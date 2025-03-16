@@ -7,7 +7,7 @@ import net.runelite.client.config.ConfigItem;
 /**
  * Project Xeric plugin configuration.
  *
- * @author <a href="mailto:carson.mullins@proton.me">Carson Mullins</a>
+ * @author <a href="mailto:carson.mullins@proton.me">Septem 150</a>
  */
 @ConfigGroup("projectxeric")
 public interface ProjectXericConfig extends Config {

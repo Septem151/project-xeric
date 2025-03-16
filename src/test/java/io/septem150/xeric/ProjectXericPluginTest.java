@@ -6,7 +6,7 @@ import net.runelite.client.externalplugins.ExternalPluginManager;
 /**
  * Project Xeric plugin tests.
  *
- * @author <a href="mailto:carson.mullins@proton.me">Carson Mullins</a>
+ * @author <a href="mailto:carson.mullins@proton.me">Septem 150</a>
  */
 public class ProjectXericPluginTest {
   /**

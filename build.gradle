@@ -37,7 +37,7 @@ spotless {
     }
     json {
         target 'src/**/*.json'
-        gson().indentWithSpaces(4).sortByKeys()
+        gson().indentWithSpaces(2).sortByKeys()
     }
 }
 
