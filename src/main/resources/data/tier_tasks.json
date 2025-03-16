@@ -1,0 +1,377 @@
+[
+  {
+    "name": "Tier 1",
+    "tasks": [
+      {
+        "name": "500 Total",
+        "type": "Level",
+        "value": 1
+      },
+      {
+        "name": "Frog Token",
+        "type": "Collect",
+        "value": 1
+      },
+      {
+        "name": "Mark of Grace",
+        "type": "Collect",
+        "value": 1
+      },
+      {
+        "name": "Burnt Pages",
+        "type": "Collect",
+        "value": 1
+      },
+      {
+        "name": "Warm Gloves",
+        "type": "Collect",
+        "value": 1
+      },
+      {
+        "name": "2 Achievements",
+        "type": "Combat",
+        "value": 1
+      },
+      {
+        "name": "Shayzien Armour Tier 1",
+        "type": "Collect",
+        "value": 1
+      },
+      {
+        "name": "Mime Outfit",
+        "type": "Collect",
+        "value": 1
+      },
+      {
+        "name": "Beekeeper's Outfit",
+        "type": "Collect",
+        "value": 1
+      },
+      {
+        "name": "Camouflage Outfit",
+        "type": "Collect",
+        "value": 1
+      },
+      {
+        "name": "Lederhosen Outfit",
+        "type": "Collect",
+        "value": 1
+      },
+      {
+        "name": "Zombie Outfit",
+        "type": "Collect",
+        "value": 1
+      }
+    ]
+  },
+  {
+    "name": "Tier 2",
+    "tasks": [
+      {
+        "name": "Bruma Torch",
+        "type": "Collect",
+        "value": 2
+      },
+      {
+        "name": "Sturdy Beehive Parts",
+        "type": "Collect",
+        "value": 2
+      },
+      {
+        "name": "Giant Key",
+        "type": "Collect",
+        "value": 2
+      },
+      {
+        "name": "Mossy Key",
+        "type": "Collect",
+        "value": 2
+      },
+      {
+        "name": "Angler's Outfit (1/4)",
+        "type": "Collect",
+        "value": 2
+      },
+      {
+        "name": "Pheasant Costume (1/5)",
+        "type": "Collect",
+        "value": 2
+      },
+      {
+        "name": "Xeric's Talisman",
+        "type": "Collect",
+        "value": 2
+      },
+      {
+        "name": "Pearl Rod (Any)",
+        "type": "Collect",
+        "value": 2
+      },
+      {
+        "name": "Sunfire Splinter",
+        "type": "Collect",
+        "value": 2
+      },
+      {
+        "name": "750 Total",
+        "type": "Level",
+        "value": 2
+      },
+      {
+        "name": "Farmer's Outfit (1/4)",
+        "type": "Collect",
+        "value": 2
+      },
+      {
+        "name": "2 Achievements",
+        "type": "Combat",
+        "value": 2
+      },
+      {
+        "name": "3 Achievements",
+        "type": "Combat",
+        "value": 2
+      }
+    ]
+  },
+  {
+    "name": "Tier 3",
+    "tasks": [
+      {
+        "name": "1000 Total",
+        "type": "Level",
+        "value": 3
+      },
+      {
+        "name": "Farmer's Outfit (2/4)",
+        "type": "Collect",
+        "value": 3
+      },
+      {
+        "name": "Shayzien Armour Tier 5",
+        "type": "Collect",
+        "value": 3
+      },
+      {
+        "name": "Ancient Shard",
+        "type": "Collect",
+        "value": 3
+      },
+      {
+        "name": "Long Bone",
+        "type": "Collect",
+        "value": 3
+      },
+      {
+        "name": "Dark Totem Pieces",
+        "type": "Collect",
+        "value": 3
+      },
+      {
+        "name": "4 Achievements",
+        "type": "Combat",
+        "value": 3
+      },
+      {
+        "name": "5 Sarachnis",
+        "type": "Combat",
+        "value": 3
+      },
+      {
+        "name": "Giant Egg Sac",
+        "type": "Collect",
+        "value": 3
+      },
+      {
+        "name": "Anima Seed (Any)",
+        "type": "Collect",
+        "value": 3
+      },
+      {
+        "name": "Pyromancer Outfit",
+        "type": "Collect",
+        "value": 3
+      },
+      {
+        "name": "Big Bass",
+        "type": "Collect",
+        "value": 3
+      },
+      {
+        "name": "Pheasant Costume (3/5)",
+        "type": "Collect",
+        "value": 3
+      },
+      {
+        "name": "Angler's Outfit (2/4)",
+        "type": "Collect",
+        "value": 3
+      },
+      {
+        "name": "Easy Tier",
+        "type": "Diary",
+        "value": 3
+      }
+    ]
+  },
+  {
+    "name": "Tier 4",
+    "tasks": [
+      {
+        "name": "1250 Total",
+        "type": "Level",
+        "value": 4
+      },
+      {
+        "name": "5 Achievements",
+        "type": "Combat",
+        "value": 4
+      },
+      {
+        "name": "1 Chambers of Xeric",
+        "type": "Combat",
+        "value": 4
+      },
+      {
+        "name": "Ancient Tablet",
+        "type": "Collect",
+        "value": 4
+      },
+      {
+        "name": "Tome of Fire",
+        "type": "Collect",
+        "value": 4
+      },
+      {
+        "name": "Golden Tench",
+        "type": "Collect",
+        "value": 4
+      },
+      {
+        "name": "Big Swordfish",
+        "type": "Collect",
+        "value": 4
+      },
+      {
+        "name": "Dragon Spear or Shield Left Half",
+        "type": "Collect",
+        "value": 4
+      },
+      {
+        "name": "Gricoller's Can",
+        "type": "Collect",
+        "value": 4
+      },
+      {
+        "name": "Herb Sack",
+        "type": "Collect",
+        "value": 4
+      },
+      {
+        "name": "Seed Box",
+        "type": "Collect",
+        "value": 4
+      },
+      {
+        "name": "Farmer's Outfit (All)",
+        "type": "Collect",
+        "value": 4
+      },
+      {
+        "name": "Anima Seeds (All)",
+        "type": "Collect",
+        "value": 4
+      },
+      {
+        "name": "Petal Garland",
+        "type": "Collect",
+        "value": 4
+      }
+    ]
+  },
+  {
+    "name": "Tier 5",
+    "tasks": [
+      {
+        "name": "1500 Total",
+        "type": "Level",
+        "value": 5
+      },
+      {
+        "name": "7 Achievements",
+        "type": "Combat",
+        "value": 5
+      },
+      {
+        "name": "5 Skotizo",
+        "type": "Combat",
+        "value": 5
+      },
+      {
+        "name": "35 Hespori",
+        "type": "Combat",
+        "value": 5
+      },
+      {
+        "name": "Bottomless Compost Bucket",
+        "type": "Collect",
+        "value": 5
+      },
+      {
+        "name": "50 Sarachnis",
+        "type": "Combat",
+        "value": 5
+      },
+      {
+        "name": "Mask of Ranul",
+        "type": "Collect",
+        "value": 5
+      },
+      {
+        "name": "Blue or Orange Egg Sac",
+        "type": "Collect",
+        "value": 5
+      },
+      {
+        "name": "5000 Glory",
+        "type": "Combat",
+        "value": 5
+      },
+      {
+        "name": "Torn Prayer Scroll or Dark Relic",
+        "type": "Collect",
+        "value": 5
+      },
+      {
+        "name": "Sulphur Blades",
+        "type": "Collect",
+        "value": 5
+      },
+      {
+        "name": "100 Lunar Chests",
+        "type": "Combat",
+        "value": 5
+      },
+      {
+        "name": "Pheasant Costume (All)",
+        "type": "Collect",
+        "value": 5
+      },
+      {
+        "name": "Angler's Outfit (All)",
+        "type": "Collect",
+        "value": 5
+      },
+      {
+        "name": "Pearl Rods (All)",
+        "type": "Collect",
+        "value": 5
+      },
+      {
+        "name": "Big Shark",
+        "type": "Collect",
+        "value": 5
+      }
+    ]
+  }
+]
