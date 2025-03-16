@@ -1,8 +1,13 @@
 .gradle
 build
 .idea/*
-!.idea/runConfigurations/
-!.idea/codeStyles/
+!.idea/codeStyles
+!.idea/runConfigurations
+!.idea/misc.xml
+!.idea/compiler.xml
+!.idea/gradle.xml
+!.idea/vcs.xml
+!.idea/spotless-applier.xml
 .project
 .settings/
 .classpath
