@@ -47,15 +47,6 @@ public class ProjectXericPlugin extends Plugin {
     log.info("Project Xeric stopped!");
   }
 
-
-
-
-
-
-
-
-
-  
   /**
    * Action to perform on GameStateChanged event.
    *
