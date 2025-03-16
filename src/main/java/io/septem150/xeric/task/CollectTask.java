@@ -13,12 +13,4 @@ public class CollectTask implements Task {
   private final TaskType type = TaskType.COLLECT;
 
   @Setter private boolean completed;
-
-
-
-
-
-
-
-  
 }

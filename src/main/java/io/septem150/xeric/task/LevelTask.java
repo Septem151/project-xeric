@@ -13,10 +13,4 @@ public class LevelTask implements Task {
   private final TaskType type = TaskType.LEVEL;
 
   @Setter private boolean completed;
-
-
-
-
-
-  
 }
