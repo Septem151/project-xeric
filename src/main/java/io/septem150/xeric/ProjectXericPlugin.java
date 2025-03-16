@@ -35,6 +35,12 @@ public class ProjectXericPlugin extends Plugin {
   @Inject private ProjectXericConfig config;
   @Inject private TaskManager taskManager;
 
+
+
+
+
+  
+
   @Override
   protected void startUp() throws Exception {
     log.info("Project Xeric started!");
