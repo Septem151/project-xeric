@@ -27,8 +27,8 @@ jobs:
       - name: Set Updated Branch Name
         id: vars
         run: |
-          branch-name="spotless-patches/${{ github.head_ref }}"
-          echo "branch-name=$branch-name" >> $GITHUB_OUTPUT
+          branch_name="spotless-patches/${{ github.head_ref }}"
+          echo "branch-name=$branch_name" >> $GITHUB_OUTPUT
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
