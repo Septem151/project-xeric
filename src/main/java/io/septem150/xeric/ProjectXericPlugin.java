@@ -31,7 +31,7 @@ public class ProjectXericPlugin extends Plugin {
   @Override
   protected void startUp() throws Exception {
     log.info("Project Xeric started!");
-    taskManager.getTaskStore().getAll().forEach(task -> log.info(task.toString()));
+    taskManager.getAllTasks().forEach(task -> log.info(task.toString()));
   }
 
   @Override
