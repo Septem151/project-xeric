@@ -2,9 +2,9 @@ package io.septem150.xeric;
 
 import com.google.gson.Gson;
 import com.google.inject.Provides;
-import io.septem150.xeric.task.Task;
+import io.septem150.xeric.task.InMemoryTaskStore;
 import io.septem150.xeric.task.TaskManager;
-import io.septem150.xeric.task.TaskTypeAdapter;
+import io.septem150.xeric.task.TaskStore;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
@@ -15,7 +15,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.http.api.RuneLiteAPI;
 
 /**
  * Project Xeric plugin.
@@ -25,12 +24,6 @@ import net.runelite.http.api.RuneLiteAPI;
 @Slf4j
 @PluginDescriptor(name = "Project Xeric")
 public class ProjectXericPlugin extends Plugin {
-
-  public static final Gson GSON =
-      RuneLiteAPI.GSON
-          .newBuilder()
-          .registerTypeHierarchyAdapter(Task.class, new TaskTypeAdapter())
-          .create();
   @Inject private Client client;
   @Inject private ProjectXericConfig config;
   @Inject private TaskManager taskManager;
@@ -38,8 +31,7 @@ public class ProjectXericPlugin extends Plugin {
   @Override
   protected void startUp() throws Exception {
     log.info("Project Xeric started!");
-    taskManager.init();
-    System.out.println(GSON.toJson(taskManager.getTasks()));
+    taskManager.getTaskStore().getAll().forEach(task -> log.info(task.toString()));
   }
 
   @Override
@@ -63,5 +55,10 @@ public class ProjectXericPlugin extends Plugin {
   @Provides
   ProjectXericConfig provideConfig(ConfigManager configManager) {
     return configManager.getConfig(ProjectXericConfig.class);
+  }
+
+  @Provides
+  TaskStore provideTaskStore(Gson gson) {
+    return new InMemoryTaskStore(gson);
   }
 }
