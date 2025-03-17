@@ -8,7 +8,7 @@ import lombok.NonNull;
 public interface TaskStore {
   List<Task> getAll();
 
-  Optional<Task> getById(String id);
+  Optional<Task> getById(@NonNull String id);
 
   Optional<Task> getByName(@NonNull String name);
 
