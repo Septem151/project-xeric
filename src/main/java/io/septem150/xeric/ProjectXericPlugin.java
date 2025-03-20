@@ -1,6 +1,6 @@
 package io.septem150.xeric;
 
-import com.google.gson.Gson;
+import com.google.inject.Binder;
 import com.google.inject.Provides;
 import io.septem150.xeric.task.InMemoryTaskStore;
 import io.septem150.xeric.task.TaskManager;
@@ -29,6 +29,12 @@ public class ProjectXericPlugin extends Plugin {
   @Inject private TaskManager taskManager;
 
   @Override
+  public void configure(Binder binder) {
+    super.configure(binder);
+    binder.bind(TaskStore.class).to(InMemoryTaskStore.class);
+  }
+
+  @Override
   protected void startUp() throws Exception {
     log.info("Project Xeric started!");
     taskManager.getAllTasks().forEach(task -> log.info(task.toString()));
@@ -55,10 +61,5 @@ public class ProjectXericPlugin extends Plugin {
   @Provides
   ProjectXericConfig provideConfig(ConfigManager configManager) {
     return configManager.getConfig(ProjectXericConfig.class);
-  }
-
-  @Provides
-  TaskStore provideTaskStore(Gson gson) {
-    return new InMemoryTaskStore(gson);
   }
 }
