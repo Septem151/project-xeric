@@ -3,10 +3,8 @@ package io.septem150.xeric.task;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import lombok.Getter;
 
 @Singleton
-@Getter
 public class TaskManager {
   private final TaskStore taskStore;
 
