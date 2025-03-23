@@ -17,14 +17,14 @@ import javax.inject.Singleton;
 import lombok.NonNull;
 
 @Singleton
-public final class InMemoryTaskStore implements TaskStore {
-  private static final String TASKS_RES_PATH = "data/rank_tasks.json";
+public final class LocalTaskStore implements TaskStore {
+  private static final String TASKS_RES_PATH = "io/septem150/xeric/data/rank_tasks.json";
 
   private final List<Task> tasksList;
   private final Map<String, Task> tasksMap;
 
   @Inject
-  public InMemoryTaskStore(Gson gson) {
+  public LocalTaskStore(Gson gson) {
     try (InputStream in =
         Thread.currentThread().getContextClassLoader().getResourceAsStream(TASKS_RES_PATH)) {
       if (in == null) {
