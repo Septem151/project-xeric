@@ -2,7 +2,8 @@ package io.septem150.xeric;
 
 import com.google.inject.Binder;
 import com.google.inject.Provides;
-import io.septem150.xeric.task.InMemoryTaskStore;
+import io.septem150.xeric.panel.ProjectXericPanel;
+import io.septem150.xeric.task.LocalTaskStore;
 import io.septem150.xeric.task.TaskManager;
 import io.septem150.xeric.task.TaskStore;
 import javax.inject.Inject;
@@ -26,23 +27,19 @@ import net.runelite.client.plugins.PluginDescriptor;
 public class ProjectXericPlugin extends Plugin {
   @Inject private Client client;
   @Inject private ProjectXericConfig config;
+  @Inject private ProjectXericPanel panel;
   @Inject private TaskManager taskManager;
-
-  @Override
-  public void configure(Binder binder) {
-    super.configure(binder);
-    binder.bind(TaskStore.class).to(InMemoryTaskStore.class);
-  }
 
   @Override
   protected void startUp() throws Exception {
     log.info("Project Xeric started!");
-    taskManager.getAllTasks().forEach(task -> log.info(task.toString()));
+    panel.init();
   }
 
   @Override
   protected void shutDown() throws Exception {
     log.info("Project Xeric stopped!");
+    panel.stop();
   }
 
   /**
@@ -56,6 +53,12 @@ public class ProjectXericPlugin extends Plugin {
       client.addChatMessage(
           ChatMessageType.GAMEMESSAGE, "", "Project Xeric says " + config.greeting(), null);
     }
+  }
+
+  @Override
+  public void configure(Binder binder) {
+    binder.bind(TaskStore.class).to(LocalTaskStore.class);
+    super.configure(binder);
   }
 
   @Provides
