@@ -13,7 +13,7 @@ public abstract class PanelBase extends PluginPanel {
     setBackground(ColorScheme.DARK_GRAY_COLOR);
   }
 
-  protected void reload() {}
+  public void reload() {}
 
   @Override
   public void onActivate() {

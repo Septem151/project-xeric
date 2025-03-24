@@ -1,6 +1,6 @@
 package io.septem150.xeric.panel;
 
-import io.septem150.xeric.ResourceManager;
+import io.septem150.xeric.util.ResourceManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -34,6 +34,7 @@ public class ProjectXericPanel extends PluginPanel {
 
   private final ClientToolbar clientToolbar;
   private final NavigationButton navigationButton;
+  private final SummaryPanel summaryPanel;
 
   @Inject
   private ProjectXericPanel(
@@ -49,6 +50,7 @@ public class ProjectXericPanel extends PluginPanel {
             .priority(SIDEPANEL_PRIORITY)
             .panel(this)
             .build();
+    this.summaryPanel = summaryPanel;
 
     setLayout(new BorderLayout());
     setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -171,5 +173,10 @@ public class ProjectXericPanel extends PluginPanel {
   /** Removes this Side Panel from the RuneLite client toolbar */
   public void stop() {
     clientToolbar.removeNavigation(navigationButton);
+  }
+
+  public void reload() {
+    summaryPanel.reload();
+    revalidate();
   }
 }

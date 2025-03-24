@@ -8,10 +8,10 @@ import io.septem150.xeric.task.TaskManager;
 import io.septem150.xeric.task.TaskStore;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
-import net.runelite.api.GameState;
 import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.GameTick;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
@@ -26,8 +26,10 @@ import net.runelite.client.plugins.PluginDescriptor;
 @PluginDescriptor(name = "Project Xeric")
 public class ProjectXericPlugin extends Plugin {
   @Inject private Client client;
+  @Inject private ClientThread clientThread;
   @Inject private ProjectXericConfig config;
   @Inject private TaskManager taskManager;
+  @Inject private DataManager dataManager;
 
   private ProjectXericPanel panel;
 
@@ -42,6 +44,7 @@ public class ProjectXericPlugin extends Plugin {
   protected void shutDown() throws Exception {
     log.info("Project Xeric stopped!");
     panel.stop();
+    dataManager.unloadPlayer();
   }
 
   /**
@@ -51,11 +54,28 @@ public class ProjectXericPlugin extends Plugin {
    */
   @Subscribe
   public void onGameStateChanged(GameStateChanged gameStateChanged) {
-    if (gameStateChanged.getGameState() == GameState.LOGGED_IN) {
-      client.addChatMessage(
-          ChatMessageType.GAMEMESSAGE, "", "Project Xeric says " + config.greeting(), null);
+    switch (gameStateChanged.getGameState()) {
+      case LOGGED_IN:
+        // Invoke later so player data can finish loading in client
+        clientThread.invokeLater(
+            () -> {
+              boolean loaded = dataManager.loadPlayer();
+              if (loaded) {
+                panel.reload();
+              }
+              return loaded;
+            });
+        break;
+      case LOGIN_SCREEN:
+        dataManager.unloadPlayer();
+        panel.reload();
+      default:
+        return;
     }
   }
+
+  @Subscribe
+  public void onGameTick(GameTick gameTick) {}
 
   @Override
   public void configure(Binder binder) {

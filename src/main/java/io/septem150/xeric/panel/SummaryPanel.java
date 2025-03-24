@@ -1,6 +1,7 @@
 package io.septem150.xeric.panel;
 
-import io.septem150.xeric.ResourceManager;
+import io.septem150.xeric.DataManager;
+import io.septem150.xeric.util.ResourceManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -19,6 +20,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
+import net.runelite.client.ui.components.PluginErrorPanel;
 import net.runelite.client.util.ImageUtil;
 
 @Singleton
@@ -26,13 +28,26 @@ public final class SummaryPanel extends PanelBase {
   static final String TOOLTIP = "Player Summary";
   static final String TAB_ICON = "summary_tab_icon.png";
 
+  private final DataManager dataManager;
+
   @Inject
-  private SummaryPanel() {
+  private SummaryPanel(DataManager dataManager) {
     super();
+    this.dataManager = dataManager;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-    JPanel clanCardPanel = createClanCardPanel();
-    add(clanCardPanel);
+    init();
+  }
+
+  private void init() {
+    if (!dataManager.isLoggedIn()) {
+      PluginErrorPanel errorPanel = new PluginErrorPanel();
+      errorPanel.setContent(TOOLTIP, "Log in to track progress");
+      add(errorPanel);
+    } else {
+      JPanel clanCardPanel = createClanCardPanel();
+      add(clanCardPanel);
+    }
   }
 
   private JPanel createClanCardPanel() {
@@ -81,7 +96,7 @@ public final class SummaryPanel extends PanelBase {
     playerInfoPanel.setBorder(new EmptyBorder(0, 5, 0, 0));
     JLabel usernameLabel =
         new JLabel(
-            "hc in zeah",
+            dataManager.getUsername(),
             new ImageIcon(ResourceManager.getImage("hcim_icon.png", 14, 14, true)),
             SwingConstants.LEFT);
     usernameLabel.setFont(FontManager.getDefaultFont().deriveFont(Font.BOLD, 14));
@@ -92,11 +107,13 @@ public final class SummaryPanel extends PanelBase {
     exceptionsPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
     exceptionsPanel.setLayout(new BoxLayout(exceptionsPanel, BoxLayout.X_AXIS));
     JLabel slayerIcon = createExceptionIcon("Off-Island Slayer", "slayer_icon.png");
-    slayerIcon.setEnabled(false);
+    slayerIcon.setEnabled(dataManager.isSlayerException());
     exceptionsPanel.add(slayerIcon);
     JLabel herbloreIcon = createExceptionIcon("Herblore Access", "herblore_icon.png");
+    herbloreIcon.setEnabled(dataManager.isHerbloreException());
     exceptionsPanel.add(herbloreIcon);
     JLabel boxTrapIcon = createExceptionIcon("Box Trap Access", "box_trap_icon.png");
+    boxTrapIcon.setEnabled(dataManager.isBoxtrapException());
     exceptionsPanel.add(boxTrapIcon);
     playerInfoPanel.add(exceptionsPanel);
     return playerInfoPanel;
@@ -134,5 +151,12 @@ public final class SummaryPanel extends PanelBase {
     descriptionLabel.setHorizontalAlignment(SwingConstants.CENTER);
     valuePanel.add(descriptionLabel);
     return valuePanel;
+  }
+
+  @Override
+  public void reload() {
+    removeAll();
+    init();
+    revalidate();
   }
 }

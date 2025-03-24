@@ -1,5 +1,6 @@
-package io.septem150.xeric;
+package io.septem150.xeric.util;
 
+import io.septem150.xeric.ProjectXericPlugin;
 import java.awt.image.BufferedImage;
 import lombok.NonNull;
 import net.runelite.client.util.ImageUtil;
