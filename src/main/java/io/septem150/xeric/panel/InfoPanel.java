@@ -3,12 +3,14 @@ package io.septem150.xeric.panel;
 import java.awt.Color;
 import java.awt.Font;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import net.runelite.client.ui.FontManager;
 
+@Singleton
 public final class InfoPanel extends PanelBase {
   @Inject
   private InfoPanel() {
@@ -33,7 +35,4 @@ public final class InfoPanel extends PanelBase {
     info.setBorder(new EmptyBorder(0, 0, 5, 0));
     add(info);
   }
-
-  @Override
-  protected void reload() {}
 }

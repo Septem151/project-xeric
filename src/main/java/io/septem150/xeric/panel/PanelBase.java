@@ -9,11 +9,11 @@ public abstract class PanelBase extends PluginPanel {
 
   protected PanelBase() {
     super(false);
-    setBorder(new EmptyBorder(10, 10, 10, 10));
+    setBorder(new EmptyBorder(10, 0, 0, 0));
     setBackground(ColorScheme.DARK_GRAY_COLOR);
   }
 
-  protected abstract void reload();
+  protected void reload() {}
 
   @Override
   public void onActivate() {

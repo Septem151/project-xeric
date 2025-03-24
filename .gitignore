@@ -16,3 +16,4 @@ nb-configuration.xml
 nbproject/
 bin/
 .vscode/
+null-ignored.json

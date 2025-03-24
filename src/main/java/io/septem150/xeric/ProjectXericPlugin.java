@@ -27,12 +27,14 @@ import net.runelite.client.plugins.PluginDescriptor;
 public class ProjectXericPlugin extends Plugin {
   @Inject private Client client;
   @Inject private ProjectXericConfig config;
-  @Inject private ProjectXericPanel panel;
   @Inject private TaskManager taskManager;
+
+  private ProjectXericPanel panel;
 
   @Override
   protected void startUp() throws Exception {
     log.info("Project Xeric started!");
+    panel = injector.getInstance(ProjectXericPanel.class);
     panel.init();
   }
 
