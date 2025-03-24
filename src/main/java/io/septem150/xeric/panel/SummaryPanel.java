@@ -37,6 +37,7 @@ public final class SummaryPanel extends PanelBase {
 
   private JPanel createClanCardPanel() {
     JPanel clanCardPanel = new JPanel(new BorderLayout());
+    clanCardPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
     clanCardPanel.setBorder(
         BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(ColorScheme.BORDER_COLOR, 1),
@@ -48,9 +49,11 @@ public final class SummaryPanel extends PanelBase {
     JPanel valuePanel = createValuePanel(String.valueOf(127), "Points");
     clanCardPanel.add(valuePanel, BorderLayout.EAST);
     JPanel numbersPanel = new JPanel();
+    numbersPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
     numbersPanel.setLayout(new BoxLayout(numbersPanel, BoxLayout.Y_AXIS));
     numbersPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
     JPanel row1 = new JPanel();
+    row1.setBackground(ColorScheme.DARKER_GRAY_COLOR);
     row1.setLayout(new BoxLayout(row1, BoxLayout.X_AXIS));
     row1.setBorder(new EmptyBorder(0, 0, 10, 0));
     row1.add(createValuePanel(String.valueOf(35), "Tasks completed"));
@@ -58,6 +61,7 @@ public final class SummaryPanel extends PanelBase {
     row1.add(createValuePanel(String.valueOf(20), "Points to next rank"));
     numbersPanel.add(row1);
     JPanel row2 = new JPanel();
+    row2.setBackground(ColorScheme.DARKER_GRAY_COLOR);
     row2.setLayout(new BoxLayout(row2, BoxLayout.X_AXIS));
     row2.add(createValuePanel("Tier 3", "Highest tier completed"));
     numbersPanel.add(row2);
@@ -73,6 +77,7 @@ public final class SummaryPanel extends PanelBase {
 
   private JPanel createPlayerInfoPanel() {
     JPanel playerInfoPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+    playerInfoPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
     playerInfoPanel.setBorder(new EmptyBorder(0, 5, 0, 0));
     JLabel usernameLabel =
         new JLabel(
@@ -84,6 +89,7 @@ public final class SummaryPanel extends PanelBase {
     usernameLabel.setIconTextGap(4);
     playerInfoPanel.add(usernameLabel);
     JPanel exceptionsPanel = new JPanel();
+    exceptionsPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
     exceptionsPanel.setLayout(new BoxLayout(exceptionsPanel, BoxLayout.X_AXIS));
     JLabel slayerIcon = createExceptionIcon("Off-Island Slayer", "slayer_icon.png");
     slayerIcon.setEnabled(false);
@@ -111,12 +117,13 @@ public final class SummaryPanel extends PanelBase {
 
   private JPanel createValuePanel(String value, String description) {
     JPanel valuePanel = new JPanel();
+    valuePanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
     valuePanel.setLayout(new GridLayout(2, 1));
     JLabel valueLabel = new JLabel(value);
     valueLabel.setForeground(Color.WHITE);
     valueLabel.setFont(FontManager.getDefaultFont().deriveFont(Font.BOLD, 12));
     valueLabel.setOpaque(true);
-    valueLabel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+    valueLabel.setBackground(ColorScheme.BORDER_COLOR);
     valueLabel.setBorder(new EmptyBorder(3, 5, 3, 5));
     valueLabel.setHorizontalAlignment(SwingConstants.CENTER);
     valuePanel.add(valueLabel);
