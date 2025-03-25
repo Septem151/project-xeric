@@ -1,7 +1,7 @@
 package io.septem150.xeric.panel;
 
-import io.septem150.xeric.DataManager;
-import io.septem150.xeric.util.ResourceManager;
+import io.septem150.xeric.player.PlayerManager;
+import io.septem150.xeric.util.ResourceUtil;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -28,19 +28,19 @@ public final class SummaryPanel extends PanelBase {
   static final String TOOLTIP = "Player Summary";
   static final String TAB_ICON = "summary_tab_icon.png";
 
-  private final DataManager dataManager;
+  private final PlayerManager playerManager;
 
   @Inject
-  private SummaryPanel(DataManager dataManager) {
+  private SummaryPanel(PlayerManager playerManager) {
     super();
-    this.dataManager = dataManager;
+    this.playerManager = playerManager;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
     init();
   }
 
   private void init() {
-    if (!dataManager.isLoggedIn()) {
+    if (playerManager.isLoggedOut()) {
       PluginErrorPanel errorPanel = new PluginErrorPanel();
       errorPanel.setContent(TOOLTIP, "Log in to track progress");
       add(errorPanel);
@@ -85,7 +85,7 @@ public final class SummaryPanel extends PanelBase {
   }
 
   private JLabel createRankIcon(String tooltip, String imageName) {
-    JLabel rankIcon = new JLabel(new ImageIcon(ResourceManager.getImage(imageName, 32, 32)));
+    JLabel rankIcon = new JLabel(new ImageIcon(ResourceUtil.getImage(imageName, 32, 32)));
     rankIcon.setToolTipText(tooltip);
     return rankIcon;
   }
@@ -96,8 +96,8 @@ public final class SummaryPanel extends PanelBase {
     playerInfoPanel.setBorder(new EmptyBorder(0, 5, 0, 0));
     JLabel usernameLabel =
         new JLabel(
-            dataManager.getUsername(),
-            new ImageIcon(ResourceManager.getImage("hcim_icon.png", 14, 14, true)),
+            playerManager.getUsername(),
+            new ImageIcon(ResourceUtil.getImage("hcim_icon.png", 14, 14, true)),
             SwingConstants.LEFT);
     usernameLabel.setFont(FontManager.getDefaultFont().deriveFont(Font.BOLD, 14));
     usernameLabel.setForeground(Color.WHITE);
@@ -107,20 +107,20 @@ public final class SummaryPanel extends PanelBase {
     exceptionsPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
     exceptionsPanel.setLayout(new BoxLayout(exceptionsPanel, BoxLayout.X_AXIS));
     JLabel slayerIcon = createExceptionIcon("Off-Island Slayer", "slayer_icon.png");
-    slayerIcon.setEnabled(dataManager.isSlayerException());
+    slayerIcon.setEnabled(playerManager.isSlayerException());
     exceptionsPanel.add(slayerIcon);
     JLabel herbloreIcon = createExceptionIcon("Herblore Access", "herblore_icon.png");
-    herbloreIcon.setEnabled(dataManager.isHerbloreException());
+    herbloreIcon.setEnabled(playerManager.isHerbloreException());
     exceptionsPanel.add(herbloreIcon);
     JLabel boxTrapIcon = createExceptionIcon("Box Trap Access", "box_trap_icon.png");
-    boxTrapIcon.setEnabled(dataManager.isBoxtrapException());
+    boxTrapIcon.setEnabled(playerManager.isBoxtrapException());
     exceptionsPanel.add(boxTrapIcon);
     playerInfoPanel.add(exceptionsPanel);
     return playerInfoPanel;
   }
 
   private JLabel createExceptionIcon(String tooltip, String imageName) {
-    BufferedImage image = ResourceManager.getImage(imageName, 18, 18);
+    BufferedImage image = ResourceUtil.getImage(imageName, 18, 18);
     JLabel exceptionIcon = new JLabel(new ImageIcon(image));
     exceptionIcon.setToolTipText(tooltip);
     exceptionIcon.setAlignmentY(Component.BOTTOM_ALIGNMENT);

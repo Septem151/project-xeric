@@ -1,22 +1,24 @@
-package io.septem150.xeric;
+package io.septem150.xeric.player;
 
+import io.septem150.xeric.ClientManager;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.Quest;
 import net.runelite.api.QuestState;
+import net.runelite.client.game.ItemManager;
 
 @Slf4j
 @Singleton
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
-public class DataManager {
+public class PlayerManager {
   private static final List<Quest> whitelistedQuests =
       List.of(
           Quest.DRUIDIC_RITUAL,
@@ -47,6 +49,9 @@ public class DataManager {
           .collect(Collectors.toList());
 
   private final Client client;
+  private final ClientManager clientManager;
+  private final ItemManager itemManager;
+
   @Getter private String username;
   @Getter private boolean herbloreException;
   @Getter private boolean boxtrapException;
@@ -55,7 +60,7 @@ public class DataManager {
 
   public boolean loadPlayer() {
     this.username = client.getLocalPlayer().getName();
-    if (!isLoggedIn()) {
+    if (isLoggedOut()) {
       return false;
     }
     herbloreException = Quest.DRUIDIC_RITUAL.getState(client) == QuestState.FINISHED;
@@ -68,13 +73,7 @@ public class DataManager {
         break;
       }
     }
-    client.addChatMessage(
-        ChatMessageType.GAMEMESSAGE,
-        "",
-        String.format(
-            "You are %s to rank on the Project Xeric Hiscores!",
-            allowedOnHiscores ? "allowed" : "not allowed"),
-        null);
+    Set<Integer> clogItems = clientManager.requestAllClogItems();
     return true;
   }
 
@@ -86,7 +85,7 @@ public class DataManager {
     allowedOnHiscores = true;
   }
 
-  public boolean isLoggedIn() {
-    return client.isClientThread() && username != null;
+  public boolean isLoggedOut() {
+    return !client.isClientThread() || username == null;
   }
 }

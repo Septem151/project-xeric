@@ -1,6 +1,6 @@
 package io.septem150.xeric.panel;
 
-import io.septem150.xeric.util.ResourceManager;
+import io.septem150.xeric.util.ResourceUtil;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -46,7 +46,7 @@ public class ProjectXericPanel extends PluginPanel {
     navigationButton =
         NavigationButton.builder()
             .tooltip(SIDEPANEL_TOOLTIP)
-            .icon(ResourceManager.getImage(SIDEPANEL_ICON))
+            .icon(ResourceUtil.getImage(SIDEPANEL_ICON))
             .priority(SIDEPANEL_PRIORITY)
             .panel(this)
             .build();
@@ -81,7 +81,7 @@ public class ProjectXericPanel extends PluginPanel {
 
   /**
    * Creates a new {@link MaterialTab} with a given image and tooltip text. The {@code imageName} is
-   * used as the tab's icon via {@link ResourceManager#getImage(String imageName)}.
+   * used as the tab's icon via {@link ResourceUtil#getImage(String imageName)}.
    *
    * @param tooltip the tooltip to display on hover.
    * @param imageName the name of an image, including extension.
@@ -92,7 +92,7 @@ public class ProjectXericPanel extends PluginPanel {
   private MaterialTab createTab(
       String tooltip, String imageName, PluginPanel content, MaterialTabGroup tabGroup) {
     MaterialTab tab =
-        new MaterialTab(new ImageIcon(ResourceManager.getImage(imageName)), tabGroup, content);
+        new MaterialTab(new ImageIcon(ResourceUtil.getImage(imageName)), tabGroup, content);
     tab.setToolTipText(tooltip);
     tabGroup.addTab(tab);
     return tab;
@@ -134,8 +134,8 @@ public class ProjectXericPanel extends PluginPanel {
 
   /**
    * Creates a {@link JButton} with a given image, tooltip text, and URL. The {@code imageName} is
-   * used as the tab's icon via {@link ResourceManager#getImage(String imageName)}. Attempts to open
-   * a new browser tab to the provided URL on click.
+   * used as the tab's icon via {@link ResourceUtil#getImage(String imageName)}. Attempts to open a
+   * new browser tab to the provided URL on click.
    *
    * @param tooltip the tooltip to display on hover.
    * @param imageName the name of an image, including extension.
@@ -143,7 +143,7 @@ public class ProjectXericPanel extends PluginPanel {
    * @return a new {@link JButton} with the desired properties.
    */
   private JButton createTitleButton(String tooltip, String imageName, String url) {
-    JButton button = new JButton(new ImageIcon(ResourceManager.getImage(imageName, 16, 16)));
+    JButton button = new JButton(new ImageIcon(ResourceUtil.getImage(imageName, 16, 16)));
     SwingUtil.removeButtonDecorations(button);
     button.setToolTipText(tooltip);
     button.setBackground(ColorScheme.DARK_GRAY_COLOR);

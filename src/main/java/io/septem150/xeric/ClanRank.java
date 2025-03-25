@@ -1,6 +1,6 @@
 package io.septem150.xeric;
 
-import io.septem150.xeric.util.ResourceManager;
+import io.septem150.xeric.util.ResourceUtil;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.Optional;
@@ -34,7 +34,7 @@ public enum ClanRank {
 
   ClanRank(int id, String imageName, int pointsNeeded) {
     this.id = id;
-    image = ResourceManager.getImage(imageName);
+    image = ResourceUtil.getImage(imageName);
     this.pointsNeeded = pointsNeeded;
   }
 

@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import lombok.NonNull;
 import net.runelite.client.util.ImageUtil;
 
-public class ResourceManager {
+public class ResourceUtil {
   public static BufferedImage getImage(@NonNull String name) {
     String imagePath = name;
     if (!name.startsWith("/")) {

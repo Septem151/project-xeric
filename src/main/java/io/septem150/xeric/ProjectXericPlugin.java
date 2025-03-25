@@ -3,8 +3,8 @@ package io.septem150.xeric;
 import com.google.inject.Binder;
 import com.google.inject.Provides;
 import io.septem150.xeric.panel.ProjectXericPanel;
+import io.septem150.xeric.player.PlayerManager;
 import io.septem150.xeric.task.LocalTaskStore;
-import io.septem150.xeric.task.TaskManager;
 import io.septem150.xeric.task.TaskStore;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +28,7 @@ public class ProjectXericPlugin extends Plugin {
   @Inject private Client client;
   @Inject private ClientThread clientThread;
   @Inject private ProjectXericConfig config;
-  @Inject private TaskManager taskManager;
-  @Inject private DataManager dataManager;
+  @Inject private PlayerManager playerManager;
 
   private ProjectXericPanel panel;
 
@@ -44,7 +43,7 @@ public class ProjectXericPlugin extends Plugin {
   protected void shutDown() throws Exception {
     log.info("Project Xeric stopped!");
     panel.stop();
-    dataManager.unloadPlayer();
+    playerManager.unloadPlayer();
   }
 
   /**
@@ -59,7 +58,7 @@ public class ProjectXericPlugin extends Plugin {
         // Invoke later so player data can finish loading in client
         clientThread.invokeLater(
             () -> {
-              boolean loaded = dataManager.loadPlayer();
+              boolean loaded = playerManager.loadPlayer();
               if (loaded) {
                 panel.reload();
               }
@@ -67,7 +66,7 @@ public class ProjectXericPlugin extends Plugin {
             });
         break;
       case LOGIN_SCREEN:
-        dataManager.unloadPlayer();
+        playerManager.unloadPlayer();
         panel.reload();
       default:
         return;
