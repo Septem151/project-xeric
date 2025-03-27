@@ -1,70 +1,30 @@
 [
   {
-    "tasks": [
-      {
-        "icon": "images/total_level.png",
-        "id": "01_01",
-        "name": "500 Total",
-        "type": "Level"
-      },
-      {
-        "icon": "images/frog_token.png",
-        "id": "01_02",
-        "name": "Frog Token",
-        "type": "Collect"
-      },
-      {
-        "icon": "images/combat_achievement.png",
-        "id": "01_03",
-        "name": "2 Achievements",
-        "type": "Combat"
-      }
-    ],
-    "tier": 1
+    "icon": "images/total_level.png",
+    "id": "01_01",
+    "name": "500 Total",
+    "tier": 1,
+    "type": "level",
+    "level": "total",
+    "goal": 500
   },
   {
-    "tasks": [
-      {
-        "icon": "images/anglers_outfit.png",
-        "id": "02_01",
-        "name": "Angler's Outfit (1/4)",
-        "type": "Collect"
-      }
+    "icon": "images/frog_token.png",
+    "id": "01_02",
+    "name": "Frog Token",
+    "tier": 1,
+    "type": "collect",
+    "itemIds": [
+      6183
     ],
-    "tier": 2
+    "amount": 1
   },
   {
-    "tasks": [
-      {
-        "icon": "images/sarachnis.png",
-        "id": "03_01",
-        "name": "5 Sarachnis",
-        "type": "Combat"
-      },
-      {
-        "icon": "images/achievement_diary.png",
-        "id": "03_02",
-        "name": "Easy Tier",
-        "type": "Diary"
-      }
-    ],
-    "tier": 3
-  },
-  {
-    "tasks": [
-      {
-        "icon": "images/colosseum.png",
-        "id": "05_01",
-        "name": "5000 Glory",
-        "type": "Combat"
-      },
-      {
-        "icon": "images/pheasant_costume.png",
-        "id": "05_02",
-        "name": "Pheasant Costume (All)",
-        "type": "Collect"
-      }
-    ],
-    "tier": 5
+    "icon": "images/combat_achievement.png",
+    "id": "01_03",
+    "name": "2 Achievements",
+    "tier": 1,
+    "type": "ca",
+    "total": 2
   }
 ]

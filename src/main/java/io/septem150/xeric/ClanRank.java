@@ -5,9 +5,13 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.Optional;
 import lombok.Getter;
+import org.apache.commons.text.WordUtils;
 
 @Getter
 public enum ClanRank {
+  /*
+  TODO: get images from Sprite cache instead of our own resources
+   */
   BAG(1, "ranks/bag.png", 0),
   ARTISAN(2, "ranks/artisan.png", 20),
   PRODIGY(3, "ranks/prodigy.png", 40),
@@ -34,7 +38,7 @@ public enum ClanRank {
 
   ClanRank(int id, String imageName, int pointsNeeded) {
     this.id = id;
-    image = ResourceUtil.getImage(imageName);
+    image = ResourceUtil.getImage(imageName, 32, 32);
     this.pointsNeeded = pointsNeeded;
   }
 
@@ -59,5 +63,10 @@ public enum ClanRank {
 
   public ClanRank getNextRank() {
     return ClanRank.fromId(this.getId() + 1).orElse(this);
+  }
+
+  @Override
+  public String toString() {
+    return WordUtils.capitalizeFully(String.format("%s Rank", this.name()));
   }
 }

@@ -9,8 +9,9 @@ import net.runelite.client.config.ConfigItem;
  *
  * @author <a href="mailto:carson.mullins@proton.me">Septem 150</a>
  */
-@ConfigGroup("projectxeric")
+@ConfigGroup(ProjectXericConfig.GROUP)
 public interface ProjectXericConfig extends Config {
+  String GROUP = "projectxeric";
 
   /**
    * The message to show to the user when they login.

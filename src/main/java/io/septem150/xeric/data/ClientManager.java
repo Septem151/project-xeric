@@ -1,21 +1,28 @@
-package io.septem150.xeric;
+package io.septem150.xeric.data;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.EnumComposition;
+import net.runelite.api.Quest;
 import net.runelite.api.StructComposition;
-import net.runelite.client.game.ItemManager;
 
+@Getter
 @Slf4j
 @Singleton
-@RequiredArgsConstructor(onConstructor_ = @__(@Inject))
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE, onConstructor_ = @__(@Inject))
 public class ClientManager {
   private static final int CLOG_TOP_TABS_ENUM_ID = 2102;
   private static final int CLOG_SUB_TABS_PARAM_ID = 683;
@@ -37,8 +44,93 @@ public class ClientManager {
         3773, 3774, 4204, 4496
       };
 
+  private static final List<Quest> whitelistedQuests =
+      List.of(
+          Quest.DRUIDIC_RITUAL,
+          Quest.EAGLES_PEAK,
+          Quest.A_KINGDOM_DIVIDED,
+          Quest.GETTING_AHEAD,
+          Quest.THE_GARDEN_OF_DEATH,
+          Quest.CHILDREN_OF_THE_SUN,
+          Quest.TWILIGHTS_PROMISE,
+          Quest.THE_HEART_OF_DARKNESS,
+          Quest.X_MARKS_THE_SPOT,
+          Quest.CLIENT_OF_KOUREND,
+          Quest.THE_QUEEN_OF_THIEVES,
+          Quest.THE_DEPTHS_OF_DESPAIR,
+          Quest.THE_ASCENT_OF_ARCEUUS,
+          Quest.THE_FORSAKEN_TOWER,
+          Quest.TALE_OF_THE_RIGHTEOUS,
+          Quest.PERILOUS_MOONS,
+          Quest.THE_RIBBITING_TALE_OF_A_LILY_PAD_LABOUR_DISPUTE,
+          Quest.AT_FIRST_LIGHT,
+          Quest.DEATH_ON_THE_ISLE,
+          Quest.RUNE_MYSTERIES,
+          Quest.MEAT_AND_GREET,
+          Quest.ETHICALLY_ACQUIRED_ANTIQUITIES);
+  private static final List<Quest> bannedQuests =
+      Arrays.stream(Quest.values())
+          .filter(quest -> !whitelistedQuests.contains(quest))
+          .collect(Collectors.toList());
+
   private final Client client;
-  private final ItemManager itemManager;
+
+  public boolean isLoggedOut() {
+    return !(client.isClientThread()
+        && client.getLocalPlayer() != null
+        && client.getLocalPlayer().getName() != null);
+  }
+
+  public @Nullable String getUsername() {
+    if (isLoggedOut()) return null;
+    return client.getLocalPlayer().getName();
+  }
+
+  /**
+   * Gets all player's completed CA Tasks and maps them to their point value.
+   *
+   * @return a map of CA Task ID to the task's point value.
+   * @see <a
+   *     href="https://discord.com/channels/301497432909414422/419891709883973642/1347233676945260684">RuneLite
+   *     Discord post</a> by @abex
+   */
+  public Map<Integer, Integer> getCATaskCompletions() {
+    Map<Integer, Integer> caTaskIdsToPoints = new HashMap<>();
+    // from [proc,ca_tasks_total]
+    // there is an enum per ca tier
+    for (int caTiersEnumId :
+        new int[] {
+          EASY_TIER_ENUM_ID,
+          MEDIUM_TIER_ENUM_ID,
+          HARD_TIER_ENUM_ID,
+          ELITE_TIER_ENUM_ID,
+          MASTER_TIER_ENUM_ID,
+          GM_TIER_ENUM_ID
+        }) {
+      EnumComposition caTiersEnum = client.getEnum(caTiersEnumId);
+      // so we can iterate the enum to find a bunch of structs
+      for (int caTierStructId : caTiersEnum.getIntVals()) {
+        StructComposition caTierStruct = client.getStructComposition(caTierStructId);
+        // and with the struct we can get info about the ca
+        // like its id, which we can use to get if its completed or not
+        int taskId = caTierStruct.getIntValue(CA_STRUCT_ID_PARAM_ID);
+        // or its tier/points value
+        int taskTier = caTierStruct.getIntValue(CA_STRUCT_TIER_PARAM_ID);
+        // we can use the cs2 vm to invoke script 4834 to do the lookup for us
+        // client.runScript(4834, id);
+        // boolean unlocked = client.getIntStack()[client.getIntStackSize() - 1] != 0;
+
+        // or we can reimplement it ourselves
+        // from script 4834
+        boolean unlocked = isCATaskComplete(taskId);
+
+        if (unlocked) {
+          caTaskIdsToPoints.put(taskId, taskTier);
+        }
+      }
+    }
+    return caTaskIdsToPoints;
+  }
 
   /**
    * Parse the enums and structs in the cache to figure out which item ids exist in the collection
@@ -90,52 +182,6 @@ public class ClientManager {
     for (int prospectorItemId : UNUSED_PROSPECTOR_ITEM_IDS) clogItems.remove(prospectorItemId);
 
     return clogItems;
-  }
-
-  /**
-   * Gets all player's completed CA Tasks and maps them to their point value.
-   *
-   * @return a map of CA Task ID to the task's point value.
-   * @see <a
-   *     href="https://discord.com/channels/301497432909414422/419891709883973642/1347233676945260684">RuneLite
-   *     Discord post</a> by @abex
-   */
-  public Map<Integer, Integer> requestCompletedCATasks() {
-    Map<Integer, Integer> caTaskIdsToPoints = new HashMap<>();
-    // from [proc,ca_tasks_total]
-    // there is an enum per ca tier
-    for (int caTiersEnumId :
-        new int[] {
-          EASY_TIER_ENUM_ID,
-          MEDIUM_TIER_ENUM_ID,
-          HARD_TIER_ENUM_ID,
-          ELITE_TIER_ENUM_ID,
-          MASTER_TIER_ENUM_ID,
-          GM_TIER_ENUM_ID
-        }) {
-      EnumComposition caTiersEnum = client.getEnum(caTiersEnumId);
-      // so we can iterate the enum to find a bunch of structs
-      for (int caTierStructId : caTiersEnum.getIntVals()) {
-        StructComposition caTierStruct = client.getStructComposition(caTierStructId);
-        // and with the struct we can get info about the ca
-        // like its id, which we can use to get if its completed or not
-        int taskId = caTierStruct.getIntValue(CA_STRUCT_ID_PARAM_ID);
-        // or its tier/points value
-        int taskTier = caTierStruct.getIntValue(CA_STRUCT_TIER_PARAM_ID);
-        // we can use the cs2 vm to invoke script 4834 to do the lookup for us
-        // client.runScript(4834, id);
-        // boolean unlocked = client.getIntStack()[client.getIntStackSize() - 1] != 0;
-
-        // or we can reimplement it ourselves
-        // from script 4834
-        boolean unlocked = isCATaskComplete(taskId);
-
-        if (unlocked) {
-          caTaskIdsToPoints.put(taskId, taskTier);
-        }
-      }
-    }
-    return caTaskIdsToPoints;
   }
 
   /**

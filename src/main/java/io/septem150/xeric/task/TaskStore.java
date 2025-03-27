@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import lombok.NonNull;
 
 public interface TaskStore {
-  List<Task> getAll();
+  @NonNull List<Task> getAll();
 
   Optional<Task> getById(@NonNull String id);
 
@@ -14,7 +14,7 @@ public interface TaskStore {
 
   Optional<Task> getByName(@NonNull Pattern pattern);
 
-  List<Task> getByType(@NonNull String type);
+  @NonNull List<Task> getByType(@NonNull String type);
 
-  List<Task> getByTier(int tier);
+  @NonNull List<Task> getByTier(int tier);
 }

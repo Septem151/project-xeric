@@ -35,6 +35,7 @@ public class ProjectXericPanel extends PluginPanel {
   private final ClientToolbar clientToolbar;
   private final NavigationButton navigationButton;
   private final SummaryPanel summaryPanel;
+  private final LeaderboardPanel leaderboardPanel;
 
   @Inject
   private ProjectXericPanel(
@@ -51,6 +52,7 @@ public class ProjectXericPanel extends PluginPanel {
             .panel(this)
             .build();
     this.summaryPanel = summaryPanel;
+    this.leaderboardPanel = leaderboardPanel;
 
     setLayout(new BorderLayout());
     setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -177,6 +179,7 @@ public class ProjectXericPanel extends PluginPanel {
 
   public void reload() {
     summaryPanel.reload();
+    leaderboardPanel.reload();
     revalidate();
   }
 }

@@ -1,6 +1,7 @@
 package io.septem150.xeric.panel;
 
-import io.septem150.xeric.player.PlayerManager;
+import io.septem150.xeric.ClanRank;
+import io.septem150.xeric.data.DataManager;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -28,21 +29,20 @@ public final class SummaryPanel extends PanelBase {
   static final String TOOLTIP = "Player Summary";
   static final String TAB_ICON = "summary_tab_icon.png";
 
-  private final PlayerManager playerManager;
+  private final DataManager dataManager;
 
   @Inject
-  private SummaryPanel(PlayerManager playerManager) {
+  private SummaryPanel(DataManager dataManager) {
     super();
-    this.playerManager = playerManager;
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
+    this.dataManager = dataManager;
     init();
   }
 
   private void init() {
-    if (playerManager.isLoggedOut()) {
+    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    if (dataManager.getPlayerData().getUsername() == null) {
       PluginErrorPanel errorPanel = new PluginErrorPanel();
-      errorPanel.setContent(TOOLTIP, "Log in to track progress");
+      errorPanel.setContent("Project Xeric", "Log in to start tracking progress.");
       add(errorPanel);
     } else {
       JPanel clanCardPanel = createClanCardPanel();
@@ -57,11 +57,11 @@ public final class SummaryPanel extends PanelBase {
         BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(ColorScheme.BORDER_COLOR, 1),
             BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-    JLabel rankIcon = createRankIcon("Emerald Rank", "emerald_rank_icon.png");
+    JLabel rankIcon = createRankIcon(dataManager.getPlayerRank());
     clanCardPanel.add(rankIcon, BorderLayout.WEST);
     JPanel playerInfoPanel = createPlayerInfoPanel();
     clanCardPanel.add(playerInfoPanel, BorderLayout.CENTER);
-    JPanel valuePanel = createValuePanel(String.valueOf(127), "Points");
+    JPanel valuePanel = createValuePanel(String.valueOf(dataManager.getPlayerPoints()), "Points");
     clanCardPanel.add(valuePanel, BorderLayout.EAST);
     JPanel numbersPanel = new JPanel();
     numbersPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
@@ -71,22 +71,23 @@ public final class SummaryPanel extends PanelBase {
     row1.setBackground(ColorScheme.DARKER_GRAY_COLOR);
     row1.setLayout(new BoxLayout(row1, BoxLayout.X_AXIS));
     row1.setBorder(new EmptyBorder(0, 0, 10, 0));
-    row1.add(createValuePanel(String.valueOf(35), "Tasks completed"));
+    row1.add(createValuePanel(String.valueOf(dataManager.getTasksCompleted()), "Tasks completed"));
     row1.add(Box.createHorizontalGlue());
-    row1.add(createValuePanel(String.valueOf(20), "Points to next rank"));
+    row1.add(
+        createValuePanel(String.valueOf(dataManager.getPointsToNextRank()), "Points to next rank"));
     numbersPanel.add(row1);
     JPanel row2 = new JPanel();
     row2.setBackground(ColorScheme.DARKER_GRAY_COLOR);
     row2.setLayout(new BoxLayout(row2, BoxLayout.X_AXIS));
-    row2.add(createValuePanel("Tier 3", "Highest tier completed"));
+    row2.add(createValuePanel(dataManager.getHighestTierCompleted(), "Highest tier completed"));
     numbersPanel.add(row2);
     clanCardPanel.add(numbersPanel, BorderLayout.SOUTH);
     return clanCardPanel;
   }
 
-  private JLabel createRankIcon(String tooltip, String imageName) {
-    JLabel rankIcon = new JLabel(new ImageIcon(ResourceUtil.getImage(imageName, 32, 32)));
-    rankIcon.setToolTipText(tooltip);
+  private JLabel createRankIcon(ClanRank clanRank) {
+    JLabel rankIcon = new JLabel(new ImageIcon(clanRank.getImage()));
+    rankIcon.setToolTipText(clanRank.toString());
     return rankIcon;
   }
 
@@ -96,8 +97,8 @@ public final class SummaryPanel extends PanelBase {
     playerInfoPanel.setBorder(new EmptyBorder(0, 5, 0, 0));
     JLabel usernameLabel =
         new JLabel(
-            playerManager.getUsername(),
-            new ImageIcon(ResourceUtil.getImage("hcim_icon.png", 14, 14, true)),
+            dataManager.getPlayerData().getUsername(),
+            new ImageIcon(dataManager.getAccountTypeImage()),
             SwingConstants.LEFT);
     usernameLabel.setFont(FontManager.getDefaultFont().deriveFont(Font.BOLD, 14));
     usernameLabel.setForeground(Color.WHITE);
@@ -107,13 +108,13 @@ public final class SummaryPanel extends PanelBase {
     exceptionsPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
     exceptionsPanel.setLayout(new BoxLayout(exceptionsPanel, BoxLayout.X_AXIS));
     JLabel slayerIcon = createExceptionIcon("Off-Island Slayer", "slayer_icon.png");
-    slayerIcon.setEnabled(playerManager.isSlayerException());
+    slayerIcon.setEnabled(dataManager.isOffIslandSlayerUnlocked());
     exceptionsPanel.add(slayerIcon);
     JLabel herbloreIcon = createExceptionIcon("Herblore Access", "herblore_icon.png");
-    herbloreIcon.setEnabled(playerManager.isHerbloreException());
+    herbloreIcon.setEnabled(dataManager.isHerbloreUnlocked());
     exceptionsPanel.add(herbloreIcon);
     JLabel boxTrapIcon = createExceptionIcon("Box Trap Access", "box_trap_icon.png");
-    boxTrapIcon.setEnabled(playerManager.isBoxtrapException());
+    boxTrapIcon.setEnabled(dataManager.isBoxTrapUnlocked());
     exceptionsPanel.add(boxTrapIcon);
     playerInfoPanel.add(exceptionsPanel);
     return playerInfoPanel;
