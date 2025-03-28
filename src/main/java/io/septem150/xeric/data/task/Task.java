@@ -1,6 +1,6 @@
-package io.septem150.xeric.task;
+package io.septem150.xeric.data.task;
 
-import io.septem150.xeric.data.PlayerData;
+import io.septem150.xeric.data.player.PlayerData;
 import lombok.Data;
 
 @Data

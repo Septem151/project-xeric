@@ -1,13 +1,15 @@
-package io.septem150.xeric.data;
+package io.septem150.xeric;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import io.septem150.xeric.ClanRank;
-import io.septem150.xeric.ProjectXericConfig;
+import io.septem150.xeric.data.player.AccountType;
+import io.septem150.xeric.data.player.AchievementDiary;
+import io.septem150.xeric.data.player.ClanRank;
+import io.septem150.xeric.data.player.PlayerData;
+import io.septem150.xeric.data.task.Task;
+import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.event.PanelRefreshRequest;
 import io.septem150.xeric.event.TaskCompletedEvent;
-import io.septem150.xeric.task.Task;
-import io.septem150.xeric.task.TaskStore;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,12 +43,13 @@ import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.SpriteManager;
 
 @Slf4j
 @Singleton
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE, onConstructor_ = @__(@Inject))
-public class DataManager {
+public final class ProjectXericManager {
   private static final String RSPROFILE_DATA_KEY = "data";
 
   private static final int EASY_TIER_ENUM_ID = 3981;
@@ -96,6 +99,7 @@ public class DataManager {
   @Named("xericGson")
   private final Gson gson;
 
+  private final ProjectXericConfig config;
   private final ConfigManager configManager;
   private final SpriteManager spriteManager;
   private final Client client;
@@ -212,7 +216,24 @@ public class DataManager {
   }
 
   public boolean isOffIslandSlayerUnlocked() {
-    return false;
+    return config.slayer();
+  }
+
+  public List<Task> getAllTasks() {
+    return new ArrayList<>(tasks.values());
+  }
+
+  public boolean isTaskCompleted(Task task) {
+    return playerData.getTasks().contains(task.getId());
+  }
+
+  @Subscribe
+  public void onConfigChanged(ConfigChanged event) {
+    if (!event.getGroup().equals(ProjectXericConfig.GROUP)) return;
+    if (event.getKey().equals("slayer")) {
+      // do some points recalculating here eventually?
+      eventBus.post(new PanelRefreshRequest());
+    }
   }
 
   @Subscribe

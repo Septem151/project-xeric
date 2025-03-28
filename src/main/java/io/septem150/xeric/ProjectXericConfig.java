@@ -13,16 +13,11 @@ import net.runelite.client.config.ConfigItem;
 public interface ProjectXericConfig extends Config {
   String GROUP = "projectxeric";
 
-  /**
-   * The message to show to the user when they login.
-   *
-   * @return String a greeting
-   */
   @ConfigItem(
-      keyName = "greeting",
-      name = "Welcome Greeting",
-      description = "The message to show to the user when they login")
-  default String greeting() {
-    return "Hello";
+      keyName = "slayer",
+      name = "Slayer Exception",
+      description = "Toggle on if you train Slayer off-island.")
+  default boolean slayer() {
+    return false;
   }
 }

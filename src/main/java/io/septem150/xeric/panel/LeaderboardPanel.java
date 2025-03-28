@@ -5,14 +5,15 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+import net.runelite.api.Client;
 
 @Singleton
 public class LeaderboardPanel extends PanelBase {
-  static final String TOOLTIP = "Leaderboard";
-  static final String TAB_ICON = "/skill_icons/overall.png";
+  public static final String TOOLTIP = "Leaderboard";
+  public static final String TAB_ICON = "/skill_icons/overall.png";
 
   @Inject
-  private LeaderboardPanel() {
+  private LeaderboardPanel(Client client) {
     super();
     BorderLayout layout = new BorderLayout();
     setLayout(layout);

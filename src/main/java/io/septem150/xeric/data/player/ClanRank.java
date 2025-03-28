@@ -1,4 +1,4 @@
-package io.septem150.xeric;
+package io.septem150.xeric.data.player;
 
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.image.BufferedImage;

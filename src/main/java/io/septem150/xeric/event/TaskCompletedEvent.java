@@ -1,6 +1,6 @@
 package io.septem150.xeric.event;
 
-import io.septem150.xeric.task.Task;
+import io.septem150.xeric.data.task.Task;
 import lombok.Data;
 import lombok.NonNull;
 

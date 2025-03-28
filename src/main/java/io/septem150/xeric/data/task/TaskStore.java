@@ -1,4 +1,4 @@
-package io.septem150.xeric.task;
+package io.septem150.xeric.data.task;
 
 import java.util.List;
 import java.util.Optional;

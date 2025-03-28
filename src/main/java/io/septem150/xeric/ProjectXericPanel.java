@@ -1,7 +1,9 @@
-package io.septem150.xeric.panel;
+package io.septem150.xeric;
 
 import io.septem150.xeric.event.PanelRefreshRequest;
 import io.septem150.xeric.event.TaskCompletedEvent;
+import io.septem150.xeric.panel.LeaderboardPanel;
+import io.septem150.xeric.panel.SummaryPanel;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,7 +33,7 @@ import net.runelite.client.util.SwingUtil;
 
 /** Side Panel UI for the Project Xeric plugin. */
 @Singleton
-public class ProjectXericPanel extends PluginPanel {
+public final class ProjectXericPanel extends PluginPanel {
   private static final String SIDEPANEL_TOOLTIP = "Project Xeric";
   private static final String SIDEPANEL_ICON = "sidepanel_icon.png";
   private static final int SIDEPANEL_PRIORITY = 3;
@@ -47,6 +49,7 @@ public class ProjectXericPanel extends PluginPanel {
       ClientToolbar clientToolbar,
       SummaryPanel summaryPanel,
       LeaderboardPanel leaderboardPanel) {
+    super(false);
     this.clientToolbar = clientToolbar;
     navigationButton =
         NavigationButton.builder()

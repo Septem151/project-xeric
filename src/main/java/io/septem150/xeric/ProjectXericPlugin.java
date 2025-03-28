@@ -3,14 +3,13 @@ package io.septem150.xeric;
 import com.google.gson.Gson;
 import com.google.inject.Binder;
 import com.google.inject.Provides;
-import io.septem150.xeric.data.DataManager;
-import io.septem150.xeric.panel.ProjectXericPanel;
-import io.septem150.xeric.task.LocalTaskStore;
-import io.septem150.xeric.task.Task;
-import io.septem150.xeric.task.TaskStore;
-import io.septem150.xeric.task.TaskTypeAdapter;
+import io.septem150.xeric.data.task.LocalTaskStore;
+import io.septem150.xeric.data.task.Task;
+import io.septem150.xeric.data.task.TaskStore;
+import io.septem150.xeric.data.task.TaskTypeAdapter;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.events.CommandExecuted;
 import net.runelite.client.config.ConfigManager;
@@ -26,11 +25,11 @@ import net.runelite.client.plugins.PluginDescriptor;
  */
 @Slf4j
 @PluginDescriptor(name = "Project Xeric")
-public class ProjectXericPlugin extends Plugin {
+public final class ProjectXericPlugin extends Plugin {
 
   @Inject private EventBus eventBus;
   @Inject private ProjectXericConfig config;
-  @Inject private DataManager dataManager;
+  @Inject private ProjectXericManager manager;
 
   private ProjectXericPanel panel;
 
@@ -39,20 +38,21 @@ public class ProjectXericPlugin extends Plugin {
     log.info("Project Xeric started!");
     panel = injector.getInstance(ProjectXericPanel.class);
     panel.init();
-    dataManager.init();
+    manager.init();
+    SwingUtilities.invokeLater(panel::reload);
   }
 
   @Override
   protected void shutDown() throws Exception {
     log.info("Project Xeric stopped!");
     panel.stop();
-    dataManager.clearPlayer();
+    manager.clearPlayer();
   }
 
   @Subscribe
   public void onCommandExecuted(CommandExecuted event) {
     if (event.getCommand().equals("xeric")) {
-      dataManager.clearRSProfile();
+      manager.clearRSProfile();
     }
   }
 
