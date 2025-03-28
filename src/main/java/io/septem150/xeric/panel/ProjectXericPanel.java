@@ -1,5 +1,7 @@
 package io.septem150.xeric.panel;
 
+import io.septem150.xeric.event.PanelRefreshRequest;
+import io.septem150.xeric.event.TaskCompletedEvent;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -13,9 +15,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
 import net.runelite.client.eventbus.EventBus;
+import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.NavigationButton;
@@ -68,6 +72,7 @@ public class ProjectXericPanel extends PluginPanel {
     MaterialTabGroup tabGroup = new MaterialTabGroup(display);
     tabGroup.setLayout(new GridLayout(1, 0, 7, 7));
 
+    eventBus.register(this);
     MaterialTab summaryTab =
         createTab(SummaryPanel.TOOLTIP, SummaryPanel.TAB_ICON, summaryPanel, tabGroup);
     eventBus.register(summaryPanel);
@@ -79,6 +84,32 @@ public class ProjectXericPanel extends PluginPanel {
     add(display, BorderLayout.CENTER);
 
     tabGroup.select(summaryTab);
+  }
+
+  /** Adds this Side Panel to the RuneLite client toolbar */
+  public void init() {
+    clientToolbar.addNavigation(navigationButton);
+  }
+
+  /** Removes this Side Panel from the RuneLite client toolbar */
+  public void stop() {
+    clientToolbar.removeNavigation(navigationButton);
+  }
+
+  public void reload() {
+    summaryPanel.reload();
+    leaderboardPanel.reload();
+    revalidate();
+  }
+
+  @Subscribe
+  public void onTaskCompletedEvent(TaskCompletedEvent event) {
+    SwingUtilities.invokeLater(this::reload);
+  }
+
+  @Subscribe
+  public void onPanelRefreshRequest(PanelRefreshRequest event) {
+    SwingUtilities.invokeLater(this::reload);
   }
 
   /**
@@ -165,21 +196,5 @@ public class ProjectXericPanel extends PluginPanel {
           }
         });
     return button;
-  }
-
-  /** Adds this Side Panel to the RuneLite client toolbar */
-  public void init() {
-    clientToolbar.addNavigation(navigationButton);
-  }
-
-  /** Removes this Side Panel from the RuneLite client toolbar */
-  public void stop() {
-    clientToolbar.removeNavigation(navigationButton);
-  }
-
-  public void reload() {
-    summaryPanel.reload();
-    leaderboardPanel.reload();
-    revalidate();
   }
 }

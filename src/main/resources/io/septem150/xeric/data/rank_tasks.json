@@ -1,7 +1,7 @@
 [
   {
     "icon": "images/total_level.png",
-    "id": "01_01",
+    "id": 1,
     "name": "500 Total",
     "tier": 1,
     "type": "level",
@@ -10,7 +10,7 @@
   },
   {
     "icon": "images/frog_token.png",
-    "id": "01_02",
+    "id": 2,
     "name": "Frog Token",
     "tier": 1,
     "type": "collect",
@@ -21,7 +21,7 @@
   },
   {
     "icon": "images/combat_achievement.png",
-    "id": "01_03",
+    "id": 3,
     "name": "2 Achievements",
     "tier": 1,
     "type": "ca",

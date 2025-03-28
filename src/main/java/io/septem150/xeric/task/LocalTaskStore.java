@@ -24,7 +24,7 @@ public final class LocalTaskStore implements TaskStore {
   private static final String TASKS_RES_PATH = "data/rank_tasks.json";
 
   private final List<Task> tasksList;
-  private final Map<String, Task> tasksMap;
+  private final Map<Integer, Task> tasksMap;
 
   @Inject
   public LocalTaskStore(@Named("xericGson") Gson gson) {
@@ -47,7 +47,7 @@ public final class LocalTaskStore implements TaskStore {
   }
 
   @Override
-  public Optional<Task> getById(@NonNull String id) {
+  public Optional<Task> getById(int id) {
     return Optional.ofNullable(tasksMap.get(id));
   }
 

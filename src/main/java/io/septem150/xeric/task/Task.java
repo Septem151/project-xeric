@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 public abstract class Task {
+  private int id;
   private String icon;
-  private String id;
   private String name;
   private String type;
   private int tier;

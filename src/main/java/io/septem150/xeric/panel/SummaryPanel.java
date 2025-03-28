@@ -40,13 +40,21 @@ public final class SummaryPanel extends PanelBase {
 
   private void init() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    if (dataManager.getPlayerData().getUsername() == null) {
+    if (dataManager.getUsername() == null) {
       PluginErrorPanel errorPanel = new PluginErrorPanel();
       errorPanel.setContent("Project Xeric", "Log in to start tracking progress.");
       add(errorPanel);
     } else {
       JPanel clanCardPanel = createClanCardPanel();
       add(clanCardPanel);
+      if (!dataManager.isStoringClogData()) {
+        JLabel collectionLogNotice =
+            new JLabel("<html>You must open your Collection Log in-game for proper syncing.");
+        collectionLogNotice.setBorder(new EmptyBorder(5, 0, 0, 0));
+        collectionLogNotice.setForeground(ColorScheme.BRAND_ORANGE);
+        collectionLogNotice.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(collectionLogNotice);
+      }
     }
   }
 
@@ -57,11 +65,11 @@ public final class SummaryPanel extends PanelBase {
         BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(ColorScheme.BORDER_COLOR, 1),
             BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-    JLabel rankIcon = createRankIcon(dataManager.getPlayerRank());
+    JLabel rankIcon = createRankIcon(dataManager.getRank());
     clanCardPanel.add(rankIcon, BorderLayout.WEST);
     JPanel playerInfoPanel = createPlayerInfoPanel();
     clanCardPanel.add(playerInfoPanel, BorderLayout.CENTER);
-    JPanel valuePanel = createValuePanel(String.valueOf(dataManager.getPlayerPoints()), "Points");
+    JPanel valuePanel = createValuePanel(String.valueOf(dataManager.getPoints()), "Points");
     clanCardPanel.add(valuePanel, BorderLayout.EAST);
     JPanel numbersPanel = new JPanel();
     numbersPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
@@ -97,7 +105,7 @@ public final class SummaryPanel extends PanelBase {
     playerInfoPanel.setBorder(new EmptyBorder(0, 5, 0, 0));
     JLabel usernameLabel =
         new JLabel(
-            dataManager.getPlayerData().getUsername(),
+            dataManager.getUsername(),
             new ImageIcon(dataManager.getAccountTypeImage()),
             SwingConstants.LEFT);
     usernameLabel.setFont(FontManager.getDefaultFont().deriveFont(Font.BOLD, 14));
