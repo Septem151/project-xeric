@@ -215,16 +215,6 @@ public class DataManager {
     return false;
   }
 
-  public void checkForTaskCompletions() {
-    for (Task task : tasks.values()) {
-      if (playerData.getTasks().contains(task.getId())) continue;
-      if (task.checkCompletion(playerData)) {
-        playerData.getTasks().add(task.getId());
-        eventBus.post(new TaskCompletedEvent(task, false));
-      }
-    }
-  }
-
   @Subscribe
   public void onGameTick(GameTick event) {
     if (tickCollectionLogOpened == -1) {
@@ -270,6 +260,17 @@ public class DataManager {
       List<Integer> clogItems = playerData.getClogItems();
       if (!clogItems.contains(itemId)) {
         clogItems.add(itemId);
+        checkForTaskCompletions();
+      }
+    }
+  }
+
+  private void checkForTaskCompletions() {
+    for (Task task : tasks.values()) {
+      if (playerData.getTasks().contains(task.getId())) continue;
+      if (task.checkCompletion(playerData)) {
+        playerData.getTasks().add(task.getId());
+        eventBus.post(new TaskCompletedEvent(task, false));
       }
     }
   }

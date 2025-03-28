@@ -20,11 +20,222 @@
     "amount": 1
   },
   {
-    "icon": "images/combat_achievement.png",
+    "icon": "images/mark_of_grace.png",
     "id": 3,
+    "name": "Mark of Grace",
+    "tier": 1,
+    "type": "collect",
+    "itemIds": [
+      11849
+    ],
+    "amount": 1
+  },
+  {
+    "icon": "images/burnt_page.png",
+    "id": 4,
+    "name": "Burnt Pages",
+    "tier": 1,
+    "type": "collect",
+    "itemIds": [
+      20718
+    ],
+    "amount": 1
+  },
+  {
+    "icon": "images/warm_gloves.png",
+    "id": 5,
+    "name": "Warm Gloves",
+    "tier": 1,
+    "type": "collect",
+    "itemIds": [
+      20712
+    ],
+    "amount": 1
+  },
+  {
+    "icon": "images/combat_achievement.png",
+    "id": 6,
     "name": "2 Achievements",
     "tier": 1,
     "type": "ca",
     "total": 2
+  },
+  {
+    "icon": "images/shayzien.png",
+    "id": 7,
+    "name": "Shayzien Tier 1",
+    "tier": 1,
+    "type": "collect",
+    "itemIds": [
+      13357,
+      13358,
+      13359,
+      13360,
+      13361
+    ],
+    "amount": 5
+  },
+  {
+    "icon": "images/mime.png",
+    "id": 8,
+    "name": "Mime Outfit",
+    "tier": 1,
+    "type": "collect",
+    "itemIds": [
+      3057,
+      3058,
+      3059,
+      3060,
+      3061
+    ],
+    "amount": 5
+  },
+  {
+    "icon": "images/beekeeper.png",
+    "id": 9,
+    "name": "Beekeeper's Outfit",
+    "tier": 1,
+    "type": "collect",
+    "itemIds": [
+      25129,
+      25131,
+      25133,
+      25135,
+      25137
+    ],
+    "amount": 5
+  },
+  {
+    "icon": "images/camo.png",
+    "id": 10,
+    "name": "Camo Outfit",
+    "tier": 1,
+    "type": "collect",
+    "itemIds": [
+      6654,
+      6655,
+      6656
+    ],
+    "amount": 3
+  },
+  {
+    "icon": "images/lederhosen.png",
+    "id": 11,
+    "name": "Lederhosen Outfit",
+    "tier": 1,
+    "type": "collect",
+    "itemIds": [
+      6180,
+      6181,
+      6182
+    ],
+    "amount": 3
+  },
+  {
+    "icon": "images/zombie.png",
+    "id": 12,
+    "name": "Zombie Outfit",
+    "tier": 1,
+    "type": "collect",
+    "itemIds": [
+      7592,
+      7593,
+      7594,
+      7595,
+      7596
+    ],
+    "amount": 5
+  },
+  {
+    "icon": "images/bruma_torch.png",
+    "id": 13,
+    "name": "Bruma Torch",
+    "tier": 2,
+    "type": "collect",
+    "itemIds": [
+      20720
+    ],
+    "amount": 1
+  },
+  {
+    "icon": "images/beehive.png",
+    "id": 14,
+    "name": "Sturdy Beehive Parts",
+    "tier": 2,
+    "type": "collect",
+    "itemIds": [
+      28674
+    ],
+    "amount": 1
+  },
+  {
+    "icon": "images/giant_key.png",
+    "id": 15,
+    "name": "Giant Key",
+    "tier": 2,
+    "type": "collect",
+    "itemIds": [
+      20754
+    ],
+    "amount": 1
+  },
+  {
+    "icon": "images/mossy_key.png",
+    "id": 16,
+    "name": "Mossy Key",
+    "tier": 2,
+    "type": "collect",
+    "itemIds": [
+      22374
+    ],
+    "amount": 1
+  },
+  {
+    "icon": "images/angler.png",
+    "id": 17,
+    "name": "Angler Outfit (1/4)",
+    "tier": 2,
+    "type": "collect",
+    "itemIds": [
+      13258,
+      13259,
+      13260,
+      13261
+    ],
+    "amount": 1
+  },
+  {
+    "icon": "images/pheasant.png",
+    "id": 18,
+    "name": "Pheasant Costume (1/5)",
+    "tier": 2,
+    "type": "collect",
+    "itemIds": [
+      28616,
+      28618,
+      28620,
+      28622
+    ],
+    "amount": 1
+  },
+  {
+    "icon": "images/xerics_talisman.png",
+    "id": 19,
+    "name": "Xeric's Talisman",
+    "tier": 2,
+    "type": "collect",
+    "itemIds": [
+      13392
+    ],
+    "amount": 1
+  },
+  {
+    "icon": "images/total_level.png",
+    "id": 20,
+    "name": "1750 Total",
+    "tier": 6,
+    "type": "level",
+    "level": "total",
+    "goal": 1750
   }
 ]
