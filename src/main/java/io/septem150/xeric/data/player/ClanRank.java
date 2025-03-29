@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -66,6 +67,7 @@ public enum ClanRank {
   }
 
   public BufferedImage getImage(SpriteManager spriteManager) {
-    return ImageUtil.resizeImage(spriteManager.getSprite(archive, file), 32, 32, true);
+    return ImageUtil.resizeImage(
+        Objects.requireNonNull(spriteManager.getSprite(archive, file)), 32, 32, true);
   }
 }
