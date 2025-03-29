@@ -11,7 +11,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.GameState;
 import net.runelite.api.events.CommandExecuted;
+import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.ScriptPreFired;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
@@ -50,11 +53,22 @@ public final class ProjectXericPlugin extends Plugin {
   }
 
   @Subscribe
+  public void onGameStateChanged(GameStateChanged event) {
+    if (event.getGameState() == GameState.LOGGED_IN) {
+      SwingUtilities.invokeLater(panel::reload);
+    }
+  }
+
+  @Subscribe
   public void onCommandExecuted(CommandExecuted event) {
     if (event.getCommand().equals("xeric")) {
       manager.clearRSProfile();
+      SwingUtilities.invokeLater(panel::reload);
     }
   }
+
+  @Subscribe
+  public void onScriptPreFired(ScriptPreFired event) {}
 
   @Override
   public void configure(Binder binder) {

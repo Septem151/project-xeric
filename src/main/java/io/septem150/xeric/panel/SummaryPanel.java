@@ -10,6 +10,9 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.BorderFactory;
@@ -17,13 +20,15 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import net.runelite.api.Client;
+import javax.swing.border.LineBorder;
+import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.components.shadowlabel.JShadowedLabel;
@@ -35,16 +40,21 @@ public final class SummaryPanel extends PanelBase {
   public static final String TAB_ICON = "summary_tab_icon.png";
 
   private final ProjectXericManager manager;
+  private final SpriteManager spriteManager;
+
+  private JPanel taskList;
+  private final List<Task> displayedTasks = new ArrayList<>();
 
   @Inject
-  private SummaryPanel(Client client, ProjectXericManager manager) {
+  private SummaryPanel(ProjectXericManager manager, SpriteManager spriteManager) {
     super();
     this.manager = manager;
+    this.spriteManager = spriteManager;
     init();
   }
 
   private void init() {
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    setLayout(new BorderLayout());
     if (manager.getUsername() == null) {
       JLabel description = new JShadowedLabel();
       description.setFont(FontManager.getRunescapeSmallFont());
@@ -52,10 +62,9 @@ public final class SummaryPanel extends PanelBase {
       description.setHorizontalAlignment(SwingConstants.CENTER);
       description.setText("<html>Log in to start tracking progress.");
       description.setBorder(new EmptyBorder(20, 0, 0, 0));
-      add(description);
+      add(description, BorderLayout.NORTH);
     } else {
-      add(createClanCardPanel());
-      add(Box.createVerticalStrut(10));
+      add(createClanCardPanel(), BorderLayout.NORTH);
       if (!manager.isStoringClogData()) {
         JLabel collectionLogNotice = new JShadowedLabel();
         collectionLogNotice.setFont(FontManager.getRunescapeSmallFont());
@@ -63,22 +72,52 @@ public final class SummaryPanel extends PanelBase {
         collectionLogNotice.setAlignmentX(Component.CENTER_ALIGNMENT);
         collectionLogNotice.setHorizontalAlignment(SwingConstants.CENTER);
         collectionLogNotice.setText("<html>Open the Collection Log in-game to sync.");
-        add(collectionLogNotice);
-        add(Box.createVerticalStrut(10));
+        add(collectionLogNotice, BorderLayout.NORTH);
       }
-      add(createTaskList());
+      JPanel taskLayout = new JPanel(new BorderLayout(0, 4));
+      taskList = new JPanel();
+      taskList.setLayout(new BoxLayout(taskList, BoxLayout.Y_AXIS));
+      //      taskList.setBorder(new EmptyBorder(0, 0, 0, 4));
+      taskList.setBorder(new LineBorder(Color.GREEN, 1));
+      taskLayout.add(createTierDropdown(), BorderLayout.NORTH);
+      taskLayout.add(createTaskListScrollPane(), BorderLayout.CENTER);
+      add(taskLayout, BorderLayout.CENTER);
     }
   }
 
-  private JScrollPane createTaskList() {
-    JPanel taskListPanel = new JPanel(new GridLayout(0, 1, 0, 4));
-    taskListPanel.setBorder(new EmptyBorder(0, 0, 0, 4));
-    for (Task task : manager.getAllTasks()) {
-      taskListPanel.add(createTask(task));
-    }
+  private JComboBox<String> createTierDropdown() {
+    JComboBox<String> dropdown =
+        new JComboBox<>(
+            manager.getAllTiers().stream()
+                .map(tier -> String.format("Tier %d", tier))
+                .toArray(String[]::new));
+    dropdown.addActionListener(
+        actionEvent -> {
+          displayedTasks.clear();
+          String tierSelected =
+              Objects.requireNonNull(
+                  (String) ((JComboBox<?>) actionEvent.getSource()).getSelectedItem());
+          int tierShown = Integer.parseInt(tierSelected.split("\\s")[1]);
+          for (Task task : manager.getAllTasks()) {
+            if (task.getTier() == tierShown) {
+              displayedTasks.add(task);
+            }
+          }
+          taskList.removeAll();
+          for (Task task : displayedTasks) {
+            taskList.add(createTask(task));
+          }
+          taskList.add(Box.createVerticalGlue());
+          taskList.revalidate();
+        });
+    dropdown.setSelectedIndex(0);
+    return dropdown;
+  }
+
+  private JScrollPane createTaskListScrollPane() {
     JScrollPane scrollPane =
         new JScrollPane(
-            taskListPanel,
+            taskList,
             ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     scrollPane.setWheelScrollingEnabled(true);
@@ -87,13 +126,15 @@ public final class SummaryPanel extends PanelBase {
   }
 
   private JPanel createTask(Task task) {
-    JPanel taskPanel = new JPanel(new BorderLayout());
+    JPanel taskPanel = new JPanel();
+    taskPanel.setLayout(new BoxLayout(taskPanel, BoxLayout.X_AXIS));
+    taskPanel.setBorder(new LineBorder(Color.RED, 1));
     JLabel icon =
         new JLabel(
             task.getName(),
             new ImageIcon(ResourceUtil.getImage(task.getIcon(), 24, 24)),
             SwingConstants.CENTER);
-    taskPanel.add(icon, BorderLayout.WEST);
+    taskPanel.add(icon);
     JPanel labeledCheckbox = new JPanel();
     labeledCheckbox.setLayout(new BoxLayout(labeledCheckbox, BoxLayout.X_AXIS));
     JLabel checkboxLabel = new JLabel(String.format("+%d", task.getTier()));
@@ -103,7 +144,8 @@ public final class SummaryPanel extends PanelBase {
     labeledCheckbox.add(checkboxLabel);
     labeledCheckbox.add(Box.createHorizontalStrut(4));
     labeledCheckbox.add(checkbox);
-    taskPanel.add(labeledCheckbox, BorderLayout.EAST);
+    taskPanel.add(Box.createHorizontalGlue());
+    taskPanel.add(labeledCheckbox);
     return taskPanel;
   }
 
@@ -143,7 +185,7 @@ public final class SummaryPanel extends PanelBase {
   }
 
   private JLabel createRankIcon(ClanRank clanRank) {
-    JLabel rankIcon = new JLabel(new ImageIcon(clanRank.getImage()));
+    JLabel rankIcon = new JLabel(new ImageIcon(clanRank.getImage(spriteManager)));
     rankIcon.setToolTipText(clanRank.toString());
     return rankIcon;
   }

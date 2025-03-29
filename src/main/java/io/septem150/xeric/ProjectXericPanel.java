@@ -3,7 +3,7 @@ package io.septem150.xeric;
 import io.septem150.xeric.event.PanelRefreshRequest;
 import io.septem150.xeric.event.TaskCompletedEvent;
 import io.septem150.xeric.panel.LeaderboardPanel;
-import io.septem150.xeric.panel.SummaryPanel;
+import io.septem150.xeric.panel.SummaryPanelV2;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -40,14 +40,14 @@ public final class ProjectXericPanel extends PluginPanel {
 
   private final ClientToolbar clientToolbar;
   private final NavigationButton navigationButton;
-  private final SummaryPanel summaryPanel;
+  private final SummaryPanelV2 summaryPanel;
   private final LeaderboardPanel leaderboardPanel;
 
   @Inject
   private ProjectXericPanel(
       EventBus eventBus,
       ClientToolbar clientToolbar,
-      SummaryPanel summaryPanel,
+      SummaryPanelV2 summaryPanel,
       LeaderboardPanel leaderboardPanel) {
     super(false);
     this.clientToolbar = clientToolbar;
@@ -72,12 +72,13 @@ public final class ProjectXericPanel extends PluginPanel {
     layoutPanel.add(titlePanel);
 
     JPanel display = new JPanel();
+    display.setBorder(new EmptyBorder(10, 0, 0, 0));
     MaterialTabGroup tabGroup = new MaterialTabGroup(display);
     tabGroup.setLayout(new GridLayout(1, 0, 7, 7));
 
     eventBus.register(this);
     MaterialTab summaryTab =
-        createTab(SummaryPanel.TOOLTIP, SummaryPanel.TAB_ICON, summaryPanel, tabGroup);
+        createTab(SummaryPanelV2.TOOLTIP, SummaryPanelV2.TAB_ICON, summaryPanel, tabGroup);
     eventBus.register(summaryPanel);
     createTab(LeaderboardPanel.TOOLTIP, LeaderboardPanel.TAB_ICON, leaderboardPanel, tabGroup);
     eventBus.register(leaderboardPanel);
@@ -121,12 +122,12 @@ public final class ProjectXericPanel extends PluginPanel {
    *
    * @param tooltip the tooltip to display on hover.
    * @param imageName the name of an image, including extension.
-   * @param content a class extending from {@link PluginPanel} to display when the tab is selected.
+   * @param content a {@link JPanel} to display when the tab is selected.
    * @param tabGroup the {@link MaterialTabGroup} to assign the newly created tab to.
    * @return a new {@link MaterialTab} with the desired properties.
    */
   private MaterialTab createTab(
-      String tooltip, String imageName, PluginPanel content, MaterialTabGroup tabGroup) {
+      String tooltip, String imageName, JPanel content, MaterialTabGroup tabGroup) {
     MaterialTab tab =
         new MaterialTab(new ImageIcon(ResourceUtil.getImage(imageName)), tabGroup, content);
     tab.setToolTipText(tooltip);

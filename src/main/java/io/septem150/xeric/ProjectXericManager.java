@@ -1,5 +1,6 @@
 package io.septem150.xeric;
 
+import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import io.septem150.xeric.data.player.AccountType;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -117,6 +119,7 @@ public final class ProjectXericManager {
 
   public void init() {
     if (initialized) return;
+    initialized = true;
     eventBus.register(this);
     clientThread.invokeLater(
         () -> {
@@ -130,7 +133,6 @@ public final class ProjectXericManager {
                 for (Task task : allTasks) {
                   tasks.put(task.getId(), task);
                 }
-                initialized = true;
               });
         });
   }
@@ -186,10 +188,17 @@ public final class ProjectXericManager {
     return getRank().getNextRank().getPointsNeeded() - getPoints();
   }
 
+  public @NonNull List<Integer> getAllTiers() {
+    return tasks.values().stream()
+        .map(Task::getTier)
+        .distinct()
+        .sorted()
+        .collect(Collectors.toList());
+  }
+
   public String getHighestTierCompleted() {
     int highestTier = 0;
-    int maxTiers =
-        tasks.values().stream().map(Task::getTier).mapToInt(Integer::intValue).max().orElse(0);
+    int maxTiers = Optional.ofNullable(Iterables.getLast(getAllTiers(), null)).orElse(0);
     for (int tier = 1; tier <= maxTiers; tier++) {
       if (playerData.getTasks().isEmpty()) break;
       boolean completed = true;
@@ -255,10 +264,19 @@ public final class ProjectXericManager {
         clientThread.invokeLater(this::handleLogin);
         break;
       case LOGIN_SCREEN:
-        saveRSProfile();
+        clientThread.invokeLater(this::handleLogout);
         break;
       default:
     }
+  }
+
+  private void handleLogout() {
+    if (!initialized || getUsername() == null || !isStoringClogData()) {
+      return;
+    }
+    //    final String json = gson.toJson(new ClogData(playerData.getClogItems()));
+    final String json = gson.toJson(playerData);
+    configManager.setRSProfileConfiguration(ProjectXericConfig.GROUP, RSPROFILE_DATA_KEY, json);
   }
 
   @Subscribe
@@ -295,6 +313,21 @@ public final class ProjectXericManager {
       }
     }
   }
+
+  //  private void updateClog() {
+  //    try {
+  //      String json =
+  //          configManager.getRSProfileConfiguration(
+  //              ProjectXericConfig.GROUP, RSPROFILE_DATA_KEY, String.class);
+  //      if (json != null) {
+  //        final ClogData clogData = gson.fromJson(json, ClogData.class);
+  //        if (clogData.getLastUpdated().isBefore(Instant.now().minus(Duration.ofDays(7)))) {}
+  //      }
+  //    } catch (JsonSyntaxException ex) {
+  //      log.warn("Malformed saved player data, removing");
+  //      configManager.unsetRSProfileConfiguration(ProjectXericConfig.GROUP, RSPROFILE_DATA_KEY);
+  //    }
+  //  }
 
   private boolean handleLogin() {
     if (!initialized
