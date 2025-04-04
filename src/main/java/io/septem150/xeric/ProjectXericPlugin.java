@@ -35,7 +35,9 @@ public final class ProjectXericPlugin extends Plugin {
   @Inject private ProjectXericConfig config;
   @Inject private SessionManager sessionManager;
   @Inject private PlayerInfo playerInfo;
-  @Inject private Gson gson;
+
+  @Inject
+  private @Named("xericGson") Gson gson;
 
   private ProjectXericPanel panel;
 
@@ -78,6 +80,10 @@ public final class ProjectXericPlugin extends Plugin {
   @Provides
   @Named("xericGson")
   public Gson provideGson(Gson gson) {
-    return gson.newBuilder().registerTypeAdapter(Task.class, new TaskTypeAdapter()).create();
+    return gson.newBuilder()
+        .disableHtmlEscaping()
+        .serializeNulls()
+        .registerTypeAdapter(Task.class, new TaskTypeAdapter())
+        .create();
   }
 }

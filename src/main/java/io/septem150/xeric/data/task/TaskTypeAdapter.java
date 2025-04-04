@@ -16,13 +16,13 @@ public class TaskTypeAdapter extends TypeAdapter<Task> {
   @Override
   public void write(JsonWriter out, Task value) throws IOException {
     out.beginObject();
-    out.name("icon").jsonValue(value.getIcon());
+    out.name("icon").jsonValue('"' + value.getIcon() + '"');
     out.name("id").value(value.getId());
-    out.name("name").jsonValue(value.getName());
-    out.name("type").jsonValue(value.getType());
+    out.name("name").jsonValue('"' + value.getName() + '"');
+    out.name("type").jsonValue('"' + value.getType() + '"');
     out.name("tier").value(value.getTier());
     if (value instanceof LevelTask) {
-      out.name("level").jsonValue(((LevelTask) value).getLevel());
+      out.name("level").jsonValue('"' + ((LevelTask) value).getLevel() + '"');
       out.name("goal").value(((LevelTask) value).getGoal());
     } else if (value instanceof CollectTask) {
       out.name("amount").value(((CollectTask) value).getAmount());

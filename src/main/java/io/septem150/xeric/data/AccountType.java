@@ -6,24 +6,26 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.runelite.client.game.SpriteManager;
+import net.runelite.client.hiscore.HiscoreEndpoint;
 import net.runelite.client.util.ImageUtil;
 
 @RequiredArgsConstructor
 @Getter
 public enum AccountType {
-  INVALID(-1, -1),
-  DEFAULT(0, 32),
-  IRONMAN(1, 2),
-  ULTIMATE(2, 3),
-  HARDCORE(3, 10),
-  RANKED_GIM(4, 41),
-  HARDCORE_GIM(5, 42),
-  UNRANKED_GIM(6, 43);
+  INVALID(-1, -1, HiscoreEndpoint.NORMAL),
+  DEFAULT(0, 32, HiscoreEndpoint.NORMAL),
+  IRONMAN(1, 2, HiscoreEndpoint.IRONMAN),
+  ULTIMATE(2, 3, HiscoreEndpoint.ULTIMATE_IRONMAN),
+  HARDCORE(3, 10, HiscoreEndpoint.HARDCORE_IRONMAN),
+  RANKED_GIM(4, 41, HiscoreEndpoint.NORMAL),
+  HARDCORE_GIM(5, 42, HiscoreEndpoint.NORMAL),
+  UNRANKED_GIM(6, 43, HiscoreEndpoint.NORMAL);
 
   private static final int MODICONS_ARCHIVE_ID = 423;
 
   private final int varbValue;
   private final int spriteId;
+  private final HiscoreEndpoint hiscoreEndpoint;
 
   public static AccountType fromVarbValue(int varbValue) {
     for (AccountType accountType : AccountType.values()) {

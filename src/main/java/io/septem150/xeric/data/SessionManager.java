@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -66,6 +67,7 @@ public class SessionManager {
   private final ConfigManager configManager;
   private final @Named("xericGson") Gson gson;
   private final EventBus eventBus;
+  private final ScheduledExecutorService executor;
   private final HiscoreClient hiscoreClient;
 
   private static final Set<WorldType> invalidWorldTypes =
@@ -121,6 +123,7 @@ public class SessionManager {
 
   @Subscribe
   public void onRuneScapeProfileChanged(RuneScapeProfileChanged event) {
+    if (event.getPreviousProfile() == null) return;
     if (!event.getNewProfile().equals(event.getPreviousProfile())) {
       if (!isValidWorldType()) {
         return;
@@ -181,9 +184,7 @@ public class SessionManager {
       int itemId = (int) event.getScriptEvent().getArguments()[1];
       CollectionLog collectionLog = playerInfo.getCollectionLog();
       if (collectionLog.getItems().stream().noneMatch(item -> item.getId() == itemId)) {
-        ClogItem clogItem = new ClogItem();
-        clogItem.setId(itemId);
-        clogItem.setName(client.getItemDefinition(itemId).getName());
+        ClogItem clogItem = ClogItem.from(client, itemId);
         collectionLog.getItems().add(clogItem);
       }
     }
@@ -289,22 +290,24 @@ public class SessionManager {
         Arrays.stream(Skill.values())
             .map(skill -> Level.from(client, skill))
             .collect(Collectors.toList());
-    if (levels.stream().anyMatch(Level::isAccurate)) {
-      return false;
+    for (Level level : levels) {
+      if (!level.isAccurate()) return false;
     }
     playerInfo.setLevels(levels);
     levelsLoaded = true;
     return true;
   }
 
-  private boolean queryKillCounts() {
+  private void queryKillCounts() {
     try {
-      HiscoreResult result = hiscoreClient.lookup(playerInfo.getUsername());
+      HiscoreResult result =
+          hiscoreClient.lookup(
+              playerInfo.getUsername(), playerInfo.getAccountType().getHiscoreEndpoint());
       final List<KillCount> killCounts = new ArrayList<>();
       KillCount.hiscoreSkills.forEach(
           hiscoreSkill -> {
             KillCount killCount = new KillCount();
-            killCount.setCount(result.getSkill(hiscoreSkill).getLevel());
+            killCount.setCount(Math.max(0, result.getSkill(hiscoreSkill).getLevel()));
             killCount.setName(hiscoreSkill.getName());
             killCounts.add(killCount);
           });
@@ -313,7 +316,6 @@ public class SessionManager {
       log.warn("IOException while looking up hiscores for player '{}'", playerInfo.getUsername());
     }
     killCountsLoaded = true;
-    return true;
   }
 
   private boolean waitForLoaded() {
