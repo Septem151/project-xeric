@@ -1,7 +1,8 @@
 package io.septem150.xeric.data.task;
 
-import io.septem150.xeric.data.player.PlayerData;
+import io.septem150.xeric.data.PlayerInfo;
 import lombok.Data;
+import lombok.NonNull;
 
 @Data
 public abstract class Task {
@@ -11,5 +12,5 @@ public abstract class Task {
   private String type;
   private int tier;
 
-  public abstract boolean checkCompletion(PlayerData playerData);
+  public abstract boolean checkCompletion(@NonNull PlayerInfo playerInfo);
 }

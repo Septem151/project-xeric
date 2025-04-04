@@ -1,11 +1,10 @@
-package io.septem150.xeric.data.player;
+package io.septem150.xeric.data;
 
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.runelite.api.Client;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.util.ImageUtil;
 
@@ -35,10 +34,9 @@ public enum AccountType {
     return AccountType.INVALID;
   }
 
-  public BufferedImage getImage(@NonNull Client client, @NonNull SpriteManager spriteManager) {
-    assert client.isClientThread();
+  public BufferedImage getImage(@NonNull SpriteManager spriteManager) {
     if (this == AccountType.INVALID) {
-      return DEFAULT.getImage(client, spriteManager);
+      return DEFAULT.getImage(spriteManager);
     }
     final BufferedImage sprite = spriteManager.getSprite(MODICONS_ARCHIVE_ID, this.getSpriteId());
     return ImageUtil.resizeImage(Objects.requireNonNull(sprite), 14, 14, false);

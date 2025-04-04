@@ -2,15 +2,12 @@ package io.septem150.xeric;
 
 import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import io.septem150.xeric.data.player.AccountType;
-import io.septem150.xeric.data.player.AchievementDiary;
-import io.septem150.xeric.data.player.ClanRank;
-import io.septem150.xeric.data.player.PlayerData;
+import io.septem150.xeric.data.AccountType;
+import io.septem150.xeric.data.ClanRank;
+import io.septem150.xeric.data.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
-import io.septem150.xeric.event.PanelRefreshRequest;
-import io.septem150.xeric.event.TaskCompletedEvent;
+import io.septem150.xeric.event.PlayerInfoUpdated;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,22 +27,11 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
-import net.runelite.api.EnumComposition;
-import net.runelite.api.MenuAction;
 import net.runelite.api.Quest;
 import net.runelite.api.QuestState;
-import net.runelite.api.Skill;
-import net.runelite.api.StructComposition;
-import net.runelite.api.Varbits;
-import net.runelite.api.events.GameStateChanged;
-import net.runelite.api.events.GameTick;
-import net.runelite.api.events.ScriptPostFired;
-import net.runelite.api.events.ScriptPreFired;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
-import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.SpriteManager;
 
 @Slf4j
@@ -95,12 +81,10 @@ public final class ProjectXericManager {
           .filter(quest -> !whitelistedQuests.contains(quest))
           .collect(Collectors.toList());
 
-  private static final int COLLECTION_LOG_SETUP_SCRIPT_ID = 7797;
-  private static final int COLLECTION_LOG_TRANSMIT_SCRIPT_ID = 4100;
-
   @Named("xericGson")
   private final Gson gson;
 
+  private final PlayerInfo playerInfo;
   private final ProjectXericConfig config;
   private final ConfigManager configManager;
   private final SpriteManager spriteManager;
@@ -113,9 +97,7 @@ public final class ProjectXericManager {
   private final Map<Integer, Task> tasks = new HashMap<>();
 
   private boolean initialized;
-  private @NonNull PlayerData playerData = new PlayerData();
   private BufferedImage accountTypeImage;
-  private int tickCollectionLogOpened = -1;
 
   public void init() {
     if (initialized) return;
@@ -124,7 +106,7 @@ public final class ProjectXericManager {
     clientThread.invokeLater(
         () -> {
           for (AccountType accountType : AccountType.values()) {
-            accountTypeImages.put(accountType, accountType.getImage(client, spriteManager));
+            accountTypeImages.put(accountType, accountType.getImage(spriteManager));
           }
           executor.execute(
               () -> {
@@ -142,7 +124,7 @@ public final class ProjectXericManager {
   }
 
   public @Nullable String getUsername() {
-    return playerData.getUsername();
+    return playerInfo.getUsername();
   }
 
   public ClanRank getRank() {
@@ -151,20 +133,18 @@ public final class ProjectXericManager {
 
   public int getPoints() {
     int totalPoints = 0;
-    for (int taskId : playerData.getTasks()) {
-      Task task = tasks.get(taskId);
-      if (task == null) continue;
+    for (Task task : playerInfo.getTasks()) {
       totalPoints += task.getTier();
     }
     return totalPoints;
   }
 
   public boolean isStoringClogData() {
-    return playerData.isStoringClogData();
+    return playerInfo.getCollectionLog().getLastOpened() != null;
   }
 
   public void clearPlayer() {
-    playerData.clear();
+    playerInfo.clear();
     accountTypeImage = null;
   }
 
@@ -173,7 +153,7 @@ public final class ProjectXericManager {
       return;
     }
     configManager.setRSProfileConfiguration(
-        ProjectXericConfig.GROUP, RSPROFILE_DATA_KEY, gson.toJson(playerData));
+        ProjectXericConfig.GROUP, RSPROFILE_DATA_KEY, gson.toJson(playerInfo));
   }
 
   public void clearRSProfile() {
@@ -181,7 +161,7 @@ public final class ProjectXericManager {
   }
 
   public int getTasksCompleted() {
-    return playerData.getTasks().size();
+    return playerInfo.getTasks().size();
   }
 
   public int getPointsToNextRank() {
@@ -200,10 +180,10 @@ public final class ProjectXericManager {
     int highestTier = 0;
     int maxTiers = Optional.ofNullable(Iterables.getLast(getAllTiers(), null)).orElse(0);
     for (int tier = 1; tier <= maxTiers; tier++) {
-      if (playerData.getTasks().isEmpty()) break;
+      if (playerInfo.getTasks().isEmpty()) break;
       boolean completed = true;
       for (Task task : tasks.values()) {
-        if (!playerData.getTasks().contains(task.getId())) {
+        if (!playerInfo.getTasks().contains(task)) {
           completed = false;
           break;
         }
@@ -216,12 +196,19 @@ public final class ProjectXericManager {
   }
 
   public boolean isHerbloreUnlocked() {
-    return playerData.getQuests().getOrDefault(String.valueOf(Quest.DRUIDIC_RITUAL.getId()), 0)
-        == 2;
+    return playerInfo.getQuests().stream()
+        .anyMatch(
+            questProgress ->
+                questProgress.getQuest() == Quest.DRUIDIC_RITUAL
+                    && questProgress.getState() == QuestState.FINISHED);
   }
 
   public boolean isBoxTrapUnlocked() {
-    return playerData.getQuests().getOrDefault(String.valueOf(Quest.EAGLES_PEAK.getId()), 0) > 0;
+    return playerInfo.getQuests().stream()
+        .anyMatch(
+            questProgress ->
+                questProgress.getQuest() == Quest.EAGLES_PEAK
+                    && questProgress.getState() != QuestState.NOT_STARTED);
   }
 
   public boolean isOffIslandSlayerUnlocked() {
@@ -233,206 +220,102 @@ public final class ProjectXericManager {
   }
 
   public boolean isTaskCompleted(Task task) {
-    return playerData.getTasks().contains(task.getId());
+    return playerInfo.getTasks().contains(task);
   }
 
-  @Subscribe
-  public void onConfigChanged(ConfigChanged event) {
-    if (!event.getGroup().equals(ProjectXericConfig.GROUP)) return;
-    if (event.getKey().equals("slayer")) {
-      // do some points recalculating here eventually?
-      eventBus.post(new PanelRefreshRequest());
-    }
-  }
-
-  @Subscribe
-  public void onGameTick(GameTick event) {
-    if (tickCollectionLogOpened == -1) {
-      return;
-    }
-    if (tickCollectionLogOpened + 2 <= client.getTickCount()) {
-      tickCollectionLogOpened = -1;
-      checkForTaskCompletions();
-      eventBus.post(new PanelRefreshRequest());
-    }
-  }
-
-  @Subscribe
-  public void onGameStateChanged(GameStateChanged event) {
-    switch (event.getGameState()) {
-      case LOGGED_IN:
-        clientThread.invokeLater(this::handleLogin);
-        break;
-      case LOGIN_SCREEN:
-        clientThread.invokeLater(this::handleLogout);
-        break;
-      default:
-    }
-  }
+  //  @Subscribe
+  //  public void onGameStateChanged(GameStateChanged event) {
+  //    switch (event.getGameState()) {
+  //      case LOGGED_IN:
+  //        clientThread.invokeLater(this::handleLogin);
+  //        break;
+  //      case LOGIN_SCREEN:
+  //        clientThread.invokeLater(this::handleLogout);
+  //        break;
+  //      default:
+  //    }
+  //  }
 
   private void handleLogout() {
     if (!initialized || getUsername() == null || !isStoringClogData()) {
       return;
     }
     //    final String json = gson.toJson(new ClogData(playerData.getClogItems()));
-    final String json = gson.toJson(playerData);
+    final String json = gson.toJson(playerInfo);
     configManager.setRSProfileConfiguration(ProjectXericConfig.GROUP, RSPROFILE_DATA_KEY, json);
   }
 
-  @Subscribe
-  public void onScriptPostFired(ScriptPostFired event) {
-    if (event.getScriptId() == COLLECTION_LOG_SETUP_SCRIPT_ID && !playerData.isStoringClogData()) {
-      playerData.setStoringClogData(true);
-      tickCollectionLogOpened = client.getTickCount();
-      // taken from WikiSync, not really sure what script is being run,
-      // but it appears that simulating a click on the Search button
-      // loads the script that checks for clog items
-      client.menuAction(-1, 40697932, MenuAction.CC_OP, 1, -1, "Search", null);
-      client.runScript(2240);
-    }
-  }
-
-  @Subscribe
-  public void onScriptPreFired(ScriptPreFired event) {
-    if (event.getScriptId() == COLLECTION_LOG_TRANSMIT_SCRIPT_ID) {
-      int itemId = (int) event.getScriptEvent().getArguments()[1];
-      List<Integer> clogItems = playerData.getClogItems();
-      if (!clogItems.contains(itemId)) {
-        clogItems.add(itemId);
-        checkForTaskCompletions();
-      }
-    }
-  }
-
   private void checkForTaskCompletions() {
+    boolean newTasks = false;
     for (Task task : tasks.values()) {
-      if (playerData.getTasks().contains(task.getId())) continue;
-      if (task.checkCompletion(playerData)) {
-        playerData.getTasks().add(task.getId());
-        eventBus.post(new TaskCompletedEvent(task, false));
+      if (playerInfo.getTasks().contains(task)) continue;
+      if (task.checkCompletion(playerInfo)) {
+        playerInfo.getTasks().add(task);
+        newTasks = true;
       }
+    }
+    if (newTasks) {
+      eventBus.post(new PlayerInfoUpdated());
     }
   }
 
-  //  private void updateClog() {
+  //  private boolean handleLogin() {
+  //    if (!initialized
+  //        || client.getLocalPlayer() == null
+  //        || client.getLocalPlayer().getName() == null) {
+  //      return false;
+  //    }
+  //    clearPlayer();
+  //    // load local saved player data
+  //    // check if data is stale and update from client if necessary
   //    try {
   //      String json =
   //          configManager.getRSProfileConfiguration(
   //              ProjectXericConfig.GROUP, RSPROFILE_DATA_KEY, String.class);
   //      if (json != null) {
-  //        final ClogData clogData = gson.fromJson(json, ClogData.class);
-  //        if (clogData.getLastUpdated().isBefore(Instant.now().minus(Duration.ofDays(7)))) {}
+  //        playerInfo = gson.fromJson(json, PlayerInfo.class);
   //      }
   //    } catch (JsonSyntaxException ex) {
   //      log.warn("Malformed saved player data, removing");
   //      configManager.unsetRSProfileConfiguration(ProjectXericConfig.GROUP, RSPROFILE_DATA_KEY);
   //    }
+  //    // Set account type and username
+  //    playerInfo.setUsername(client.getLocalPlayer().getName());
+  //    accountTypeImage =
+  //        accountTypeImages.get(
+  //            AccountType.fromVarbValue(client.getVarbitValue(Varbits.ACCOUNT_TYPE)));
+  //    // Set quests
+  //    for (Quest quest : Quest.values()) {
+  //      QuestState questState = quest.getState(client);
+  //      if (questState == QuestState.NOT_STARTED) {
+  //        continue;
+  //      }
+  //      playerInfo.getQuests().put(String.valueOf(quest.getId()), questState.ordinal());
+  //    }
+  //    // Set diaries
+  //    playerInfo.setDiaries(
+  //        KourendDiary.allDiaries.stream()
+  //            .collect(
+  //                Collectors.toMap(KourendDiary::toString, diary -> diary.getTaskCount(client))));
+  //    // player stats don't load for a while, invoke later
+  //    clientThread.invokeLater(
+  //        () -> {
+  //          // Set stats
+  //          Map<String, Integer> levels =
+  //              Arrays.stream(Skill.values())
+  //                  .collect(Collectors.toMap(Skill::getName, client::getRealSkillLevel));
+  //          if (levels.containsValue(0)) {
+  //            return false;
+  //          }
+  //          playerInfo.setLevels(levels);
+  //          return true;
+  //        });
+  //    // Set CA's
+  //    playerInfo.setCaTasks(getCATaskCompletions());
+  //    // Clogs get populated from RSProfile OR when player opens Clog
+  //    // Check for any new task completions
+  //    checkForTaskCompletions();
+  //    eventBus.post(new PlayerInfoUpdated());
+  //    return true;
   //  }
-
-  private boolean handleLogin() {
-    if (!initialized
-        || client.getLocalPlayer() == null
-        || client.getLocalPlayer().getName() == null) {
-      return false;
-    }
-    clearPlayer();
-    // load local saved player data
-    // check if data is stale and update from client if necessary
-    try {
-      String json =
-          configManager.getRSProfileConfiguration(
-              ProjectXericConfig.GROUP, RSPROFILE_DATA_KEY, String.class);
-      if (json != null) {
-        playerData = gson.fromJson(json, PlayerData.class);
-      }
-    } catch (JsonSyntaxException ex) {
-      log.warn("Malformed saved player data, removing");
-      configManager.unsetRSProfileConfiguration(ProjectXericConfig.GROUP, RSPROFILE_DATA_KEY);
-    }
-    // Set account type and username
-    playerData.setUsername(client.getLocalPlayer().getName());
-    accountTypeImage =
-        accountTypeImages.get(
-            AccountType.fromVarbValue(client.getVarbitValue(Varbits.ACCOUNT_TYPE)));
-    // Set quests
-    for (Quest quest : Quest.values()) {
-      QuestState questState = quest.getState(client);
-      if (questState == QuestState.NOT_STARTED) {
-        continue;
-      }
-      playerData.getQuests().put(String.valueOf(quest.getId()), questState.ordinal());
-    }
-    // Set diaries
-    playerData.setDiaries(
-        Arrays.stream(AchievementDiary.values())
-            .collect(
-                Collectors.toMap(
-                    AchievementDiary::toString,
-                    achievementDiary -> client.getVarbitValue(achievementDiary.getVarbit()))));
-    // player stats don't load for a while, invoke later
-    clientThread.invokeLater(
-        () -> {
-          // Set stats
-          Map<String, Integer> levels =
-              Arrays.stream(Skill.values())
-                  .collect(Collectors.toMap(Skill::getName, client::getRealSkillLevel));
-          if (levels.containsValue(0)) {
-            return false;
-          }
-          playerData.setLevels(levels);
-          return true;
-        });
-    // Set CA's
-    playerData.setCaTasks(getCATaskCompletions());
-    // Clogs get populated from RSProfile OR when player opens Clog
-    // Check for any new task completions
-    checkForTaskCompletions();
-    eventBus.post(new PanelRefreshRequest());
-    return true;
-  }
-
-  /**
-   * Gets all player's completed CA Tasks and maps them to their point value.
-   *
-   * @return list of CA Task ID to the task's point value.
-   * @see <a
-   *     href="https://discord.com/channels/301497432909414422/419891709883973642/1347233676945260684">RuneLite
-   *     Discord post</a> by @abex
-   */
-  private List<Integer> getCATaskCompletions() {
-    List<Integer> caTaskIds = new ArrayList<>();
-    // from [proc,ca_tasks_total]
-    // there is an enum per ca tier
-    for (int caTiersEnumId :
-        new int[] {
-          EASY_TIER_ENUM_ID,
-          MEDIUM_TIER_ENUM_ID,
-          HARD_TIER_ENUM_ID,
-          ELITE_TIER_ENUM_ID,
-          MASTER_TIER_ENUM_ID,
-          GM_TIER_ENUM_ID
-        }) {
-      EnumComposition caTiersEnum = client.getEnum(caTiersEnumId);
-      // so we can iterate the enum to find a bunch of structs
-      for (int caTierStructId : caTiersEnum.getIntVals()) {
-        StructComposition caTierStruct = client.getStructComposition(caTierStructId);
-        // and with the struct we can get info about the ca
-        // like its id, which we can use to get if its completed or not
-        int taskId = caTierStruct.getIntValue(CA_STRUCT_ID_PARAM_ID);
-        // we can use the cs2 vm to invoke script 4834 to do the lookup for us
-        // client.runScript(4834, id);
-        // boolean unlocked = client.getIntStack()[client.getIntStackSize() - 1] != 0;
-
-        // or we can reimplement it ourselves
-        // from script 4834
-        boolean unlocked =
-            (client.getVarpValue(SCRIPT_4834_VARP_IDS[taskId / 32]) & (1 << (taskId % 32))) != 0;
-
-        if (unlocked) {
-          caTaskIds.add(taskId);
-        }
-      }
-    }
-    return caTaskIds;
-  }
 }

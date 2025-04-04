@@ -1,7 +1,6 @@
 package io.septem150.xeric;
 
-import io.septem150.xeric.event.PanelRefreshRequest;
-import io.septem150.xeric.event.TaskCompletedEvent;
+import io.septem150.xeric.event.PlayerInfoUpdated;
 import io.septem150.xeric.panel.LeaderboardPanel;
 import io.septem150.xeric.panel.SummaryPanelV2;
 import io.septem150.xeric.util.ResourceUtil;
@@ -107,12 +106,7 @@ public final class ProjectXericPanel extends PluginPanel {
   }
 
   @Subscribe
-  public void onTaskCompletedEvent(TaskCompletedEvent event) {
-    SwingUtilities.invokeLater(this::reload);
-  }
-
-  @Subscribe
-  public void onPanelRefreshRequest(PanelRefreshRequest event) {
+  public void onPlayerInfoUpdated(PlayerInfoUpdated event) {
     SwingUtilities.invokeLater(this::reload);
   }
 

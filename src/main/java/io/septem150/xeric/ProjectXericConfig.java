@@ -12,9 +12,11 @@ import net.runelite.client.config.ConfigItem;
 @ConfigGroup(ProjectXericConfig.GROUP)
 public interface ProjectXericConfig extends Config {
   String GROUP = "projectxeric";
+  String DATA_KEY = "clog";
+  String SLAYER = "slayer";
 
   @ConfigItem(
-      keyName = "slayer",
+      keyName = SLAYER,
       name = "Slayer Exception",
       description = "Toggle on if you train Slayer off-island.")
   default boolean slayer() {

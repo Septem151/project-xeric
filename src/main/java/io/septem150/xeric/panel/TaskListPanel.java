@@ -1,7 +1,8 @@
 package io.septem150.xeric.panel;
 
-import io.septem150.xeric.ProjectXericManager;
+import io.septem150.xeric.data.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
+import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -35,14 +36,16 @@ public class TaskListPanel extends JPanel {
   private final Map<Integer, JPanel> tierPanels = new HashMap<>();
   private final Map<Integer, List<Task>> tasksPerTier = new HashMap<>();
 
-  private final ProjectXericManager manager;
+  private final TaskStore taskStore;
+  private final PlayerInfo playerInfo;
 
   private boolean loaded;
 
   @Inject
-  private TaskListPanel(ProjectXericManager manager) {
+  private TaskListPanel(TaskStore taskStore, PlayerInfo playerInfo) {
     super(new BorderLayout());
-    this.manager = manager;
+    this.taskStore = taskStore;
+    this.playerInfo = playerInfo;
     loaded = false;
 
     final JScrollPane scrollPane =
@@ -61,7 +64,7 @@ public class TaskListPanel extends JPanel {
   public void init() {
     if (loaded) return;
     loaded = true;
-    for (Task task : manager.getAllTasks()) {
+    for (Task task : taskStore.getAll()) {
       List<Task> tasksInTier = tasksPerTier.getOrDefault(task.getTier(), new ArrayList<>());
       tasksInTier.add(task);
       tasksPerTier.put(task.getTier(), tasksInTier);
@@ -93,7 +96,7 @@ public class TaskListPanel extends JPanel {
   }
 
   public void reload() {
-    if (manager.getUsername() == null) return;
+    if (playerInfo.getUsername() == null) return;
     if (!loaded) {
       init();
     }
@@ -117,7 +120,7 @@ public class TaskListPanel extends JPanel {
         taskPanel.add(Box.createHorizontalGlue());
         JCheckBox completedCheckbox = new JCheckBox();
         completedCheckbox.setEnabled(false);
-        completedCheckbox.setSelected(manager.isTaskCompleted(task));
+        completedCheckbox.setSelected(playerInfo.getTasks().contains(task));
         completedCheckbox.setBorder(new EmptyBorder(0, 5, 0, 0));
         taskPanel.add(completedCheckbox);
         panel.add(taskPanel);

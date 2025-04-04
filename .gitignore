@@ -1,5 +1,5 @@
 .gradle
-build
+build/
 .idea/*
 !.idea/codeStyles
 !.idea/runConfigurations
@@ -9,6 +9,7 @@ build
 !.idea/vcs.xml
 !.idea/spotless-applier.xml
 .project
+.settings
 .settings/
 .classpath
 nbactions.xml

@@ -3,4 +3,4 @@ package io.septem150.xeric.event;
 import lombok.Data;
 
 @Data
-public class PanelRefreshRequest {}
+public class PlayerInfoUpdated {}

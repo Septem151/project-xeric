@@ -1,6 +1,6 @@
 package io.septem150.xeric.panel;
 
-import io.septem150.xeric.ProjectXericManager;
+import io.septem150.xeric.data.PlayerInfo;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -27,13 +27,13 @@ public class SummaryPanelV2 extends JPanel {
   private final CardLayout layout = new CardLayout();
   private final JLabel clogNotice = new JLabel();
 
-  private final ProjectXericManager manager;
+  private final PlayerInfo playerInfo;
   private final TaskListPanel taskListPanel;
 
   @Inject
   private SummaryPanelV2(
-      ProjectXericManager manager, TaskListPanel taskListPanel, IdCardPanel idCardPanel) {
-    this.manager = manager;
+      PlayerInfo playerInfo, TaskListPanel taskListPanel, IdCardPanel idCardPanel) {
+    this.playerInfo = playerInfo;
     this.taskListPanel = taskListPanel;
     setBackground(ColorScheme.DARK_GRAY_COLOR);
     setLayout(layout);
@@ -78,11 +78,11 @@ public class SummaryPanelV2 extends JPanel {
   }
 
   public void reload() {
-    if (manager.getUsername() == null) {
+    if (playerInfo.getUsername() == null) {
       layout.show(this, LOGGED_OUT_CONSTRAINT);
     } else {
       layout.show(this, LOGGED_IN_CONSTRAINT);
-      clogNotice.setVisible(!manager.isStoringClogData());
+      clogNotice.setVisible(playerInfo.getCollectionLog().getLastOpened() == null);
       taskListPanel.reload();
     }
     revalidate();

@@ -1,7 +1,7 @@
 package io.septem150.xeric.panel;
 
 import io.septem150.xeric.ProjectXericManager;
-import io.septem150.xeric.data.player.ClanRank;
+import io.septem150.xeric.data.ClanRank;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.BorderLayout;
