@@ -19,7 +19,6 @@ import com.google.gson.JsonSyntaxException;
 import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
-import io.septem150.xeric.event.PlayerInfoUpdated;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -33,6 +32,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.EnumComposition;
@@ -138,7 +138,7 @@ public class SessionManager {
     if (!event.getGroup().equals(ProjectXericConfig.GROUP)) return;
     if (event.getKey().equals(ProjectXericConfig.SLAYER)) {
       playerInfo.setSlayerException(true);
-      eventBus.post(new PlayerInfoUpdated());
+      //      eventBus.post(new PanelUpdate());
     }
   }
 
@@ -156,7 +156,19 @@ public class SessionManager {
       if (playerInfo.getTasks().size() != tasks.size()) {
         playerInfo.setTasks(tasks);
       }
-      eventBus.post(new PlayerInfoUpdated());
+      //      eventBus.post(new PanelUpdate());
+    }
+  }
+
+  @Subscribe
+  public void onScriptPreFired(ScriptPreFired event) {
+    if (event.getScriptId() == COLLECTION_LOG_TRANSMIT_SCRIPT_ID) {
+      int itemId = (int) event.getScriptEvent().getArguments()[1];
+      CollectionLog collectionLog = playerInfo.getCollectionLog();
+      if (collectionLog.getItems().stream().noneMatch(item -> item.getId() == itemId)) {
+        ClogItem clogItem = ClogItem.from(client, itemId);
+        collectionLog.getItems().add(clogItem);
+      }
     }
   }
 
@@ -178,28 +190,19 @@ public class SessionManager {
     }
   }
 
-  @Subscribe
-  public void onScriptPreFired(ScriptPreFired event) {
-    if (event.getScriptId() == COLLECTION_LOG_TRANSMIT_SCRIPT_ID) {
-      int itemId = (int) event.getScriptEvent().getArguments()[1];
-      CollectionLog collectionLog = playerInfo.getCollectionLog();
-      if (collectionLog.getItems().stream().noneMatch(item -> item.getId() == itemId)) {
-        ClogItem clogItem = ClogItem.from(client, itemId);
-        collectionLog.getItems().add(clogItem);
-      }
-    }
-  }
-
   private boolean handleLogin() {
     handlingLogin = true;
     if (!client.isClientThread()
         || client.getLocalPlayer() == null
         || client.getLocalPlayer().getName() == null) return false;
 
-    clientThread.invokeLater(this::queryGeneral);
-    clientThread.invokeLater(this::queryLevels);
-    clientThread.invokeLater(this::queryKillCounts);
-    clientThread.invokeLater(this::waitForLoaded);
+    executor.execute(
+        () -> {
+          clientThread.invokeLater(this::queryGeneral);
+          clientThread.invokeLater(this::queryLevels);
+          clientThread.invokeLater(this::queryKillCounts);
+          clientThread.invokeLater(this::waitForLoaded);
+        });
     return true;
   }
 
@@ -298,8 +301,10 @@ public class SessionManager {
     return true;
   }
 
+  @SneakyThrows
   private void queryKillCounts() {
     try {
+      Thread.sleep(5000);
       HiscoreResult result =
           hiscoreClient.lookup(
               playerInfo.getUsername(), playerInfo.getAccountType().getHiscoreEndpoint());
@@ -330,7 +335,7 @@ public class SessionManager {
     if (playerInfo.getTasks().size() != tasks.size()) {
       playerInfo.setTasks(tasks);
     }
-    eventBus.post(new PlayerInfoUpdated());
+    //    eventBus.post(new PanelUpdate());
     return true;
   }
 

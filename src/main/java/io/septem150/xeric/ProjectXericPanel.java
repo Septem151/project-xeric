@@ -1,6 +1,5 @@
 package io.septem150.xeric;
 
-import io.septem150.xeric.event.PlayerInfoUpdated;
 import io.septem150.xeric.panel.LeaderboardPanel;
 import io.septem150.xeric.panel.SummaryPanelV2;
 import io.septem150.xeric.util.ResourceUtil;
@@ -16,11 +15,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
 import net.runelite.client.eventbus.EventBus;
-import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.NavigationButton;
@@ -105,10 +102,10 @@ public final class ProjectXericPanel extends PluginPanel {
     revalidate();
   }
 
-  @Subscribe
-  public void onPlayerInfoUpdated(PlayerInfoUpdated event) {
-    SwingUtilities.invokeLater(this::reload);
-  }
+  //  @Subscribe
+  //  public void onPlayerInfoUpdated(PanelUpdate event) {
+  //    SwingUtilities.invokeLater(this::reload);
+  //  }
 
   /**
    * Creates a new {@link MaterialTab} with a given image and tooltip text. The {@code imageName} is

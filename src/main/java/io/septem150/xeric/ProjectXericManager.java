@@ -7,7 +7,6 @@ import io.septem150.xeric.data.ClanRank;
 import io.septem150.xeric.data.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
-import io.septem150.xeric.event.PlayerInfoUpdated;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -255,7 +254,7 @@ public final class ProjectXericManager {
       }
     }
     if (newTasks) {
-      eventBus.post(new PlayerInfoUpdated());
+      //      eventBus.post(new PanelUpdate());
     }
   }
 
