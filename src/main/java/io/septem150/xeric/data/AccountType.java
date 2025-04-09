@@ -2,6 +2,7 @@ package io.septem150.xeric.data;
 
 import java.awt.image.BufferedImage;
 import java.util.Objects;
+import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,13 @@ public enum AccountType {
       return DEFAULT.getImage(spriteManager);
     }
     final BufferedImage sprite = spriteManager.getSprite(MODICONS_ARCHIVE_ID, this.getSpriteId());
-    return ImageUtil.resizeImage(Objects.requireNonNull(sprite), 14, 14, false);
+    return ImageUtil.resizeImage(Objects.requireNonNull(sprite), 14, 14, true);
+  }
+
+  public void getImageAsync(@NonNull SpriteManager spriteManager, Consumer<BufferedImage> user) {
+    spriteManager.getSpriteAsync(
+        MODICONS_ARCHIVE_ID,
+        this.getSpriteId(),
+        image -> user.accept(ImageUtil.resizeImage(image, 14, 14, true)));
   }
 }

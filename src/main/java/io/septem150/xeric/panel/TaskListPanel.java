@@ -31,8 +31,7 @@ import net.runelite.client.ui.ColorScheme;
 
 public class TaskListPanel extends JPanel {
   private final CardLayout displayLayout = new CardLayout();
-  private final JPanel display = new JPanel(displayLayout);
-  private final JComboBox<String> tierComboBox = new JComboBox<>();
+
   private final Map<Integer, JPanel> tierPanels = new HashMap<>();
   private final Map<Integer, List<Task>> tasksPerTier = new HashMap<>();
 
@@ -43,23 +42,32 @@ public class TaskListPanel extends JPanel {
 
   @Inject
   private TaskListPanel(TaskStore taskStore, PlayerInfo playerInfo) {
-    super(new BorderLayout());
     this.taskStore = taskStore;
     this.playerInfo = playerInfo;
     loaded = false;
+  }
 
-    final JScrollPane scrollPane =
+  private final JPanel display = new JPanel(displayLayout);
+  private final JComboBox<String> tierComboBox = new JComboBox<>();
+
+  private void makeLayout() {
+    removeAll();
+    setLayout(new BorderLayout());
+    tierComboBox.setBorder(new LineBorder(ColorScheme.BORDER_COLOR, 1));
+    add(tierComboBox, BorderLayout.NORTH);
+    JScrollPane scrollPane =
         new JScrollPane(
             display,
             ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     scrollPane.setWheelScrollingEnabled(true);
     scrollPane.setBorder(new EmptyBorder(5, 0, 0, 0));
-
-    tierComboBox.setBorder(new LineBorder(ColorScheme.BORDER_COLOR, 1));
-    add(tierComboBox, BorderLayout.NORTH);
     add(scrollPane, BorderLayout.CENTER);
   }
+
+  private void makeStaticData() {}
+
+  private void makeDynamicData() {}
 
   public void init() {
     if (loaded) return;
@@ -96,6 +104,9 @@ public class TaskListPanel extends JPanel {
   }
 
   public void reload() {
+    makeLayout();
+    makeStaticData();
+    makeDynamicData();
     if (playerInfo.getUsername() == null) return;
     if (!loaded) {
       init();

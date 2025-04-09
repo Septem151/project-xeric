@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.util.ImageUtil;
@@ -63,8 +65,13 @@ public enum ClanRank {
     return WordUtils.capitalizeFully(String.format("%s Rank", this.name()));
   }
 
-  public BufferedImage getImage(SpriteManager spriteManager) {
+  public BufferedImage getImage(@NonNull SpriteManager spriteManager) {
     return ImageUtil.resizeImage(
         Objects.requireNonNull(spriteManager.getSprite(archive, file)), 32, 32, true);
+  }
+
+  public void getImageAsync(@NonNull SpriteManager spriteManager, Consumer<BufferedImage> user) {
+    spriteManager.getSpriteAsync(
+        archive, file, image -> user.accept(ImageUtil.resizeImage(image, 32, 32, true)));
   }
 }

@@ -38,4 +38,8 @@ public class PlayerInfo {
     collectionLog = new CollectionLog();
     tasks = new ArrayList<>();
   }
+
+  public ClanRank getRank() {
+    return ClanRank.fromPoints(tasks.stream().mapToInt(Task::getTier).sum());
+  }
 }

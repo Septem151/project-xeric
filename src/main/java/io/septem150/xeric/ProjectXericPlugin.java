@@ -13,6 +13,7 @@ import static io.septem150.xeric.data.CombatAchievement.MASTER_TIER_ENUM_ID;
 import static io.septem150.xeric.data.CombatAchievement.MEDIUM_TIER_ENUM_ID;
 import static io.septem150.xeric.data.CombatAchievement.SCRIPT_4834_VARP_IDS;
 
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.inject.Binder;
@@ -36,6 +37,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -49,6 +51,7 @@ import net.runelite.api.MenuAction;
 import net.runelite.api.Skill;
 import net.runelite.api.StructComposition;
 import net.runelite.api.Varbits;
+import net.runelite.api.WorldType;
 import net.runelite.api.events.CommandExecuted;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
@@ -57,8 +60,8 @@ import net.runelite.api.events.ScriptPreFired;
 import net.runelite.api.events.StatChanged;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.hiscore.HiscoreClient;
 import net.runelite.client.hiscore.HiscoreEndpoint;
 import net.runelite.client.hiscore.HiscoreResult;
@@ -73,13 +76,21 @@ import net.runelite.client.plugins.PluginDescriptor;
 @Slf4j
 @PluginDescriptor(name = "Project Xeric")
 public final class ProjectXericPlugin extends Plugin {
+  private static final Set<WorldType> invalidWorldTypes =
+      Set.of(
+          WorldType.NOSAVE_MODE,
+          WorldType.BETA_WORLD,
+          WorldType.FRESH_START_WORLD,
+          WorldType.DEADMAN,
+          WorldType.PVP_ARENA,
+          WorldType.QUEST_SPEEDRUNNING,
+          WorldType.SEASONAL,
+          WorldType.TOURNAMENT_WORLD);
 
   @Inject private Client client;
   @Inject private ClientThread clientThread;
-  @Inject private EventBus eventBus;
   @Inject private ProjectXericConfig config;
   @Inject private ConfigManager configManager;
-  //  @Inject private SessionManager sessionManager;
   @Inject private PlayerInfo playerInfo;
   @Inject private HiscoreClient hiscoreClient;
   @Inject private ScheduledExecutorService executor;
@@ -104,9 +115,9 @@ public final class ProjectXericPlugin extends Plugin {
   private void reset() {
     checkTasks = true;
     clogOpened = false;
-    fetchGeneral = false;
-    fetchHiscores = 0;
-    fetchLevels = false;
+    fetchGeneral = true;
+    fetchHiscores = 2;
+    fetchLevels = true;
     generalLoaded = false;
     hiscoresLoaded = false;
     lastAccount = -1L;
@@ -119,22 +130,11 @@ public final class ProjectXericPlugin extends Plugin {
     log.info("Project Xeric started!");
     panel = injector.getInstance(ProjectXericPanel.class);
     panel.init();
-    //    sessionManager.init();
     SwingUtilities.invokeLater(panel::reload);
-
-    checkTasks = true;
-    clogOpened = false;
-    fetchGeneral = true;
-    fetchHiscores = 2;
-    fetchLevels = true;
-    generalLoaded = false;
-    hiscoresLoaded = false;
-    lastAccount = -1L;
-    levelsLoaded = false;
-    updateClog = 0;
+    reset();
     clientThread.invokeLater(
         () -> {
-          if (client.getGameState() == GameState.LOGGED_IN) {
+          if (client.getGameState() == GameState.LOGGED_IN && isValidWorldType()) {
             lastAccount = client.getAccountHash();
           }
         });
@@ -150,28 +150,39 @@ public final class ProjectXericPlugin extends Plugin {
 
   @Subscribe
   public void onGameStateChanged(GameStateChanged event) {
+    if (!isValidWorldType()) {
+      log.debug("Not logged in to main worlds, ignoring");
+      reset();
+      return;
+    }
     if (GameState.LOGGED_IN == event.getGameState()) {
       long account = client.getAccountHash();
       if (account != lastAccount) {
         log.debug("Account change: {} -> {}", lastAccount, account);
-        checkTasks = true;
-        clogOpened = false;
-        fetchGeneral = true;
-        fetchHiscores = 2;
-        fetchLevels = true;
-        generalLoaded = false;
-        hiscoresLoaded = false;
+        reset();
         lastAccount = account;
-        levelsLoaded = false;
-        updateClog = 0;
       }
     } else if (GameState.LOGIN_SCREEN == event.getGameState()) {
       StoredInfo storedInfo = new StoredInfo();
       storedInfo.setSlayerException(playerInfo.isSlayerException());
-      storedInfo.setCollectionLog(playerInfo.getCollectionLog());
-      storedInfo.setTasks(playerInfo.getTasks());
+      storedInfo.setClogItems(
+          playerInfo.getCollectionLog().getItems().stream()
+              .map(ClogItem::getId)
+              .collect(Collectors.toList()));
+      storedInfo.setLastUpdated(playerInfo.getCollectionLog().getLastOpened());
+      storedInfo.setTasks(
+          playerInfo.getTasks().stream().map(Task::getId).collect(Collectors.toList()));
       configManager.setRSProfileConfiguration(
           ProjectXericConfig.GROUP, ProjectXericConfig.DATA_KEY, gson.toJson(storedInfo));
+    }
+  }
+
+  @Subscribe
+  public void onConfigChanged(ConfigChanged event) {
+    if (!event.getGroup().equals(ProjectXericConfig.GROUP)) return;
+    if (event.getKey().equals(ProjectXericConfig.SLAYER)) {
+      playerInfo.setSlayerException(Boolean.parseBoolean(event.getNewValue()));
+      SwingUtilities.invokeLater(panel::reload);
     }
   }
 
@@ -281,11 +292,13 @@ public final class ProjectXericPlugin extends Plugin {
                 StoredInfo.class);
       } catch (JsonSyntaxException exc) {
         log.warn("malformed stored data found, will ignore and overwrite.");
+        configManager.unsetRSProfileConfiguration(
+            ProjectXericConfig.GROUP, ProjectXericConfig.DATA_KEY);
       }
       if (storedInfo == null) {
         storedInfo = new StoredInfo();
-        storedInfo.setCollectionLog(new CollectionLog());
         storedInfo.setSlayerException(config.slayer());
+        storedInfo.setClogItems(new ArrayList<>());
         storedInfo.setTasks(new ArrayList<>());
         configManager.setRSProfileConfiguration(
             ProjectXericConfig.GROUP, ProjectXericConfig.DATA_KEY, gson.toJson(storedInfo));
@@ -293,11 +306,20 @@ public final class ProjectXericPlugin extends Plugin {
       } else {
         log.info("Loaded storedInfo:\n{}", gson.toJson(storedInfo));
       }
-      playerInfo.setCollectionLog(storedInfo.getCollectionLog());
+      CollectionLog collectionLog = new CollectionLog();
+      collectionLog.setLastOpened(storedInfo.getLastUpdated());
+      collectionLog.setItems(
+          storedInfo.getClogItems().stream()
+              .map(itemId -> ClogItem.from(client, itemId))
+              .collect(Collectors.toList()));
+      playerInfo.setCollectionLog(collectionLog);
       log.info("Loaded collectionLog:\n{}", gson.toJson(playerInfo.getCollectionLog()));
       playerInfo.setSlayerException(storedInfo.isSlayerException());
       log.info("Loaded slayerException: {}", playerInfo.isSlayerException());
-      playerInfo.setTasks(storedInfo.getTasks());
+      playerInfo.setTasks(
+          storedInfo.getTasks().stream()
+              .map(taskId -> taskStore.getById(taskId).orElseThrow())
+              .collect(Collectors.toList()));
       log.info("Loaded tasks:\n{}", gson.toJson(playerInfo.getTasks()));
       generalLoaded = true;
       fetchGeneral = false;
@@ -366,6 +388,8 @@ public final class ProjectXericPlugin extends Plugin {
     if (event.getCommand().equals("xeric")) {
       //      sessionManager.reset();
       //      log.info(gson.toJson(playerInfo));
+      configManager.unsetRSProfileConfiguration(
+          ProjectXericConfig.GROUP, ProjectXericConfig.DATA_KEY);
       SwingUtilities.invokeLater(panel::reload);
     }
   }
@@ -389,5 +413,12 @@ public final class ProjectXericPlugin extends Plugin {
         .serializeNulls()
         .registerTypeAdapter(Task.class, new TaskTypeAdapter())
         .create();
+  }
+
+  private boolean isValidWorldType() {
+    if (!client.isClientThread()) {
+      return false;
+    }
+    return Sets.intersection(invalidWorldTypes, client.getWorldType()).isEmpty();
   }
 }

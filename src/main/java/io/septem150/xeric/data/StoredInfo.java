@@ -1,12 +1,13 @@
 package io.septem150.xeric.data;
 
-import io.septem150.xeric.data.task.Task;
+import java.time.Instant;
 import java.util.List;
 import lombok.Data;
 
 @Data
 public class StoredInfo {
-  private CollectionLog collectionLog;
-  private List<Task> tasks;
+  private List<Integer> clogItems;
+  private List<Integer> tasks;
   private boolean slayerException;
+  private Instant lastUpdated;
 }
