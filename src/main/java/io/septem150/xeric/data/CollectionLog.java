@@ -10,6 +10,10 @@ public class CollectionLog {
   private Instant lastOpened;
   private List<ClogItem> items = new ArrayList<>();
 
+  public void add(ClogItem clogItem) {
+    items.add(clogItem);
+  }
+
   public static final int COLLECTION_LOG_SETUP_SCRIPT_ID = 7797;
   public static final int COLLECTION_LOG_TRANSMIT_SCRIPT_ID = 4100;
 }
