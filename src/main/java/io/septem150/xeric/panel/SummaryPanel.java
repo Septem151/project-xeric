@@ -15,7 +15,7 @@ import net.runelite.client.ui.FontManager;
 
 @Slf4j
 @Singleton
-public class SummaryPanelV2 extends JPanel {
+public class SummaryPanel extends JPanel {
   public static final String TOOLTIP = "Player Summary";
   public static final String TAB_ICON = "summary_tab_icon.png";
 
@@ -24,7 +24,7 @@ public class SummaryPanelV2 extends JPanel {
   private final IdCard idCard;
 
   @Inject
-  private SummaryPanelV2(PlayerInfo playerInfo, TaskListPanel taskListPanel, IdCard idCard) {
+  private SummaryPanel(PlayerInfo playerInfo, TaskListPanel taskListPanel, IdCard idCard) {
     this.playerInfo = playerInfo;
     this.taskListPanel = taskListPanel;
     this.idCard = idCard;

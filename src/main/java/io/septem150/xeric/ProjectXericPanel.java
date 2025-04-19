@@ -1,7 +1,7 @@
 package io.septem150.xeric;
 
 import io.septem150.xeric.panel.LeaderboardPanel;
-import io.septem150.xeric.panel.SummaryPanelV2;
+import io.septem150.xeric.panel.SummaryPanel;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -36,14 +36,14 @@ public final class ProjectXericPanel extends PluginPanel {
 
   private final ClientToolbar clientToolbar;
   private final NavigationButton navigationButton;
-  private final SummaryPanelV2 summaryPanel;
+  private final SummaryPanel summaryPanel;
   private final LeaderboardPanel leaderboardPanel;
 
   @Inject
   private ProjectXericPanel(
       EventBus eventBus,
       ClientToolbar clientToolbar,
-      SummaryPanelV2 summaryPanel,
+      SummaryPanel summaryPanel,
       LeaderboardPanel leaderboardPanel) {
     super(false);
     this.clientToolbar = clientToolbar;
@@ -74,7 +74,7 @@ public final class ProjectXericPanel extends PluginPanel {
 
     eventBus.register(this);
     MaterialTab summaryTab =
-        createTab(SummaryPanelV2.TOOLTIP, SummaryPanelV2.TAB_ICON, summaryPanel, tabGroup);
+        createTab(SummaryPanel.TOOLTIP, SummaryPanel.TAB_ICON, summaryPanel, tabGroup);
     eventBus.register(summaryPanel);
     createTab(LeaderboardPanel.TOOLTIP, LeaderboardPanel.TAB_ICON, leaderboardPanel, tabGroup);
     eventBus.register(leaderboardPanel);
