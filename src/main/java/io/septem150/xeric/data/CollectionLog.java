@@ -16,4 +16,10 @@ public class CollectionLog {
 
   public static final int COLLECTION_LOG_SETUP_SCRIPT_ID = 7797;
   public static final int COLLECTION_LOG_TRANSMIT_SCRIPT_ID = 4100;
+
+  public static final int CLOG_TOP_TABS_ENUM_ID = 2102;
+  public static final int CLOG_SUB_TABS_PARAM_ID = 683;
+  public static final int CLOG_SUB_TAB_ITEMS_PARAM_ID = 690;
+  public static final int ITEM_REPLACEMENT_MAPPING_ENUM_ID = 3721;
+  public static final int[] UNUSED_PROSPECTOR_ITEM_IDS = new int[] {29472, 29474, 29476, 29478};
 }

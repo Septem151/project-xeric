@@ -1,0 +1,103 @@
+package io.septem150.xeric.manager;
+
+import com.google.gson.Gson;
+import io.septem150.xeric.PlayerUpdate;
+import io.septem150.xeric.data.AccountType;
+import io.septem150.xeric.data.KillCount;
+import io.septem150.xeric.data.PlayerInfo;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.Client;
+import net.runelite.api.events.ChatMessage;
+import net.runelite.api.events.GameTick;
+import net.runelite.api.gameval.VarbitID;
+import net.runelite.client.eventbus.EventBus;
+import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.hiscore.HiscoreEndpoint;
+import net.runelite.client.hiscore.HiscoreManager;
+import net.runelite.client.hiscore.HiscoreResult;
+
+@Slf4j
+@Singleton
+@RequiredArgsConstructor(onConstructor_ = @__(@Inject))
+public class KCManager {
+  private List<KillCount> kcs;
+
+  private boolean active;
+  private int ticksTilUpdate = -1;
+
+  private final Client client;
+  private final EventBus eventBus;
+  private final @Named("xericGson") Gson gson;
+  private final ScheduledExecutorService executor;
+  private final HiscoreManager hiscoreManager;
+
+  public void startUp() {
+    if (active) return;
+    eventBus.register(this);
+    active = true;
+    ticksTilUpdate = 2; // wait 2 ticks before updating
+  }
+
+  public void shutDown() {
+    if (!active) return;
+    eventBus.unregister(this);
+    active = false;
+    ticksTilUpdate = -1; // never update
+    kcs = null;
+  }
+
+  public void reset() {
+    ticksTilUpdate = 2; // wait 1 tick before updating
+    kcs = null;
+  }
+
+  public void update(PlayerInfo playerInfo) {
+    if (kcs == null) {
+      HiscoreEndpoint hiscoreEndpoint =
+          AccountType.fromVarbValue(client.getVarbitValue(VarbitID.IRONMAN)).getHiscoreEndpoint();
+      executor.execute(
+          () -> {
+            try {
+              HiscoreResult result =
+                  hiscoreManager.lookup(client.getLocalPlayer().getName(), hiscoreEndpoint);
+              KillCount.hiscoreSkills.forEach(
+                  hiscoreSkill -> {
+                    KillCount killCount = new KillCount();
+                    killCount.setCount(Math.max(0, result.getSkill(hiscoreSkill).getLevel()));
+                    killCount.setName(hiscoreSkill.getName());
+                    kcs.add(killCount);
+                  });
+              log.info("Loaded KCs:\n{}", gson.toJson(kcs));
+            } catch (IOException exc) {
+              log.warn(
+                  "IOException while looking up hiscores for player '{}'",
+                  client.getLocalPlayer().getName());
+            }
+          });
+    }
+    playerInfo.setKillCounts(kcs);
+    log.debug("updated player KCs");
+  }
+
+  @Subscribe
+  public void onGameTick(GameTick event) {
+    if (!active) return;
+    if (ticksTilUpdate > 0) {
+      ticksTilUpdate--;
+    } else if (ticksTilUpdate == 0) {
+      eventBus.post(new PlayerUpdate(this::update));
+    }
+  }
+
+  @Subscribe
+  public void onChatMessage(ChatMessage event) {
+    // TODO: Parse chat message for new KCs
+  }
+}

@@ -150,7 +150,7 @@ public final class ProjectXericPlugin extends Plugin {
 
   private String obtainedItemName;
   private Multiset<Integer> inventoryItems;
-  private Set<Integer> caTaskIds;
+  private Set<Integer> caTaskStructIds;
   private Set<Integer> clogItemIds;
 
   private void reset() {
@@ -181,9 +181,9 @@ public final class ProjectXericPlugin extends Plugin {
               clogItemIds = requestAllClogItems();
               log.debug("clog item IDs: {}", gson.toJson(clogItemIds));
             }
-            if (caTaskIds == null) {
-              caTaskIds = requestAllCaTaskIds();
-              log.debug("ca task IDs: {}", gson.toJson(caTaskIds));
+            if (caTaskStructIds == null) {
+              caTaskStructIds = requestAllCaTaskIds();
+              log.debug("ca task IDs: {}", gson.toJson(caTaskStructIds));
             }
           }
         });
@@ -194,7 +194,7 @@ public final class ProjectXericPlugin extends Plugin {
     log.info("Project Xeric stopped!");
     reset();
     clogItemIds = null;
-    caTaskIds = null;
+    caTaskStructIds = null;
     panel.stop();
     //    sessionManager.reset();
   }
@@ -216,9 +216,9 @@ public final class ProjectXericPlugin extends Plugin {
           clogItemIds = requestAllClogItems();
           log.debug("clog item IDs: {}", gson.toJson(clogItemIds));
         }
-        if (caTaskIds == null) {
-          caTaskIds = requestAllCaTaskIds();
-          log.debug("ca task IDs: {}", gson.toJson(caTaskIds));
+        if (caTaskStructIds == null) {
+          caTaskStructIds = requestAllCaTaskIds();
+          log.debug("ca task IDs: {}", gson.toJson(caTaskStructIds));
         }
       }
     } else if (GameState.LOGIN_SCREEN == event.getGameState()) {
@@ -304,12 +304,13 @@ public final class ProjectXericPlugin extends Plugin {
       playerInfo.setUsername(client.getLocalPlayer().getName());
       log.info("Loaded username: {}", playerInfo.getUsername());
       List<CombatAchievement> combatAchievements = new ArrayList<>();
-      for (int caTaskId : caTaskIds) {
+      for (int caTaskStructId : caTaskStructIds) {
+        StructComposition struct = client.getStructComposition(caTaskStructId);
+        int caTaskId = struct.getIntValue(CA_STRUCT_ID_PARAM_ID);
         boolean unlocked =
             (client.getVarpValue(SCRIPT_4834_VARP_IDS[caTaskId / 32]) & (1 << (caTaskId % 32)))
                 != 0;
         if (unlocked) {
-          StructComposition struct = client.getStructComposition(caTaskId);
           CombatAchievement combatAchievement = new CombatAchievement();
           combatAchievement.setId(caTaskId);
           combatAchievement.setName(struct.getStringValue(CA_STRUCT_NAME_PARAM_ID));
@@ -453,7 +454,7 @@ public final class ProjectXericPlugin extends Plugin {
     Matcher caTaskMatcher = COMBAT_TASK_REGEX.matcher(message);
     if (caTaskMatcher.matches()) {
       log.debug("Updating CA's");
-      for (int caTaskId : caTaskIds) {
+      for (int caTaskId : caTaskStructIds) {
         boolean unlocked =
             (client.getVarpValue(SCRIPT_4834_VARP_IDS[caTaskId / 32]) & (1 << (caTaskId % 32)))
                 != 0;
@@ -493,7 +494,7 @@ public final class ProjectXericPlugin extends Plugin {
   }
 
   @Subscribe
-  private void onItemContainerChanged(ItemContainerChanged itemContainerChanged) {
+  public void onItemContainerChanged(ItemContainerChanged itemContainerChanged) {
     if (itemContainerChanged.getContainerId() != InventoryID.INVENTORY.getId()) {
       return;
     }
@@ -629,7 +630,7 @@ public final class ProjectXericPlugin extends Plugin {
   }
 
   private Set<Integer> requestAllCaTaskIds() {
-    Set<Integer> caTaskIds = new HashSet<>();
+    Set<Integer> allCaTaskStructIds = new HashSet<>();
     for (int caTiersEnumId :
         new int[] {
           EASY_TIER_ENUM_ID,
@@ -645,8 +646,7 @@ public final class ProjectXericPlugin extends Plugin {
         StructComposition caTierStruct = client.getStructComposition(caTierStructId);
         // and with the struct we can get info about the ca
         // like its id, which we can use to get if its completed or not
-        int taskId = caTierStruct.getIntValue(CA_STRUCT_ID_PARAM_ID);
-        caTaskIds.add(taskId);
+        allCaTaskStructIds.add(caTierStructId);
         // we can use the cs2 vm to invoke script 4834 to do the lookup for us
         // client.runScript(4834, id);
         // boolean unlocked = client.getIntStack()[client.getIntStackSize() - 1] != 0;
@@ -655,7 +655,7 @@ public final class ProjectXericPlugin extends Plugin {
         // from script 4834
       }
     }
-    return caTaskIds;
+    return allCaTaskStructIds;
   }
 
   /**
