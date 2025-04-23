@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import io.septem150.xeric.PlayerUpdate;
 import io.septem150.xeric.data.PlayerInfo;
 import io.septem150.xeric.data.QuestProgress;
+import io.septem150.xeric.util.WorldUtil;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,13 +58,11 @@ public class QuestManager {
   }
 
   public void update(PlayerInfo playerInfo) {
-    if (quests == null) {
-      quests =
-          QuestProgress.trackedQuests.stream()
-              .map(quest -> QuestProgress.from(client, quest))
-              .collect(Collectors.toList());
-      log.info("Loaded quests:\n{}", gson.toJson(quests));
-    }
+    if (!WorldUtil.isValidWorldType(client)) return;
+    quests =
+        QuestProgress.trackedQuests.stream()
+            .map(quest -> QuestProgress.from(client, quest))
+            .collect(Collectors.toList());
     playerInfo.setQuests(quests);
     log.debug("updated player quests");
   }
@@ -71,10 +70,11 @@ public class QuestManager {
   @Subscribe
   public void onGameTick(GameTick event) {
     if (!active) return;
-    if (ticksTilUpdate > 0) {
+    if (ticksTilUpdate == 0) {
+      eventBus.post(new PlayerUpdate(this, this::update));
+    }
+    if (ticksTilUpdate >= 0) {
       ticksTilUpdate--;
-    } else if (ticksTilUpdate == 0) {
-      eventBus.post(new PlayerUpdate(this::update));
     }
   }
 
@@ -84,10 +84,6 @@ public class QuestManager {
     String message = Text.removeTags(event.getMessage());
     Matcher questMatcher = QUEST_REGEX.matcher(message);
     if (questMatcher.matches()) {
-      quests =
-          QuestProgress.trackedQuests.stream()
-              .map(quest -> QuestProgress.from(client, quest))
-              .collect(Collectors.toList());
       ticksTilUpdate = 0;
     }
   }

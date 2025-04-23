@@ -16,6 +16,8 @@ import io.septem150.xeric.PlayerUpdate;
 import io.septem150.xeric.data.ClogItem;
 import io.septem150.xeric.data.CollectionLog;
 import io.septem150.xeric.data.PlayerInfo;
+import io.septem150.xeric.data.StoredInfo;
+import io.septem150.xeric.util.WorldUtil;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,6 +25,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -71,6 +75,7 @@ public class ClogManager {
 
   public void startUp() {
     if (active) return;
+    clog = new CollectionLog();
     eventBus.register(this);
     active = true;
     ticksTilUpdate = 1; // wait 1 tick before updating
@@ -82,32 +87,45 @@ public class ClogManager {
     active = false;
     ticksTilUpdate = -1; // never update
     clog = null;
+    clogItemIds = null;
     clogOpened = false;
+    inventoryItems = null;
+    obtainedItemName = null;
   }
 
   public void reset() {
     ticksTilUpdate = 1; // wait 1 tick before updating
-    clog = null;
+    clogOpened = false;
   }
 
   public void update(PlayerInfo playerInfo) {
-    if (clog == null) {
-      if (clogItemIds == null) {
-        clogItemIds = requestAllClogItems();
-      }
-      clog = new CollectionLog();
+    if (!WorldUtil.isValidWorldType(client)) return;
+    if (clogItemIds == null) {
+      clogItemIds = requestAllClogItems();
     }
     playerInfo.setCollectionLog(clog);
     log.debug("updated player clog");
   }
 
+  public void load(@Nullable StoredInfo storedInfo) {
+    if (storedInfo == null) return;
+    clog = new CollectionLog();
+    clog.setLastOpened(storedInfo.getLastUpdated());
+    clog.setItems(
+        storedInfo.getClogItems().stream()
+            .map(itemId -> ClogItem.from(client, itemId))
+            .collect(Collectors.toList()));
+    ticksTilUpdate = 1;
+  }
+
   @Subscribe
   public void onGameTick(GameTick event) {
     if (!active) return;
-    if (ticksTilUpdate > 0) {
+    if (ticksTilUpdate == 0) {
+      eventBus.post(new PlayerUpdate(this, this::update));
+    }
+    if (ticksTilUpdate >= 0) {
       ticksTilUpdate--;
-    } else if (ticksTilUpdate == 0) {
-      eventBus.post(new PlayerUpdate(this::update));
     }
   }
 
@@ -141,12 +159,11 @@ public class ClogManager {
 
   @Subscribe
   public void onScriptPreFired(ScriptPreFired event) {
-    if (event.getScriptId() == COLLECTION_LOG_TRANSMIT_SCRIPT_ID) {
-      int itemId = (int) event.getScriptEvent().getArguments()[1];
-      if (clog.getItems().stream().noneMatch(item -> item.getId() == itemId)) {
-        ClogItem clogItem = ClogItem.from(client, itemId);
-        clog.getItems().add(clogItem);
-      }
+    if (event.getScriptId() != COLLECTION_LOG_TRANSMIT_SCRIPT_ID) return;
+    int itemId = (int) event.getScriptEvent().getArguments()[1];
+    if (clog.getItems().stream().noneMatch(item -> item.getId() == itemId)) {
+      ClogItem clogItem = ClogItem.from(client, itemId);
+      clog.getItems().add(clogItem);
     }
   }
 
@@ -159,11 +176,11 @@ public class ClogManager {
       clog.setLastOpened(Instant.now());
       // taken from WikiSync, not really sure what script is being run,
       // but it appears that simulating a click on the Search button
-      // loads the script that checks for clog items
+      // loads the script that checks for obtained clog items (not quantities though)
       client.menuAction(-1, 40697932, MenuAction.CC_OP, 1, -1, "Search", null);
       client.runScript(2240);
       clogOpened = true;
-      // wait 2 ticks to update
+      // wait 3 ticks to update
       ticksTilUpdate = 3;
     }
   }

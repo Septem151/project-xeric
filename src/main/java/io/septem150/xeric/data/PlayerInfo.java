@@ -35,6 +35,7 @@ public class PlayerInfo {
     diaries = new ArrayList<>();
     levels = new ArrayList<>();
     killCounts = new ArrayList<>();
+    combatAchievements = new ArrayList<>();
     collectionLog = new CollectionLog();
     tasks = new ArrayList<>();
   }

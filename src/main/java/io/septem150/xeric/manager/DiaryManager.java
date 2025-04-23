@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import io.septem150.xeric.PlayerUpdate;
 import io.septem150.xeric.data.DiaryProgress;
 import io.septem150.xeric.data.PlayerInfo;
+import io.septem150.xeric.util.WorldUtil;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -59,13 +60,11 @@ public class DiaryManager {
   }
 
   public void update(PlayerInfo playerInfo) {
-    if (diaries == null) {
-      diaries =
-          DiaryProgress.trackedDiaries.stream()
-              .map(diary -> DiaryProgress.from(client, diary))
-              .collect(Collectors.toList());
-      log.info("Loaded diaries:\n{}", gson.toJson(diaries));
-    }
+    if (!WorldUtil.isValidWorldType(client)) return;
+    diaries =
+        DiaryProgress.trackedDiaries.stream()
+            .map(diary -> DiaryProgress.from(client, diary))
+            .collect(Collectors.toList());
     playerInfo.setDiaries(diaries);
     log.debug("updated player diaries");
   }
@@ -73,10 +72,11 @@ public class DiaryManager {
   @Subscribe
   public void onGameTick(GameTick event) {
     if (!active) return;
-    if (ticksTilUpdate > 0) {
+    if (ticksTilUpdate == 0) {
+      eventBus.post(new PlayerUpdate(this, this::update));
+    }
+    if (ticksTilUpdate >= 0) {
       ticksTilUpdate--;
-    } else if (ticksTilUpdate == 0) {
-      eventBus.post(new PlayerUpdate(this::update));
     }
   }
 

@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import io.septem150.xeric.PlayerUpdate;
 import io.septem150.xeric.data.CombatAchievement;
 import io.septem150.xeric.data.PlayerInfo;
+import io.septem150.xeric.util.WorldUtil;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -54,6 +55,7 @@ public class CAManager {
 
   public void startUp() {
     if (active) return;
+    cas = new ArrayList<>();
     eventBus.register(this);
     active = true;
     ticksTilUpdate = 1; // wait 1 tick before updating
@@ -73,26 +75,23 @@ public class CAManager {
   }
 
   public void update(PlayerInfo playerInfo) {
-    if (cas == null) {
-      if (caTaskStructIds == null) {
-        caTaskStructIds = requestAllCaTaskStructIds(client);
+    if (!WorldUtil.isValidWorldType(client)) return;
+    if (caTaskStructIds == null) {
+      caTaskStructIds = requestAllCaTaskStructIds(client);
+    }
+    cas = new ArrayList<>();
+    for (int caTaskStructId : caTaskStructIds) {
+      StructComposition struct = client.getStructComposition(caTaskStructId);
+      int caTaskId = struct.getIntValue(CA_STRUCT_ID_PARAM_ID);
+      boolean unlocked =
+          (client.getVarpValue(SCRIPT_4834_VARP_IDS[caTaskId / 32]) & (1 << (caTaskId % 32))) != 0;
+      if (unlocked) {
+        CombatAchievement combatAchievement = new CombatAchievement();
+        combatAchievement.setId(caTaskId);
+        combatAchievement.setName(struct.getStringValue(CA_STRUCT_NAME_PARAM_ID));
+        combatAchievement.setPoints(struct.getIntValue(CA_STRUCT_TIER_PARAM_ID));
+        cas.add(combatAchievement);
       }
-      cas = new ArrayList<>();
-      for (int caTaskStructId : caTaskStructIds) {
-        StructComposition struct = client.getStructComposition(caTaskStructId);
-        int caTaskId = struct.getIntValue(CA_STRUCT_ID_PARAM_ID);
-        boolean unlocked =
-            (client.getVarpValue(SCRIPT_4834_VARP_IDS[caTaskId / 32]) & (1 << (caTaskId % 32)))
-                != 0;
-        if (unlocked) {
-          CombatAchievement combatAchievement = new CombatAchievement();
-          combatAchievement.setId(caTaskId);
-          combatAchievement.setName(struct.getStringValue(CA_STRUCT_NAME_PARAM_ID));
-          combatAchievement.setPoints(struct.getIntValue(CA_STRUCT_TIER_PARAM_ID));
-          cas.add(combatAchievement);
-        }
-      }
-      log.info("Loaded CAs:\n{}", gson.toJson(cas));
     }
     playerInfo.setCombatAchievements(cas);
     log.debug("updated player CAs");
@@ -101,10 +100,11 @@ public class CAManager {
   @Subscribe
   public void onGameTick(GameTick event) {
     if (!active) return;
-    if (ticksTilUpdate > 0) {
+    if (ticksTilUpdate == 0) {
+      eventBus.post(new PlayerUpdate(this, this::update));
+    }
+    if (ticksTilUpdate >= 0) {
       ticksTilUpdate--;
-    } else if (ticksTilUpdate == 0) {
-      eventBus.post(new PlayerUpdate(this::update));
     }
   }
 
@@ -114,23 +114,7 @@ public class CAManager {
     String message = Text.removeTags(event.getMessage());
     Matcher caTaskMatcher = COMBAT_TASK_REGEX.matcher(message);
     if (caTaskMatcher.matches()) {
-      for (int caTaskStructId : caTaskStructIds) {
-        StructComposition struct = client.getStructComposition(caTaskStructId);
-        int caTaskId = struct.getIntValue(CA_STRUCT_ID_PARAM_ID);
-        boolean unlocked =
-            (client.getVarpValue(SCRIPT_4834_VARP_IDS[caTaskId / 32]) & (1 << (caTaskId % 32)))
-                != 0;
-        if (unlocked) {
-          CombatAchievement combatAchievement = new CombatAchievement();
-          combatAchievement.setId(caTaskId);
-          combatAchievement.setName(struct.getStringValue(CA_STRUCT_NAME_PARAM_ID));
-          combatAchievement.setPoints(struct.getIntValue(CA_STRUCT_TIER_PARAM_ID));
-          if (!cas.contains(combatAchievement)) {
-            cas.add(combatAchievement);
-            ticksTilUpdate = 0;
-          }
-        }
-      }
+      ticksTilUpdate = 0;
     }
   }
 

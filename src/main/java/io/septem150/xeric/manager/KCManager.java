@@ -5,14 +5,19 @@ import io.septem150.xeric.PlayerUpdate;
 import io.septem150.xeric.data.AccountType;
 import io.septem150.xeric.data.KillCount;
 import io.septem150.xeric.data.PlayerInfo;
+import io.septem150.xeric.util.WorldUtil;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameTick;
@@ -22,11 +27,16 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.hiscore.HiscoreEndpoint;
 import net.runelite.client.hiscore.HiscoreManager;
 import net.runelite.client.hiscore.HiscoreResult;
+import net.runelite.client.util.Text;
 
 @Slf4j
 @Singleton
 @RequiredArgsConstructor(onConstructor_ = @__(@Inject))
 public class KCManager {
+  private static final Pattern KC_REGEX =
+      Pattern.compile("Your (?:subdued|completed)? (.*) (?:kill)? count is: (\\d+)\\.");
+  private static final Pattern CLUE_REGEX =
+      Pattern.compile("You have completed (\\d+) (.*) Treasure Trails\\.");
   private List<KillCount> kcs;
 
   private boolean active;
@@ -59,7 +69,9 @@ public class KCManager {
   }
 
   public void update(PlayerInfo playerInfo) {
+    if (!WorldUtil.isValidWorldType(client)) return;
     if (kcs == null) {
+      kcs = new ArrayList<>();
       HiscoreEndpoint hiscoreEndpoint =
           AccountType.fromVarbValue(client.getVarbitValue(VarbitID.IRONMAN)).getHiscoreEndpoint();
       executor.execute(
@@ -74,30 +86,63 @@ public class KCManager {
                     killCount.setName(hiscoreSkill.getName());
                     kcs.add(killCount);
                   });
-              log.info("Loaded KCs:\n{}", gson.toJson(kcs));
+              ticksTilUpdate = 0;
             } catch (IOException exc) {
               log.warn(
                   "IOException while looking up hiscores for player '{}'",
                   client.getLocalPlayer().getName());
             }
           });
+    } else {
+      playerInfo.setKillCounts(kcs);
+      log.debug("updated player KCs:\n{}", gson.toJson(kcs));
     }
-    playerInfo.setKillCounts(kcs);
-    log.debug("updated player KCs");
   }
 
   @Subscribe
   public void onGameTick(GameTick event) {
     if (!active) return;
-    if (ticksTilUpdate > 0) {
+    if (ticksTilUpdate == 0) {
+      eventBus.post(new PlayerUpdate(this, this::update));
+    }
+    if (ticksTilUpdate >= 0) {
       ticksTilUpdate--;
-    } else if (ticksTilUpdate == 0) {
-      eventBus.post(new PlayerUpdate(this::update));
     }
   }
 
   @Subscribe
   public void onChatMessage(ChatMessage event) {
-    // TODO: Parse chat message for new KCs
+    if (!active || event.getType() != ChatMessageType.GAMEMESSAGE) return;
+    String message = Text.removeTags(event.getMessage());
+    log.debug("Game message: {}", message);
+    Matcher kcMatcher = KC_REGEX.matcher(message);
+    if (kcMatcher.matches()) {
+      String name = kcMatcher.group(1);
+      if ("Lunar Chest".equals(name)) {
+        name += "s";
+      } else if ("Hueycoatl".equals(name)) {
+        name = "The " + name;
+      }
+      int count = Integer.parseInt(kcMatcher.group(2));
+      for (KillCount killCount : kcs) {
+        if (killCount.getName().equals(name)) {
+          killCount.setCount(count);
+          break;
+        }
+      }
+      ticksTilUpdate = 0;
+      return;
+    }
+    Matcher clueMatcher = CLUE_REGEX.matcher(message);
+    if (clueMatcher.matches()) {
+      int count = Integer.parseInt(clueMatcher.group(1));
+      String tier = clueMatcher.group(2);
+      for (KillCount killCount : kcs) {
+        if (killCount.getName().equals(String.format("Clue Scrolls (%s)", tier))) {
+          killCount.setCount(count);
+        }
+      }
+      ticksTilUpdate = 0;
+    }
   }
 }
