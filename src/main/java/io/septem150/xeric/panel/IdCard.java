@@ -27,6 +27,7 @@ import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.util.ImageUtil;
+import org.apache.commons.text.WordUtils;
 
 public class IdCard extends JPanel {
   private final PlayerInfo playerInfo;
@@ -117,6 +118,7 @@ public class IdCard extends JPanel {
   private void makeDynamicData() {
     int playerPoints = playerInfo.getTasks().stream().mapToInt(Task::getTier).sum();
     playerInfo.getRank().getImageAsync(spriteManager, image -> rank.setIcon(new ImageIcon(image)));
+    rank.setToolTipText(WordUtils.capitalizeFully(playerInfo.getRank().name()));
     playerInfo
         .getAccountType()
         .getImageAsync(spriteManager, image -> username.setIcon(new ImageIcon(image)));
@@ -172,6 +174,7 @@ public class IdCard extends JPanel {
       if (playerInfo.getTasks().isEmpty()) break;
       boolean completed = true;
       for (Task task : tasks) {
+        if (task.getTier() != tier) continue;
         if (!playerInfo.getTasks().contains(task)) {
           completed = false;
           break;
