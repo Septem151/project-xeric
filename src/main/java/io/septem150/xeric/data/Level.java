@@ -7,7 +7,8 @@ import net.runelite.api.Skill;
 @Data
 public class Level {
   private String name;
-  private int value;
+  private int amount;
+  private int exp;
 
   public static Level from(Client client, Skill skill) {
     if (client == null || !client.isClientThread()) {
@@ -15,11 +16,12 @@ public class Level {
     }
     Level level = new Level();
     level.name = skill.getName();
-    level.value = client.getRealSkillLevel(skill);
+    level.amount = client.getRealSkillLevel(skill);
+    level.exp = client.getSkillExperience(skill);
     return level;
   }
 
   public boolean isAccurate() {
-    return value != 0;
+    return amount != 0;
   }
 }

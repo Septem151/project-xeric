@@ -3,22 +3,22 @@ package io.septem150.xeric.data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.runelite.api.Client;
-import org.apache.commons.text.WordUtils;
 
 @RequiredArgsConstructor
 @Getter
 public enum KourendDiary {
-  EASY(7933, 7925),
-  MEDIUM(7934, 7926),
-  HARD(7935, 7927),
-  ELITE(7936, 7928);
+  EASY("Easy", 7933, 7925),
+  MEDIUM("Medium", 7934, 7926),
+  HARD("Hard", 7935, 7927),
+  ELITE("Elite", 7936, 7928);
 
+  private final String name;
   private final int countVarb;
   private final int completedVarb;
 
   @Override
   public String toString() {
-    return WordUtils.capitalizeFully(this.name());
+    return name;
   }
 
   public int getTaskCount(Client client) {

@@ -16,6 +16,9 @@ public class CollectTask extends Task {
 
   @Override
   public boolean checkCompletion(@NonNull PlayerInfo playerInfo) {
+    if (itemIds.isEmpty()) {
+      return playerInfo.getCollectionLog().size() >= amount;
+    }
     List<Integer> itemIds =
         playerInfo.getCollectionLog().getItems().stream()
             .map(ClogItem::getId)

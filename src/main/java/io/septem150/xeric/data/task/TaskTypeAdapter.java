@@ -33,6 +33,13 @@ public class TaskTypeAdapter extends TypeAdapter<Task> {
       out.endArray();
     } else if (value instanceof CATask) {
       out.name("total").value(((CATask) value).getTotal());
+    } else if (value instanceof QuestTask) {
+      out.name("quest").jsonValue("'" + ((QuestTask) value).getQuest() + "'");
+    } else if (value instanceof DiaryTask) {
+      out.name("tier").jsonValue("'" + ((DiaryTask) value).getDiary() + "'");
+    } else if (value instanceof KCTask) {
+      out.name("boss").jsonValue("'" + ((KCTask) value).getBoss() + "'");
+      out.name("total").value(((KCTask) value).getTotal());
     }
     out.endObject();
   }
@@ -102,6 +109,19 @@ public class TaskTypeAdapter extends TypeAdapter<Task> {
       case "ca":
         task = new CATask();
         ((CATask) task).setTotal((int) properties.get("total"));
+        break;
+      case "quest":
+        task = new QuestTask();
+        ((QuestTask) task).setQuest((String) properties.get("quest"));
+        break;
+      case "diary":
+        task = new DiaryTask();
+        ((DiaryTask) task).setDiary((String) properties.get("diary"));
+        break;
+      case "kc":
+        task = new KCTask();
+        ((KCTask) task).setBoss((String) properties.get("boss"));
+        ((KCTask) task).setTotal((int) properties.get("total"));
         break;
       default:
         throw new JsonParseException("Unknown value for Task 'type'");
