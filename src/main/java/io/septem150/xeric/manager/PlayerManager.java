@@ -1,5 +1,6 @@
 package io.septem150.xeric.manager;
 
+import com.google.gson.Gson;
 import io.septem150.xeric.PlayerUpdate;
 import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.data.AccountType;
@@ -8,8 +9,8 @@ import io.septem150.xeric.data.StoredInfo;
 import io.septem150.xeric.util.WorldUtil;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -22,7 +23,6 @@ import net.runelite.client.events.ConfigChanged;
 
 @Slf4j
 @Singleton
-@RequiredArgsConstructor(onConstructor_ = @__(@Inject))
 public class PlayerManager {
   private String username;
   private AccountType accountType;
@@ -34,7 +34,17 @@ public class PlayerManager {
 
   private final Client client;
   private final EventBus eventBus;
+  private final Gson gson;
   private final ProjectXericConfig config;
+
+  @Inject
+  public PlayerManager(
+      Client client, EventBus eventBus, @Named("xericGson") Gson gson, ProjectXericConfig config) {
+    this.client = client;
+    this.eventBus = eventBus;
+    this.gson = gson;
+    this.config = config;
+  }
 
   public void startUp() {
     if (active) return;

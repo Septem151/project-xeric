@@ -28,5 +28,6 @@ public class KillCount {
           HiscoreSkill.CLUE_SCROLL_MEDIUM,
           HiscoreSkill.CLUE_SCROLL_HARD,
           HiscoreSkill.CLUE_SCROLL_ELITE,
-          HiscoreSkill.CLUE_SCROLL_MASTER);
+          HiscoreSkill.CLUE_SCROLL_MASTER,
+          HiscoreSkill.COLOSSEUM_GLORY);
 }

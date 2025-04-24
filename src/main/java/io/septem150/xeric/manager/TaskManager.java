@@ -13,7 +13,6 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.events.GameTick;
@@ -22,7 +21,6 @@ import net.runelite.client.eventbus.Subscribe;
 
 @Slf4j
 @Singleton
-@RequiredArgsConstructor(onConstructor_ = @__(@Inject))
 public class TaskManager {
   private List<Task> tasks;
 
@@ -32,8 +30,17 @@ public class TaskManager {
 
   private final Client client;
   private final EventBus eventBus;
-  private final @Named("xericGson") Gson gson;
+  private final Gson gson;
   private final TaskStore taskStore;
+
+  @Inject
+  public TaskManager(
+      Client client, EventBus eventBus, @Named("xericGson") Gson gson, TaskStore taskStore) {
+    this.client = client;
+    this.eventBus = eventBus;
+    this.gson = gson;
+    this.taskStore = taskStore;
+  }
 
   public void startUp() {
     if (active) return;

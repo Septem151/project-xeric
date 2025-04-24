@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.Skill;
@@ -22,7 +21,6 @@ import net.runelite.client.eventbus.Subscribe;
 
 @Slf4j
 @Singleton
-@RequiredArgsConstructor(onConstructor_ = @__(@Inject))
 public class LevelManager {
   private List<Level> levels;
 
@@ -31,7 +29,14 @@ public class LevelManager {
 
   private final Client client;
   private final EventBus eventBus;
-  private final @Named("xericGson") Gson gson;
+  private final Gson gson;
+
+  @Inject
+  public LevelManager(Client client, EventBus eventBus, @Named("xericGson") Gson gson) {
+    this.client = client;
+    this.eventBus = eventBus;
+    this.gson = gson;
+  }
 
   public void startUp() {
     if (active) return;

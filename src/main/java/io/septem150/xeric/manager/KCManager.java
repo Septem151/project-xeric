@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -31,7 +30,6 @@ import net.runelite.client.util.Text;
 
 @Slf4j
 @Singleton
-@RequiredArgsConstructor(onConstructor_ = @__(@Inject))
 public class KCManager {
   private static final Pattern KC_REGEX =
       Pattern.compile("Your (?:subdued|completed)? (.*) (?:kill)? count is: (\\d+)\\.");
@@ -44,9 +42,23 @@ public class KCManager {
 
   private final Client client;
   private final EventBus eventBus;
-  private final @Named("xericGson") Gson gson;
+  private final Gson gson;
   private final ScheduledExecutorService executor;
   private final HiscoreManager hiscoreManager;
+
+  @Inject
+  public KCManager(
+      Client client,
+      EventBus eventBus,
+      @Named("xericGson") Gson gson,
+      ScheduledExecutorService executor,
+      HiscoreManager hiscoreManager) {
+    this.client = client;
+    this.eventBus = eventBus;
+    this.gson = gson;
+    this.executor = executor;
+    this.hiscoreManager = hiscoreManager;
+  }
 
   public void startUp() {
     if (active) return;

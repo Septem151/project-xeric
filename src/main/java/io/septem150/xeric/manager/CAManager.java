@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -39,7 +38,6 @@ import net.runelite.client.util.Text;
 
 @Slf4j
 @Singleton
-@RequiredArgsConstructor(onConstructor_ = @__(@Inject))
 public class CAManager {
   private static final Pattern COMBAT_TASK_REGEX =
       Pattern.compile("Congratulations, you've completed an? \\w+ combat task:.*");
@@ -51,7 +49,14 @@ public class CAManager {
 
   private final Client client;
   private final EventBus eventBus;
-  private final @Named("xericGson") Gson gson;
+  private final Gson gson;
+
+  @Inject
+  public CAManager(Client client, EventBus eventBus, @Named("xericGson") Gson gson) {
+    this.client = client;
+    this.eventBus = eventBus;
+    this.gson = gson;
+  }
 
   public void startUp() {
     if (active) return;

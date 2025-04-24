@@ -30,7 +30,6 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -55,7 +54,6 @@ import net.runelite.client.util.Text;
 
 @Slf4j
 @Singleton
-@RequiredArgsConstructor(onConstructor_ = @__(@Inject))
 public class ClogManager {
   private static final Pattern CLOG_REGEX =
       Pattern.compile("New item added to your collection log: (.*)");
@@ -70,8 +68,17 @@ public class ClogManager {
 
   private final Client client;
   private final EventBus eventBus;
-  private final @Named("xericGson") Gson gson;
+  private final Gson gson;
   private final ItemManager itemManager;
+
+  @Inject
+  public ClogManager(
+      Client client, EventBus eventBus, @Named("xericGson") Gson gson, ItemManager itemManager) {
+    this.client = client;
+    this.eventBus = eventBus;
+    this.gson = gson;
+    this.itemManager = itemManager;
+  }
 
   public void startUp() {
     if (active) return;

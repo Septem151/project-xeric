@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -24,7 +23,6 @@ import net.runelite.client.util.Text;
 
 @Slf4j
 @Singleton
-@RequiredArgsConstructor(onConstructor_ = @__(@Inject))
 public class DiaryManager {
   private static final Pattern DIARY_REGEX =
       Pattern.compile(
@@ -37,7 +35,14 @@ public class DiaryManager {
 
   private final Client client;
   private final EventBus eventBus;
-  private final @Named("xericGson") Gson gson;
+  private final Gson gson;
+
+  @Inject
+  public DiaryManager(Client client, EventBus eventBus, @Named("xericGson") Gson gson) {
+    this.client = client;
+    this.eventBus = eventBus;
+    this.gson = gson;
+  }
 
   public void startUp() {
     if (active) return;
