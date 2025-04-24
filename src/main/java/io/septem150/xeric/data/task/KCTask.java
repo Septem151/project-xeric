@@ -1,5 +1,6 @@
 package io.septem150.xeric.data.task;
 
+import io.septem150.xeric.data.KillCount;
 import io.septem150.xeric.data.PlayerInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +14,17 @@ public class KCTask extends Task {
 
   @Override
   public boolean checkCompletion(@NonNull PlayerInfo playerInfo) {
-    return playerInfo.getKillCounts().stream()
-        .anyMatch(killCount -> killCount.getName().equals(boss) && killCount.getCount() >= total);
+    String name = boss;
+    if ("Lunar Chest".equals(name)) {
+      name += "s";
+    } else if ("Hueycoatl".equals(name)) {
+      name = "The " + name;
+    }
+    for (KillCount killCount : playerInfo.getKillCounts()) {
+      if (killCount.getName().equals(name)) {
+        return killCount.getCount() >= total;
+      }
+    }
+    return false;
   }
 }
