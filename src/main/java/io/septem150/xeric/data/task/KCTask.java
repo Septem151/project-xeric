@@ -20,11 +20,8 @@ public class KCTask extends Task {
     } else if ("Hueycoatl".equals(name)) {
       name = "The " + name;
     }
-    for (KillCount killCount : playerInfo.getKillCounts()) {
-      if (killCount.getName().equals(name)) {
-        return killCount.getCount() >= total;
-      }
-    }
-    return false;
+    KillCount kc = playerInfo.getKillCounts().getOrDefault(name, null);
+    if (kc == null) return false;
+    return kc.getCount() >= total;
   }
 }

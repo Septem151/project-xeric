@@ -1,6 +1,6 @@
 package io.septem150.xeric.panel;
 
-import io.septem150.xeric.data.PlayerInfo;
+import io.septem150.xeric.ProjectXericManager;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import javax.inject.Inject;
@@ -19,18 +19,17 @@ public class SummaryPanel extends JPanel {
   public static final String TOOLTIP = "Player Summary";
   public static final String TAB_ICON = "summary_tab_icon.png";
 
-  private final PlayerInfo playerInfo;
+  private final ProjectXericManager manager;
   private final TaskListPanel taskListPanel;
   private final IdCard idCard;
 
   @Inject
-  private SummaryPanel(PlayerInfo playerInfo, TaskListPanel taskListPanel, IdCard idCard) {
-    this.playerInfo = playerInfo;
+  private SummaryPanel(ProjectXericManager manager, TaskListPanel taskListPanel, IdCard idCard) {
+    this.manager = manager;
     this.taskListPanel = taskListPanel;
     this.idCard = idCard;
     makeLayout();
     makeStaticData();
-    reload();
   }
 
   private static final String LOGGED_OUT_CONSTRAINT = "LOGGED_OUT";
@@ -76,11 +75,11 @@ public class SummaryPanel extends JPanel {
   public void reload() {
     makeLayout();
     makeStaticData();
-    if (playerInfo.getUsername() == null) {
+    if (manager.getPlayerInfo().getUsername() == null) {
       layout.show(this, LOGGED_OUT_CONSTRAINT);
     } else {
       layout.show(this, LOGGED_IN_CONSTRAINT);
-      clogLabel.setVisible(playerInfo.getCollectionLog().getLastOpened() == null);
+      clogLabel.setVisible(manager.getPlayerInfo().getCollectionLog().getLastOpened() == null);
       idCard.reload();
       taskListPanel.reload();
     }

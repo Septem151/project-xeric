@@ -1,6 +1,6 @@
 package io.septem150.xeric.panel;
 
-import io.septem150.xeric.data.PlayerInfo;
+import io.septem150.xeric.ProjectXericManager;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.util.ResourceUtil;
@@ -36,14 +36,14 @@ public class TaskListPanel extends JPanel {
   private final Map<Integer, List<Task>> tasksPerTier = new HashMap<>();
 
   private final TaskStore taskStore;
-  private final PlayerInfo playerInfo;
+  private final ProjectXericManager manager;
 
   private boolean loaded;
 
   @Inject
-  private TaskListPanel(TaskStore taskStore, PlayerInfo playerInfo) {
+  private TaskListPanel(TaskStore taskStore, ProjectXericManager manager) {
     this.taskStore = taskStore;
-    this.playerInfo = playerInfo;
+    this.manager = manager;
     loaded = false;
   }
 
@@ -107,7 +107,7 @@ public class TaskListPanel extends JPanel {
     makeLayout();
     makeStaticData();
     makeDynamicData();
-    if (playerInfo.getUsername() == null) return;
+    if (manager.getPlayerInfo().getUsername() == null) return;
     if (!loaded) {
       init();
     }
@@ -131,7 +131,7 @@ public class TaskListPanel extends JPanel {
         taskPanel.add(Box.createHorizontalGlue());
         JCheckBox completedCheckbox = new JCheckBox();
         completedCheckbox.setEnabled(false);
-        completedCheckbox.setSelected(playerInfo.getTasks().contains(task));
+        completedCheckbox.setSelected(manager.getPlayerInfo().getTasks().contains(task));
         completedCheckbox.setBorder(new EmptyBorder(0, 5, 0, 0));
         taskPanel.add(completedCheckbox);
         panel.add(taskPanel);

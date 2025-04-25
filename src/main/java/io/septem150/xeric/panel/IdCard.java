@@ -1,6 +1,7 @@
 package io.septem150.xeric.panel;
 
 import com.google.common.collect.Iterables;
+import io.septem150.xeric.ProjectXericManager;
 import io.septem150.xeric.data.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
@@ -30,13 +31,13 @@ import net.runelite.client.util.ImageUtil;
 import org.apache.commons.text.WordUtils;
 
 public class IdCard extends JPanel {
-  private final PlayerInfo playerInfo;
+  private final ProjectXericManager manager;
   private final TaskStore taskStore;
   private final SpriteManager spriteManager;
 
   @Inject
-  private IdCard(PlayerInfo playerInfo, TaskStore taskStore, SpriteManager spriteManager) {
-    this.playerInfo = playerInfo;
+  private IdCard(ProjectXericManager manager, TaskStore taskStore, SpriteManager spriteManager) {
+    this.manager = manager;
     this.taskStore = taskStore;
     this.spriteManager = spriteManager;
 
@@ -116,6 +117,7 @@ public class IdCard extends JPanel {
   }
 
   private void makeDynamicData() {
+    PlayerInfo playerInfo = manager.getPlayerInfo();
     int playerPoints = playerInfo.getTasks().stream().mapToInt(Task::getTier).sum();
     playerInfo.getRank().getImageAsync(spriteManager, image -> rank.setIcon(new ImageIcon(image)));
     rank.setToolTipText(WordUtils.capitalizeFully(playerInfo.getRank().name()));
@@ -171,11 +173,11 @@ public class IdCard extends JPanel {
     int highestTier = 0;
     int maxTiers = Optional.ofNullable(Iterables.getLast(tiers, 0)).orElse(0);
     for (int tier = 1; tier <= maxTiers; tier++) {
-      if (playerInfo.getTasks().isEmpty()) break;
+      if (manager.getPlayerInfo().getTasks().isEmpty()) break;
       boolean completed = true;
       for (Task task : tasks) {
         if (task.getTier() != tier) continue;
-        if (!playerInfo.getTasks().contains(task)) {
+        if (!manager.getPlayerInfo().getTasks().contains(task)) {
           completed = false;
           break;
         }

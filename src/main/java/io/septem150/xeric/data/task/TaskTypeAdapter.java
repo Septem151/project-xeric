@@ -8,6 +8,7 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -99,7 +100,7 @@ public class TaskTypeAdapter extends TypeAdapter<Task> {
       case "collect":
         task = new CollectTask();
         ((CollectTask) task).setAmount((int) properties.get("amount"));
-        ((CollectTask) task).setItemIds((List<Integer>) properties.get("itemIds"));
+        ((CollectTask) task).setItemIds(new HashSet<>((List<Integer>) properties.get("itemIds")));
         break;
       case "level":
         task = new LevelTask();

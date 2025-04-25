@@ -3,6 +3,8 @@ package io.septem150.xeric.data;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Data;
 
 @Data
@@ -16,6 +18,10 @@ public class CollectionLog {
 
   public int size() {
     return items.size();
+  }
+
+  public Set<Integer> getItemIds() {
+    return items.stream().map(ClogItem::getId).collect(Collectors.toSet());
   }
 
   public static final int COLLECTION_LOG_SETUP_SCRIPT_ID = 7797;
