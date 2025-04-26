@@ -1,6 +1,6 @@
 package io.septem150.xeric.data.task;
 
-import io.septem150.xeric.data.PlayerInfo;
+import io.septem150.xeric.data.player.PlayerInfo;
 import lombok.Data;
 import lombok.NonNull;
 

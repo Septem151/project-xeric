@@ -1,7 +1,7 @@
 package io.septem150.xeric.data.task;
 
 import io.septem150.xeric.data.KillCount;
-import io.septem150.xeric.data.PlayerInfo;
+import io.septem150.xeric.data.player.PlayerInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;

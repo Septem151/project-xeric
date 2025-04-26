@@ -1,7 +1,7 @@
 package io.septem150.xeric.data.task;
 
 import io.septem150.xeric.data.Level;
-import io.septem150.xeric.data.PlayerInfo;
+import io.septem150.xeric.data.player.PlayerInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -15,11 +15,7 @@ public class LevelTask extends Task {
   @Override
   public boolean checkCompletion(@NonNull PlayerInfo playerInfo) {
     if ("total".equalsIgnoreCase(level)) {
-      int total =
-          playerInfo.getLevels().values().stream()
-              .map(Level::getAmount)
-              .mapToInt(Integer::intValue)
-              .sum();
+      int total = playerInfo.getLevels().values().stream().mapToInt(Level::getAmount).sum();
       return total >= goal;
     } else if ("any".equals(level)) {
       for (Level level : playerInfo.getLevels().values()) {

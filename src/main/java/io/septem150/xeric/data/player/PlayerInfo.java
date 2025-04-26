@@ -1,5 +1,11 @@
-package io.septem150.xeric.data;
+package io.septem150.xeric.data.player;
 
+import io.septem150.xeric.data.CombatAchievement;
+import io.septem150.xeric.data.KillCount;
+import io.septem150.xeric.data.Level;
+import io.septem150.xeric.data.QuestProgress;
+import io.septem150.xeric.data.clog.CollectionLog;
+import io.septem150.xeric.data.diary.DiaryProgress;
 import io.septem150.xeric.data.task.Task;
 import java.util.ArrayList;
 import java.util.HashMap;

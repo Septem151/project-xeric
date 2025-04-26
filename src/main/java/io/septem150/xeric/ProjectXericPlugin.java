@@ -14,6 +14,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.events.CommandExecuted;
+import net.runelite.api.events.GameTick;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -39,6 +40,7 @@ public final class ProjectXericPlugin extends Plugin {
   @Inject private ProjectXericManager manager;
 
   private ProjectXericPanel panel;
+  private int updatePanel;
 
   @Override
   protected void startUp() throws Exception {
@@ -46,6 +48,7 @@ public final class ProjectXericPlugin extends Plugin {
     panel = injector.getInstance(ProjectXericPanel.class);
     manager.startUp();
     panel.init();
+    SwingUtilities.invokeLater(panel::reload);
   }
 
   @Override
@@ -66,8 +69,15 @@ public final class ProjectXericPlugin extends Plugin {
   }
 
   @Subscribe
+  public void onGameTick(GameTick event) {
+    if (updatePanel > 0 && --updatePanel == 0) {
+      SwingUtilities.invokeLater(panel::reload);
+    }
+  }
+
+  @Subscribe
   public void onPanelUpdate(PanelUpdate event) {
-    SwingUtilities.invokeLater(panel::reload);
+    if (updatePanel <= 0) updatePanel = 3;
   }
 
   @Override

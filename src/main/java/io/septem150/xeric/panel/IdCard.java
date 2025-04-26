@@ -2,7 +2,7 @@ package io.septem150.xeric.panel;
 
 import com.google.common.collect.Iterables;
 import io.septem150.xeric.ProjectXericManager;
-import io.septem150.xeric.data.PlayerInfo;
+import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.util.ResourceUtil;

@@ -1,4 +1,4 @@
-package io.septem150.xeric.data;
+package io.septem150.xeric.data.clog;
 
 import lombok.Data;
 import net.runelite.api.Client;

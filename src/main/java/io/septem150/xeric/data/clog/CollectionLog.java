@@ -1,4 +1,4 @@
-package io.septem150.xeric.data;
+package io.septem150.xeric.data.clog;
 
 import java.time.Instant;
 import java.util.ArrayList;

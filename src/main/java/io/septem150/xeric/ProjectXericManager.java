@@ -1,12 +1,5 @@
 package io.septem150.xeric;
 
-import static io.septem150.xeric.data.CollectionLog.CLOG_SUB_TABS_PARAM_ID;
-import static io.septem150.xeric.data.CollectionLog.CLOG_SUB_TAB_ITEMS_PARAM_ID;
-import static io.septem150.xeric.data.CollectionLog.CLOG_TOP_TABS_ENUM_ID;
-import static io.septem150.xeric.data.CollectionLog.COLLECTION_LOG_SETUP_SCRIPT_ID;
-import static io.septem150.xeric.data.CollectionLog.COLLECTION_LOG_TRANSMIT_SCRIPT_ID;
-import static io.septem150.xeric.data.CollectionLog.ITEM_REPLACEMENT_MAPPING_ENUM_ID;
-import static io.septem150.xeric.data.CollectionLog.UNUSED_PROSPECTOR_ITEM_IDS;
 import static io.septem150.xeric.data.CombatAchievement.CA_STRUCT_ID_PARAM_ID;
 import static io.septem150.xeric.data.CombatAchievement.CA_STRUCT_NAME_PARAM_ID;
 import static io.septem150.xeric.data.CombatAchievement.CA_STRUCT_TIER_PARAM_ID;
@@ -17,6 +10,13 @@ import static io.septem150.xeric.data.CombatAchievement.HARD_TIER_ENUM_ID;
 import static io.septem150.xeric.data.CombatAchievement.MASTER_TIER_ENUM_ID;
 import static io.septem150.xeric.data.CombatAchievement.MEDIUM_TIER_ENUM_ID;
 import static io.septem150.xeric.data.CombatAchievement.SCRIPT_4834_VARP_IDS;
+import static io.septem150.xeric.data.clog.CollectionLog.CLOG_SUB_TABS_PARAM_ID;
+import static io.septem150.xeric.data.clog.CollectionLog.CLOG_SUB_TAB_ITEMS_PARAM_ID;
+import static io.septem150.xeric.data.clog.CollectionLog.CLOG_TOP_TABS_ENUM_ID;
+import static io.septem150.xeric.data.clog.CollectionLog.COLLECTION_LOG_SETUP_SCRIPT_ID;
+import static io.septem150.xeric.data.clog.CollectionLog.COLLECTION_LOG_TRANSMIT_SCRIPT_ID;
+import static io.septem150.xeric.data.clog.CollectionLog.ITEM_REPLACEMENT_MAPPING_ENUM_ID;
+import static io.septem150.xeric.data.clog.CollectionLog.UNUSED_PROSPECTOR_ITEM_IDS;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
@@ -24,15 +24,15 @@ import com.google.common.collect.Multisets;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import io.septem150.xeric.data.AccountType;
-import io.septem150.xeric.data.ClogItem;
-import io.septem150.xeric.data.CollectionLog;
 import io.septem150.xeric.data.CombatAchievement;
-import io.septem150.xeric.data.DiaryProgress;
 import io.septem150.xeric.data.KillCount;
 import io.septem150.xeric.data.Level;
-import io.septem150.xeric.data.PlayerInfo;
 import io.septem150.xeric.data.QuestProgress;
+import io.septem150.xeric.data.clog.ClogItem;
+import io.septem150.xeric.data.clog.CollectionLog;
+import io.septem150.xeric.data.diary.DiaryProgress;
+import io.septem150.xeric.data.player.AccountType;
+import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.event.PanelUpdate;
@@ -122,6 +122,7 @@ public class ProjectXericManager {
   private Set<Integer> remainingCaStructIds;
   private Set<Integer> clogItemIds;
   private Set<Task> remainingTasks;
+  private Set<Task> levelTasks;
   private boolean clogOpened;
   private Multiset<Integer> inventoryItems;
   private String obtainedItemName;
@@ -168,6 +169,17 @@ public class ProjectXericManager {
 
   public void shutDown() {
     eventBus.unregister(this);
+    playerInfo = null;
+    lastAccountId = -1L;
+    clogOpened = false;
+    remainingCaStructIds = null;
+    clogItemIds = null;
+    levelTasks = null;
+    inventoryItems = null;
+    obtainedItemName = null;
+    updateGeneral = 0;
+    updateTasks = 0;
+    updateLevels = 0;
   }
 
   public void reset(long accountId) {
@@ -178,7 +190,6 @@ public class ProjectXericManager {
     playerInfo.setUsername(client.getLocalPlayer().getName());
     playerInfo.setAccountType(AccountType.fromVarbValue(client.getVarbitValue(VarbitID.IRONMAN)));
     playerInfo.setSlayerException(config.slayer());
-    updateLevels = 2;
     updateQuests();
     updateDiaries();
 
@@ -186,9 +197,7 @@ public class ProjectXericManager {
     updateCombatAchievements();
 
     // collection log
-    if (clogItemIds == null || clogItemIds.isEmpty()) {
-      clogItemIds = requestAllClogItems();
-    }
+    clogItemIds = requestAllClogItems();
 
     Set<Integer> clogItemIds = null;
     Instant clogUpdated = null;
@@ -221,6 +230,10 @@ public class ProjectXericManager {
     playerInfo.setCollectionLog(clog);
 
     remainingTasks = new HashSet<>(taskStore.getAll());
+    levelTasks =
+        remainingTasks.stream()
+            .filter(task -> "level".equals(task.getType()))
+            .collect(Collectors.toSet());
     playerInfo.setTasks(new ArrayList<>());
 
     HiscoreEndpoint hiscoreEndpoint =
@@ -239,7 +252,7 @@ public class ProjectXericManager {
                   kcs.put(killCount.getName(), killCount);
                 });
             playerInfo.setKillCounts(kcs);
-            updateTasks = 3;
+            updateTasks = 2;
             log.debug("High scores updated!");
           } catch (IOException exc) {
             log.warn(
@@ -247,7 +260,8 @@ public class ProjectXericManager {
                 client.getLocalPlayer().getName());
           }
         });
-    eventBus.post(new PanelUpdate());
+    updateLevels = 2;
+    updateTasks = 2;
   }
 
   @Subscribe
@@ -270,13 +284,16 @@ public class ProjectXericManager {
       return;
     }
     if (updateLevels > 0 && --updateLevels == 0) {
-      playerInfo.setLevels(
-          Arrays.stream(Skill.values())
-              .map(skill -> Level.from(client, skill))
-              .collect(Collectors.toMap(Level::getName, level -> level)));
+      if (playerInfo.getLevels().isEmpty()) {
+        playerInfo.setLevels(
+            Arrays.stream(Skill.values())
+                .map(skill -> Level.from(client, skill))
+                .collect(Collectors.toMap(Level::getName, level -> level)));
+      }
+      updateXericTasks(true);
     }
     if (updateTasks > 0 && --updateTasks == 0) {
-      updateXericTasks();
+      updateXericTasks(false);
     }
   }
 
@@ -286,17 +303,19 @@ public class ProjectXericManager {
     String message = Text.removeTags(event.getMessage());
     Matcher caTaskMatcher = COMBAT_TASK_REGEX.matcher(message);
     if (caTaskMatcher.matches()) {
-      updateCombatAchievements();
+      if (updateCombatAchievements() && updateTasks <= 0) updateTasks = 1;
       return;
     }
     Matcher diaryMatcher = DIARY_REGEX.matcher(message);
     if (diaryMatcher.matches()) {
       updateDiaries();
+      if (updateTasks <= 0) updateTasks = 1;
       return;
     }
     Matcher questMatcher = QUEST_REGEX.matcher(message);
     if (questMatcher.matches()) {
       updateQuests();
+      if (updateTasks <= 0) updateTasks = 1;
       return;
     }
     Matcher kcMatcher = KC_REGEX.matcher(message);
@@ -358,7 +377,7 @@ public class ProjectXericManager {
     level.setAmount(event.getLevel());
     level.setExp(event.getXp());
     log.debug("UPDATED STAT! {}: {} ({})", level.getName(), level.getAmount(), level.getExp());
-    if (updateTasks <= 0 && level.isAccurate()) updateTasks = 5;
+    if (updateLevels <= 0 && level.isAccurate()) updateLevels = 5;
   }
 
   @Subscribe
@@ -485,16 +504,20 @@ public class ProjectXericManager {
     inventoryItems = HashMultiset.create();
   }
 
-  private void updateXericTasks() {
-    log.debug("Called UPDATE TASKS");
+  private void updateXericTasks(boolean onlyLevels) {
+    log.debug("Called UPDATE TASKS, Only Levels: {}", onlyLevels);
     boolean refresh = false;
     Set<Task> completedTasks = new HashSet<>(playerInfo.getTasks());
-    Iterator<Task> iterator = remainingTasks.iterator();
+    Iterator<Task> iterator = onlyLevels ? levelTasks.iterator() : remainingTasks.iterator();
+    log.debug("Iterating over {} tasks", onlyLevels ? levelTasks.size() : remainingTasks.size());
     while (iterator.hasNext()) {
       Task task = iterator.next();
       if (task.checkCompletion(playerInfo)) {
+        log.debug("New completed task!\n{}", gson.toJson(task));
         completedTasks.add(task);
         iterator.remove();
+        if (onlyLevels) remainingTasks.remove(task);
+        else levelTasks.remove(task);
         refresh = true;
       }
     }
@@ -504,7 +527,7 @@ public class ProjectXericManager {
     }
   }
 
-  private void updateCombatAchievements() {
+  private boolean updateCombatAchievements() {
     Set<CombatAchievement> cas = new HashSet<>(playerInfo.getCombatAchievements());
     boolean refresh = false;
     Iterator<Integer> iterator = remainingCaStructIds.iterator();
@@ -526,8 +549,8 @@ public class ProjectXericManager {
     }
     if (refresh) {
       playerInfo.setCombatAchievements(new ArrayList<>(cas));
-      if (updateTasks <= 0) updateTasks = 1;
     }
+    return refresh;
   }
 
   private void updateQuests() {
@@ -535,7 +558,6 @@ public class ProjectXericManager {
         QuestProgress.trackedQuests.stream()
             .map(quest -> QuestProgress.from(client, quest))
             .collect(Collectors.toList()));
-    if (updateTasks <= 0) updateTasks = 1;
   }
 
   private void updateDiaries() {
@@ -543,7 +565,6 @@ public class ProjectXericManager {
         DiaryProgress.trackedDiaries.stream()
             .map(diary -> DiaryProgress.from(client, diary))
             .collect(Collectors.toList()));
-    if (updateTasks <= 0) updateTasks = 1;
   }
 
   private Set<Integer> requestAllCaTaskStructIds() {
