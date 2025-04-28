@@ -274,6 +274,7 @@ public class ProjectXericManager {
           ProjectXericConfig.DATA_KEY,
           gson.toJson(playerInfo.getCollectionLog().getItemIds()));
       clogOpened = false;
+      updateLevels = 2;
     }
   }
 
