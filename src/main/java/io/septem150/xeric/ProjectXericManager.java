@@ -101,7 +101,7 @@ public class ProjectXericManager {
           "Well done! You have completed an? \\w+ task in the .* area\\. Your Achievement"
               + " Diary has been updated");
   private static final Pattern KC_REGEX =
-      Pattern.compile("Your (?:subdued|completed)? (.*) (?:kill)? count is: (\\d+)\\.");
+      Pattern.compile("Your (?:subdued |completed )?(.*) (?:kill)? count is: (\\d+)\\.");
   private static final Pattern CLUE_REGEX =
       Pattern.compile("You have completed (\\d+) (.*) Treasure Trails\\.");
   private static final Pattern QUEST_REGEX =

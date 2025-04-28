@@ -1,4 +1,4 @@
-package io.septem150.xeric.panel;
+package io.septem150.xeric.panel.summary;
 
 import io.septem150.xeric.ProjectXericManager;
 import java.awt.BorderLayout;
@@ -54,7 +54,7 @@ public class SummaryPanel extends JPanel {
     clogLabel.setHorizontalAlignment(SwingConstants.CENTER);
     inner1.add(clogLabel, BorderLayout.NORTH);
     inner1.add(taskListPanel, BorderLayout.CENTER);
-    loggedInPanel.add(inner1);
+    loggedInPanel.add(inner1, BorderLayout.CENTER);
     add(loggedInPanel, LOGGED_IN_CONSTRAINT);
   }
 

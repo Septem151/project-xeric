@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "username": "hc in zeah",
+    "slayerException": false,
+    "accountType": "HARDCORE",
+    "points": 85
+  },
+  {
+    "id": 2,
+    "username": "Zoylgoifo",
+    "slayerException": false,
+    "accountType": "IRONMAN",
+    "points": 280
+  },
+  {
+    "id": 3,
+    "username": "Septem 150",
+    "slayerException": true,
+    "accountType": "IRONMAN",
+    "points": 844
+  },
+  {
+    "id": 4,
+    "username": "Zuropean",
+    "slayerException": false,
+    "accountType": "ULTIMATE",
+    "points": 750
+  },
+  {
+    "id": 5,
+    "username": "Snow of Zeah",
+    "slayerException": false,
+    "accountType": "ULTIMATE",
+    "points": 790
+  },
+  {
+    "id": 6,
+    "username": "zeah0locked",
+    "slayerException": false,
+    "accountType": "RANKED_GIM",
+    "points": 65
+  },
+  {
+    "id": 7,
+    "username": "Gaius Fortis",
+    "slayerException": false,
+    "accountType": "IRONMAN",
+    "points": 140
+  },
+  {
+    "id": 8,
+    "username": "Koulabos",
+    "slayerException": true,
+    "accountType": "IRONMAN",
+    "points": 250
+  }
+]

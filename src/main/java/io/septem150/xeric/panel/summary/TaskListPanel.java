@@ -1,4 +1,4 @@
-package io.septem150.xeric.panel;
+package io.septem150.xeric.panel.summary;
 
 import io.septem150.xeric.ProjectXericManager;
 import io.septem150.xeric.data.task.Task;
@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -29,6 +30,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import net.runelite.client.ui.ColorScheme;
 
+@Singleton
 public class TaskListPanel extends JPanel {
   private final CardLayout displayLayout = new CardLayout();
 

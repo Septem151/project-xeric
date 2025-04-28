@@ -1,10 +1,11 @@
-package io.septem150.xeric.panel;
+package io.septem150.xeric.panel.summary;
 
 import com.google.common.collect.Iterables;
 import io.septem150.xeric.ProjectXericManager;
 import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
+import io.septem150.xeric.panel.JLabeledValue;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -30,6 +32,7 @@ import net.runelite.client.ui.FontManager;
 import net.runelite.client.util.ImageUtil;
 import org.apache.commons.text.WordUtils;
 
+@Singleton
 public class IdCard extends JPanel {
   private final ProjectXericManager manager;
   private final TaskStore taskStore;

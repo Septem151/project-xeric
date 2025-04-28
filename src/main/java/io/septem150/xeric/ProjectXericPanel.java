@@ -1,7 +1,7 @@
 package io.septem150.xeric;
 
-import io.septem150.xeric.panel.LeaderboardPanel;
-import io.septem150.xeric.panel.SummaryPanel;
+import io.septem150.xeric.panel.leaderboard.LeaderboardPanel;
+import io.septem150.xeric.panel.summary.SummaryPanel;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.BorderLayout;
 import java.awt.Color;

@@ -3,15 +3,19 @@ package io.septem150.xeric;
 import com.google.gson.Gson;
 import com.google.inject.Binder;
 import com.google.inject.Provides;
+import io.septem150.xeric.data.hiscore.HiscoreStore;
+import io.septem150.xeric.data.hiscore.LocalHiscoreStore;
 import io.septem150.xeric.data.task.LocalTaskStore;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.data.task.TaskTypeAdapter;
 import io.septem150.xeric.event.PanelUpdate;
+import java.awt.Color;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.events.CommandExecuted;
 import net.runelite.api.events.GameTick;
@@ -20,6 +24,7 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.util.ColorUtil;
 
 /**
  * Project Xeric plugin.
@@ -65,6 +70,12 @@ public final class ProjectXericPlugin extends Plugin {
       //          ProjectXericConfig.GROUP, ProjectXericConfig.DATA_KEY);
       //      manager.reset(client.getAccountHash());
       log.debug(gson.toJson(manager.getPlayerInfo()));
+      client.addChatMessage(
+          ChatMessageType.GAMEMESSAGE,
+          "",
+          "Your Hueycoatl kill count is: " + ColorUtil.wrapWithColorTag("400", Color.RED) + ".",
+          null,
+          true);
     }
   }
 
@@ -84,6 +95,7 @@ public final class ProjectXericPlugin extends Plugin {
   public void configure(Binder binder) {
     super.configure(binder);
     binder.bind(TaskStore.class).to(LocalTaskStore.class);
+    binder.bind(HiscoreStore.class).to(LocalHiscoreStore.class);
   }
 
   @Provides
