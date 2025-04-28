@@ -229,11 +229,11 @@
   {
     "icon": "collect_task.png",
     "id": 20,
-    "name": "1/4 Pheasant Outfit",
+    "name": "Xeric's Talisman",
     "tier": 2,
     "type": "collect",
     "itemIds": [
-      13393
+      13392
     ],
     "amount": 1
   },
