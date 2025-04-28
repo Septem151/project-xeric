@@ -506,26 +506,30 @@ public class ProjectXericManager {
   }
 
   private void updateXericTasks(boolean onlyLevels) {
-    log.debug("Called UPDATE TASKS, Only Levels: {}", onlyLevels);
-    boolean refresh = false;
-    Set<Task> completedTasks = new HashSet<>(playerInfo.getTasks());
-    Iterator<Task> iterator = onlyLevels ? levelTasks.iterator() : remainingTasks.iterator();
-    log.debug("Iterating over {} tasks", onlyLevels ? levelTasks.size() : remainingTasks.size());
-    while (iterator.hasNext()) {
-      Task task = iterator.next();
-      if (task.checkCompletion(playerInfo)) {
-        log.debug("New completed task!\n{}", gson.toJson(task));
-        completedTasks.add(task);
-        iterator.remove();
-        if (onlyLevels) remainingTasks.remove(task);
-        else levelTasks.remove(task);
-        refresh = true;
-      }
-    }
-    if (refresh) {
-      playerInfo.setTasks(new ArrayList<>(completedTasks));
-      eventBus.post(new PanelUpdate());
-    }
+    executor.execute(
+        () -> {
+          log.debug("Called UPDATE TASKS, Only Levels: {}", onlyLevels);
+          boolean refresh = false;
+          Set<Task> completedTasks = new HashSet<>(playerInfo.getTasks());
+          Iterator<Task> iterator = onlyLevels ? levelTasks.iterator() : remainingTasks.iterator();
+          log.debug(
+              "Iterating over {} tasks", onlyLevels ? levelTasks.size() : remainingTasks.size());
+          while (iterator.hasNext()) {
+            Task task = iterator.next();
+            if (task.checkCompletion(playerInfo)) {
+              log.debug("New completed task!\n{}", gson.toJson(task));
+              completedTasks.add(task);
+              iterator.remove();
+              if (onlyLevels) remainingTasks.remove(task);
+              else levelTasks.remove(task);
+              refresh = true;
+            }
+          }
+          if (refresh) {
+            playerInfo.setTasks(new ArrayList<>(completedTasks));
+            eventBus.post(new PanelUpdate());
+          }
+        });
   }
 
   private boolean updateCombatAchievements() {

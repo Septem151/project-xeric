@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.ColorScheme;
@@ -28,6 +29,7 @@ import net.runelite.client.util.LinkBrowser;
 import net.runelite.client.util.SwingUtil;
 
 /** Side Panel UI for the Project Xeric plugin. */
+@Slf4j
 @Singleton
 public final class ProjectXericPanel extends PluginPanel {
   private static final String SIDEPANEL_TOOLTIP = "Project Xeric";
@@ -97,6 +99,7 @@ public final class ProjectXericPanel extends PluginPanel {
   }
 
   public void reload() {
+    log.debug("reloading ProjectXericPanel");
     summaryPanel.reload();
     leaderboardPanel.reload();
     revalidate();

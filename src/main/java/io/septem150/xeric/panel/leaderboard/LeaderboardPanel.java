@@ -33,6 +33,7 @@ public class LeaderboardPanel extends JPanel {
   }
 
   public void reload() {
+    log.debug("reloading LeaderboardPanel");
     makeLayout();
     makeStaticData();
     playerListPanel.reload();
