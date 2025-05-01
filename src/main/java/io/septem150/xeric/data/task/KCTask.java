@@ -23,7 +23,7 @@ public class KCTask extends Task {
     int file;
   }
 
-  private final static Map<String, Coord> iconMap = new HashMap<>();
+  private static final Map<String, Coord> iconMap = new HashMap<>();
 
   private String boss;
   private int total;

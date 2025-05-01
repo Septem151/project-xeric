@@ -3,7 +3,6 @@ package io.septem150.xeric.panel.summary;
 import io.septem150.xeric.ProjectXericManager;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
-import io.septem150.xeric.util.ResourceUtil;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -47,7 +46,11 @@ public class TaskListPanel extends JPanel {
   private boolean loaded;
 
   @Inject
-  private TaskListPanel(TaskStore taskStore, ProjectXericManager manager, SpriteManager spriteManager, ClientThread clientThread) {
+  private TaskListPanel(
+      TaskStore taskStore,
+      ProjectXericManager manager,
+      SpriteManager spriteManager,
+      ClientThread clientThread) {
     this.taskStore = taskStore;
     this.manager = manager;
     this.spriteManager = spriteManager;
@@ -132,9 +135,10 @@ public class TaskListPanel extends JPanel {
         taskPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
         JLabel taskLabel = new JLabel(task.getName());
         taskLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        clientThread.invokeLater(() -> {
-          taskLabel.setIcon(new ImageIcon(task.getIcon(spriteManager)));
-        });
+        clientThread.invokeLater(
+            () -> {
+              taskLabel.setIcon(new ImageIcon(task.getIcon(spriteManager)));
+            });
         taskPanel.add(taskLabel);
         taskPanel.add(Box.createHorizontalGlue());
         JCheckBox completedCheckbox = new JCheckBox();

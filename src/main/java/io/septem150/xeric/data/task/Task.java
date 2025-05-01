@@ -14,5 +14,6 @@ public abstract class Task {
   private int tier;
 
   public abstract boolean checkCompletion(@NonNull PlayerInfo playerInfo);
+
   public abstract BufferedImage getIcon(SpriteManager spriteManager);
 }
