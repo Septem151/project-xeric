@@ -28,6 +28,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import net.runelite.client.callback.ClientThread;
+import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.ColorScheme;
 
 @Singleton
@@ -39,13 +41,17 @@ public class TaskListPanel extends JPanel {
 
   private final TaskStore taskStore;
   private final ProjectXericManager manager;
+  private final SpriteManager spriteManager;
+  private final ClientThread clientThread;
 
   private boolean loaded;
 
   @Inject
-  private TaskListPanel(TaskStore taskStore, ProjectXericManager manager) {
+  private TaskListPanel(TaskStore taskStore, ProjectXericManager manager, SpriteManager spriteManager, ClientThread clientThread) {
     this.taskStore = taskStore;
     this.manager = manager;
+    this.spriteManager = spriteManager;
+    this.clientThread = clientThread;
     loaded = false;
   }
 
@@ -124,11 +130,11 @@ public class TaskListPanel extends JPanel {
         taskPanel.setLayout(new BoxLayout(taskPanel, BoxLayout.X_AXIS));
         taskPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         taskPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-        JLabel taskLabel =
-            new JLabel(
-                task.getName(),
-                new ImageIcon(ResourceUtil.getImage(task.getIcon(), 20, 20)),
-                SwingConstants.LEFT);
+        JLabel taskLabel = new JLabel(task.getName());
+        taskLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        clientThread.invokeLater(() -> {
+          taskLabel.setIcon(new ImageIcon(task.getIcon(spriteManager)));
+        });
         taskPanel.add(taskLabel);
         taskPanel.add(Box.createHorizontalGlue());
         JCheckBox completedCheckbox = new JCheckBox();
