@@ -1,7 +1,6 @@
 package io.septem150.xeric;
 
 import io.septem150.xeric.panel.leaderboard.LeaderboardPanel;
-import io.septem150.xeric.panel.summary.SummaryPanel;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -38,15 +37,11 @@ public final class ProjectXericPanel extends PluginPanel {
 
   private final ClientToolbar clientToolbar;
   private final NavigationButton navigationButton;
-  private final SummaryPanel summaryPanel;
   private final LeaderboardPanel leaderboardPanel;
 
   @Inject
   private ProjectXericPanel(
-      EventBus eventBus,
-      ClientToolbar clientToolbar,
-      SummaryPanel summaryPanel,
-      LeaderboardPanel leaderboardPanel) {
+      EventBus eventBus, ClientToolbar clientToolbar, LeaderboardPanel leaderboardPanel) {
     super(false);
     this.clientToolbar = clientToolbar;
     navigationButton =
@@ -56,9 +51,8 @@ public final class ProjectXericPanel extends PluginPanel {
             .priority(SIDEPANEL_PRIORITY)
             .panel(this)
             .build();
-    this.summaryPanel = summaryPanel;
-    this.leaderboardPanel = leaderboardPanel;
 
+    this.leaderboardPanel = leaderboardPanel;
     setLayout(new BorderLayout());
     setBackground(ColorScheme.DARK_GRAY_COLOR);
     setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -75,40 +69,33 @@ public final class ProjectXericPanel extends PluginPanel {
     tabGroup.setLayout(new GridLayout(1, 0, 7, 7));
 
     eventBus.register(this);
-    MaterialTab summaryTab =
-        createTab(SummaryPanel.TOOLTIP, SummaryPanel.TAB_ICON, summaryPanel, tabGroup);
-    eventBus.register(summaryPanel);
-    createTab(LeaderboardPanel.TOOLTIP, LeaderboardPanel.TAB_ICON, leaderboardPanel, tabGroup);
+    MaterialTab leaderboardTab =
+        createTab(LeaderboardPanel.TOOLTIP, LeaderboardPanel.TAB_ICON, leaderboardPanel, tabGroup);
     eventBus.register(leaderboardPanel);
     layoutPanel.add(tabGroup);
 
     add(layoutPanel, BorderLayout.NORTH);
     add(display, BorderLayout.CENTER);
 
-    tabGroup.select(summaryTab);
+    tabGroup.select(leaderboardTab);
   }
 
   /** Adds this Side Panel to the RuneLite client toolbar */
-  public void init() {
+  public void startUp() {
     clientToolbar.addNavigation(navigationButton);
+    leaderboardPanel.startUp();
   }
 
   /** Removes this Side Panel from the RuneLite client toolbar */
-  public void stop() {
+  public void shutDown() {
     clientToolbar.removeNavigation(navigationButton);
   }
 
-  public void reload() {
-    log.debug("reloading ProjectXericPanel");
-    summaryPanel.reload();
-    leaderboardPanel.reload();
+  public void refresh() {
+    log.debug("refreshing ProjectXericPanel");
+    leaderboardPanel.refresh();
     revalidate();
   }
-
-  //  @Subscribe
-  //  public void onPlayerInfoUpdated(PanelUpdate event) {
-  //    SwingUtilities.invokeLater(this::reload);
-  //  }
 
   /**
    * Creates a new {@link MaterialTab} with a given image and tooltip text. The {@code imageName} is
