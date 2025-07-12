@@ -1,13 +1,10 @@
 package io.septem150.xeric.panel.leaderboard;
 
-import com.google.gson.Gson;
-import io.septem150.xeric.data.player.AccountType;
+import io.septem150.xeric.data.hiscore.HiscoreStore;
 import io.septem150.xeric.data.player.ClanRank;
 import java.awt.BorderLayout;
 import java.util.AbstractCollection;
-import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -24,16 +21,12 @@ public class LeaderboardPanel extends JPanel {
 
   private final JTable hiscoresTable;
   private final HiscoresTableModel hiscoresTableModel;
-  private final ClientThread clientThread;
-  private final SpriteManager spriteManager;
-  private final Gson gson;
+  private final HiscoreStore hiscoreStore;
 
   @Inject
   private LeaderboardPanel(
-      ClientThread clientThread, SpriteManager spriteManager, @Named("xericGson") Gson gson) {
-    this.clientThread = clientThread;
-    this.spriteManager = spriteManager;
-    this.gson = gson;
+      HiscoreStore hiscoreStore, ClientThread clientThread, SpriteManager spriteManager) {
+    this.hiscoreStore = hiscoreStore;
 
     setLayout(new BorderLayout());
     hiscoresTableModel = new HiscoresTableModel();
@@ -60,44 +53,19 @@ public class LeaderboardPanel extends JPanel {
 
   public void startUp() {
     hiscoresTableModel.setData(
-        new Object[][] {
-          {
-            ClanRank.fromPoints(885),
-            Username.builder().username("Septem 150").accountType(AccountType.IRONMAN).build(),
-            List.of("Slayer", "Other"),
-            885
-          },
-          {
-            ClanRank.fromPoints(700),
-            Username.builder().username("hc in zeah").accountType(AccountType.HARDCORE).build(),
-            List.of(),
-            700
-          },
-          {
-            ClanRank.fromPoints(650),
-            Username.builder().username("Doom Send").accountType(AccountType.IRONMAN).build(),
-            List.of("Slayer"),
-            650
-          },
-          {
-            ClanRank.fromPoints(389),
-            Username.builder().username("ErgotDreams").accountType(AccountType.HARDCORE).build(),
-            List.of("Other"),
-            389
-          },
-          {
-            ClanRank.fromPoints(277),
-            Username.builder().username("SirFroggits").accountType(AccountType.IRONMAN).build(),
-            List.of("Other"),
-            277
-          },
-          {
-            ClanRank.fromPoints(9),
-            Username.builder().username("Zezima").accountType(AccountType.UNRANKED_GIM).build(),
-            List.of("Other"),
-            9
-          },
-        });
+        hiscoreStore.getAll().stream()
+            .map(
+                hiscore ->
+                    new Object[] {
+                      ClanRank.fromPoints(hiscore.getPoints()),
+                      Username.builder()
+                          .username(hiscore.getUsername())
+                          .accountType(hiscore.getAccountType())
+                          .build(),
+                      hiscore.getExceptions(),
+                      hiscore.getPoints()
+                    })
+            .toArray(Object[][]::new));
   }
 
   public void shutDown() {}

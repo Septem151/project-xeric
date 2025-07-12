@@ -50,12 +50,14 @@ public class ExceptionsRenderer extends JPanel implements TableCellRenderer {
     removeAll();
     for (int i = 0; i < newExceptions.size(); i++) {
       String exc = newExceptions.get(i);
-      JLabel label = new JLabel();
-      label.setIcon(imageMap.get(exc));
-      label.setToolTipText(exc);
-      add(label);
-      if (i < newExceptions.size() - 1) {
-        add(Box.createRigidArea(new Dimension(2, 0)));
+      if (imageMap.containsKey(exc)) {
+        JLabel label = new JLabel();
+        label.setIcon(imageMap.get(exc));
+        label.setToolTipText(exc);
+        add(label);
+        if (i < newExceptions.size() - 1) {
+          add(Box.createRigidArea(new Dimension(2, 0)));
+        }
       }
     }
     setBorder(new EmptyBorder(0, 2, 0, 0));

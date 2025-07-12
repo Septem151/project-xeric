@@ -1,6 +1,7 @@
 package io.septem150.xeric;
 
 import io.septem150.xeric.panel.leaderboard.LeaderboardPanel;
+import io.septem150.xeric.panel.summary.SummaryPanel;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -37,11 +38,15 @@ public final class ProjectXericPanel extends PluginPanel {
 
   private final ClientToolbar clientToolbar;
   private final NavigationButton navigationButton;
+  private final SummaryPanel summaryPanel;
   private final LeaderboardPanel leaderboardPanel;
 
   @Inject
   private ProjectXericPanel(
-      EventBus eventBus, ClientToolbar clientToolbar, LeaderboardPanel leaderboardPanel) {
+      EventBus eventBus,
+      ClientToolbar clientToolbar,
+      SummaryPanel summaryPanel,
+      LeaderboardPanel leaderboardPanel) {
     super(false);
     this.clientToolbar = clientToolbar;
     navigationButton =
@@ -52,6 +57,7 @@ public final class ProjectXericPanel extends PluginPanel {
             .panel(this)
             .build();
 
+    this.summaryPanel = summaryPanel;
     this.leaderboardPanel = leaderboardPanel;
     setLayout(new BorderLayout());
     setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -69,6 +75,10 @@ public final class ProjectXericPanel extends PluginPanel {
     tabGroup.setLayout(new GridLayout(1, 0, 7, 7));
 
     eventBus.register(this);
+    MaterialTab summaryTab =
+        createTab(SummaryPanel.TOOLTIP, SummaryPanel.TAB_ICON, summaryPanel, tabGroup);
+    eventBus.register(summaryPanel);
+
     MaterialTab leaderboardTab =
         createTab(LeaderboardPanel.TOOLTIP, LeaderboardPanel.TAB_ICON, leaderboardPanel, tabGroup);
     eventBus.register(leaderboardPanel);
@@ -77,12 +87,13 @@ public final class ProjectXericPanel extends PluginPanel {
     add(layoutPanel, BorderLayout.NORTH);
     add(display, BorderLayout.CENTER);
 
-    tabGroup.select(leaderboardTab);
+    tabGroup.select(summaryTab);
   }
 
   /** Adds this Side Panel to the RuneLite client toolbar */
   public void startUp() {
     clientToolbar.addNavigation(navigationButton);
+    summaryPanel.startUp();
     leaderboardPanel.startUp();
   }
 
@@ -93,6 +104,7 @@ public final class ProjectXericPanel extends PluginPanel {
 
   public void refresh() {
     log.debug("refreshing ProjectXericPanel");
+    summaryPanel.refresh();
     leaderboardPanel.refresh();
     revalidate();
   }
