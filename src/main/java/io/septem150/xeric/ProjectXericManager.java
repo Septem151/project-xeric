@@ -540,6 +540,11 @@ public class ProjectXericManager {
       int caStructId = iterator.next();
       StructComposition struct = client.getStructComposition(caStructId);
       int caTaskId = struct.getIntValue(CA_STRUCT_ID_PARAM_ID);
+
+      // We may lag behind updating this array for new CAs - avoid fatal error by skipping.
+      if (caTaskId/32 >= SCRIPT_4834_VARP_IDS.length)
+        continue;
+
       boolean unlocked =
           (client.getVarpValue(SCRIPT_4834_VARP_IDS[caTaskId / 32]) & (1 << (caTaskId % 32))) != 0;
       if (unlocked) {
