@@ -36,6 +36,7 @@ import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.event.PanelUpdate;
 import io.septem150.xeric.util.WorldUtil;
+import java.awt.Color;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.Instant;
@@ -45,6 +46,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
@@ -86,6 +88,7 @@ import net.runelite.client.hiscore.HiscoreEndpoint;
 import net.runelite.client.hiscore.HiscoreManager;
 import net.runelite.client.hiscore.HiscoreResult;
 import net.runelite.client.plugins.loottracker.LootReceived;
+import net.runelite.client.util.ColorUtil;
 import net.runelite.client.util.Text;
 
 @Slf4j
@@ -119,6 +122,7 @@ public class ProjectXericManager {
 
   private long lastAccountId;
   private Set<Integer> remainingCaStructIds;
+  private Set<Integer> completedTaskIds;
   private Set<Integer> clogItemIds;
   private Set<Task> remainingTasks;
   private Set<Task> levelTasks;
@@ -167,12 +171,21 @@ public class ProjectXericManager {
   }
 
   public void shutDown() {
+    configManager.setRSProfileConfiguration(
+        ProjectXericConfig.GROUP,
+        ProjectXericConfig.CLOG_DATA_KEY,
+        gson.toJson(playerInfo.getCollectionLog().getItemIds()));
+    configManager.setRSProfileConfiguration(
+        ProjectXericConfig.GROUP,
+        ProjectXericConfig.TASKS_DATA_KEY,
+        gson.toJson(playerInfo.getTasks().stream().map(Task::getId).collect(Collectors.toSet())));
     eventBus.unregister(this);
     playerInfo = null;
     lastAccountId = -1L;
     clogOpened = false;
     remainingCaStructIds = null;
     clogItemIds = null;
+    completedTaskIds = null;
     levelTasks = null;
     inventoryItems = null;
     obtainedItemName = null;
@@ -197,24 +210,26 @@ public class ProjectXericManager {
     // collection log
     clogItemIds = requestAllClogItems();
 
-    Set<Integer> clogItemIds = null;
+    Set<Integer> obtainedClogItemIds = null;
     Instant clogUpdated = null;
     try {
       Type type = new TypeToken<Set<Integer>>() {}.getType();
-      clogItemIds =
+      obtainedClogItemIds =
           gson.fromJson(
               configManager.getRSProfileConfiguration(
-                  ProjectXericConfig.GROUP, ProjectXericConfig.DATA_KEY),
+                  ProjectXericConfig.GROUP, ProjectXericConfig.CLOG_DATA_KEY),
               type);
     } catch (JsonSyntaxException exc) {
-      log.warn("malformed stored data found, will ignore and overwrite.");
+      log.warn("malformed stored clog data found, will ignore and overwrite.");
       configManager.unsetRSProfileConfiguration(
-          ProjectXericConfig.GROUP, ProjectXericConfig.DATA_KEY);
+          ProjectXericConfig.GROUP, ProjectXericConfig.CLOG_DATA_KEY);
     }
-    if (clogItemIds == null) {
-      clogItemIds = new HashSet<>();
+    if (obtainedClogItemIds == null) {
+      obtainedClogItemIds = new HashSet<>();
       configManager.setRSProfileConfiguration(
-          ProjectXericConfig.GROUP, ProjectXericConfig.DATA_KEY, gson.toJson(clogItemIds));
+          ProjectXericConfig.GROUP,
+          ProjectXericConfig.CLOG_DATA_KEY,
+          gson.toJson(obtainedClogItemIds));
     } else {
       clogUpdated = Instant.now();
     }
@@ -222,17 +237,45 @@ public class ProjectXericManager {
     CollectionLog clog = new CollectionLog();
     clog.setLastOpened(clogUpdated);
     clog.setItems(
-        clogItemIds.stream()
+        obtainedClogItemIds.stream()
             .map(itemId -> ClogItem.from(client, itemId))
             .collect(Collectors.toList()));
     playerInfo.setCollectionLog(clog);
 
+    try {
+      Type type = new TypeToken<Set<Integer>>() {}.getType();
+      completedTaskIds =
+          gson.fromJson(
+              configManager.getRSProfileConfiguration(
+                  ProjectXericConfig.GROUP, ProjectXericConfig.TASKS_DATA_KEY),
+              type);
+    } catch (JsonSyntaxException exc) {
+      log.warn("malformed stored tasks data found, will ignore and overwrite.");
+      configManager.unsetRSProfileConfiguration(
+          ProjectXericConfig.GROUP, ProjectXericConfig.TASKS_DATA_KEY);
+    }
+    if (completedTaskIds == null) {
+      completedTaskIds = new HashSet<>();
+      configManager.setRSProfileConfiguration(
+          ProjectXericConfig.GROUP,
+          ProjectXericConfig.TASKS_DATA_KEY,
+          gson.toJson(completedTaskIds));
+    }
     remainingTasks = new HashSet<>(taskStore.getAll());
+    List<Task> completedTasks = new ArrayList<>();
+    Iterator<Task> iterator = remainingTasks.iterator();
+    while (iterator.hasNext()) {
+      Task task = iterator.next();
+      if (completedTaskIds.contains(task.getId())) {
+        iterator.remove();
+        completedTasks.add(task);
+      }
+    }
     levelTasks =
         remainingTasks.stream()
             .filter(task -> "level".equals(task.getType()))
             .collect(Collectors.toSet());
-    playerInfo.setTasks(new ArrayList<>());
+    playerInfo.setTasks(completedTasks);
 
     HiscoreEndpoint hiscoreEndpoint =
         AccountType.fromVarbValue(client.getVarbitValue(VarbitID.IRONMAN)).getHiscoreEndpoint();
@@ -259,6 +302,7 @@ public class ProjectXericManager {
         });
     updateLevels = 2;
     updateTasks = 2;
+    eventBus.post(new PanelUpdate());
   }
 
   @Subscribe
@@ -268,8 +312,12 @@ public class ProjectXericManager {
     } else if (client.getGameState() == GameState.LOGIN_SCREEN) {
       configManager.setRSProfileConfiguration(
           ProjectXericConfig.GROUP,
-          ProjectXericConfig.DATA_KEY,
+          ProjectXericConfig.CLOG_DATA_KEY,
           gson.toJson(playerInfo.getCollectionLog().getItemIds()));
+      configManager.setRSProfileConfiguration(
+          ProjectXericConfig.GROUP,
+          ProjectXericConfig.TASKS_DATA_KEY,
+          gson.toJson(playerInfo.getTasks().stream().map(Task::getId).collect(Collectors.toSet())));
       clogOpened = false;
       updateLevels = 2;
     }
@@ -517,16 +565,19 @@ public class ProjectXericManager {
               if (onlyLevels) remainingTasks.remove(task);
               else levelTasks.remove(task);
               refresh = true;
-              clientThread.invokeLater(
-                  () -> {
-                    client.addChatMessage(
-                        ChatMessageType.GAMEMESSAGE,
-                        ProjectXericConfig.NAME,
-                        String.format(
-                            "You have completed a Xeric Task: %s (+%d Points)",
-                            task.getName(), task.getTier()),
-                        "");
-                  });
+              if (config.chatMessages()) {
+                clientThread.invokeLater(
+                    () -> {
+                      client.addChatMessage(
+                          ChatMessageType.GAMEMESSAGE,
+                          ProjectXericConfig.NAME,
+                          String.format(
+                              "Xeric task completed for %d points: %s.",
+                              task.getTier(),
+                              ColorUtil.wrapWithColorTag(task.getName(), Color.decode("#006600"))),
+                          "");
+                    });
+              }
             }
           }
           if (refresh) {

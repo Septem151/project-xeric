@@ -58,9 +58,11 @@ public final class ProjectXericPlugin extends Plugin {
   public void onCommandExecuted(CommandExecuted event) {
     if (event.getCommand().equals("xeric")) {
       // ::xeric - resets your saved collection log data and refreshes the side panel
-      SwingUtilities.invokeLater(panel::refresh);
       configManager.unsetRSProfileConfiguration(
-          ProjectXericConfig.GROUP, ProjectXericConfig.DATA_KEY);
+          ProjectXericConfig.GROUP, ProjectXericConfig.CLOG_DATA_KEY);
+      configManager.unsetRSProfileConfiguration(
+          ProjectXericConfig.GROUP, ProjectXericConfig.TASKS_DATA_KEY);
+      SwingUtilities.invokeLater(panel::refresh);
     }
   }
 
