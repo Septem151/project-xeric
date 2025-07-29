@@ -1,10 +1,14 @@
 package io.septem150.xeric.data.task;
 
 import io.septem150.xeric.data.player.PlayerInfo;
+import java.awt.image.BufferedImage;
+import java.util.Objects;
 import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import net.runelite.client.game.SpriteManager;
+import net.runelite.client.util.ImageUtil;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -26,5 +30,10 @@ public class CollectTask extends Task {
       if (amountRemaining == 0) break;
     }
     return amountRemaining <= 0;
+  }
+
+  @Override
+  public BufferedImage getIcon(SpriteManager spriteManager) {
+    return ImageUtil.resizeImage(Objects.requireNonNull(spriteManager.getSprite(3390, 0)), 20, 20);
   }
 }
