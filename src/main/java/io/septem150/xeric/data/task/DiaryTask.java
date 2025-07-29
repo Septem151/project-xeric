@@ -24,6 +24,7 @@ public class DiaryTask extends Task {
 
   @Override
   public BufferedImage getIcon(SpriteManager spriteManager) {
-    return ImageUtil.resizeImage(Objects.requireNonNull(spriteManager.getSprite(1299, 0)), 20, 20, true);
+    return ImageUtil.resizeImage(
+        Objects.requireNonNull(spriteManager.getSprite(1299, 0)), 20, 20, true);
   }
 }

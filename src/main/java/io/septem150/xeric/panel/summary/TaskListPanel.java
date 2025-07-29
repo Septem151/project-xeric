@@ -60,17 +60,17 @@ public class TaskListPanel extends JPanel {
 
   private final JPanel display = new JPanel(displayLayout);
   private final JComboBox<String> tierComboBox = new JComboBox<>();
+  private final JScrollPane scrollPane =
+      new JScrollPane(
+          display,
+          ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+          ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
   private void makeLayout() {
     removeAll();
     setLayout(new BorderLayout());
     tierComboBox.setBorder(new LineBorder(ColorScheme.BORDER_COLOR, 1));
     add(tierComboBox, BorderLayout.NORTH);
-    JScrollPane scrollPane =
-        new JScrollPane(
-            display,
-            ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     scrollPane.setWheelScrollingEnabled(true);
     scrollPane.setBorder(new EmptyBorder(5, 0, 0, 0));
     add(scrollPane, BorderLayout.CENTER);
@@ -98,6 +98,7 @@ public class TaskListPanel extends JPanel {
         event -> {
           String tierSelected =
               Objects.requireNonNull((String) ((JComboBox<?>) event.getSource()).getSelectedItem());
+          scrollPane.getVerticalScrollBar().setValue(0);
           displayLayout.show(display, tierSelected);
         });
     for (int tier : tasksPerTier.keySet()) {

@@ -38,6 +38,7 @@ public class CollectTask extends Task {
     if (this.getIcon() != null) {
       return ResourceUtil.getImage(this.getIcon(), ICON_SIZE, ICON_SIZE, true);
     }
-    return ImageUtil.resizeImage(Objects.requireNonNull(spriteManager.getSprite(3390, 0)), 20, 20, true);
+    return ImageUtil.resizeImage(
+        Objects.requireNonNull(spriteManager.getSprite(3390, 0)), 20, 20, true);
   }
 }

@@ -1,13 +1,13 @@
 [
-{
+  {
     "id": 1,
     "name": "Open the Collection Log",
     "tier": 1,
     "type": "collect",
     "itemIds": [],
     "amount": 1
-},
-{
+  },
+  {
     "id": 2,
     "name": "50 Firemaking",
     "tier": 1,
@@ -15,266 +15,266 @@
     "icon": "/skill_icons/firemaking.png",
     "level": "Firemaking",
     "goal": 50
-},
-{
+  },
+  {
     "id": 3,
     "name": "500 Total",
     "tier": 1,
     "type": "level",
     "level": "total",
     "goal": 500
-},
-{
+  },
+  {
     "id": 4,
     "name": "Frog Token",
     "tier": 1,
     "type": "collect",
     "icon": "frog_token.png",
     "itemIds": [
-        6183
+      6183
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 5,
     "name": "Mark of Grace",
     "tier": 1,
     "type": "collect",
     "icon": "mark_of_grace.png",
     "itemIds": [
-        11849
+      11849
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 6,
     "name": "Burnt Pages",
     "tier": 1,
     "type": "collect",
     "icon": "burnt_page.png",
     "itemIds": [
-        20718
+      20718
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 7,
     "name": "Warm Gloves",
     "tier": 1,
     "type": "collect",
     "icon": "warm_gloves.png",
     "itemIds": [
-        20712
+      20712
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 8,
     "name": "2 Total CAs",
     "tier": 1,
     "type": "ca",
     "total": 2
-},
-{
+  },
+  {
     "id": 9,
     "name": "4 Total CAs",
     "tier": 1,
     "type": "ca",
     "total": 4
-},
-{
+  },
+  {
     "id": 10,
     "name": "Shayzien Tier 1 Set",
     "tier": 1,
     "type": "collect",
     "icon": "shayzien_helm_1.png",
     "itemIds": [
-        13357,
-        13358,
-        13359,
-        13360,
-        13361
+      13357,
+      13358,
+      13359,
+      13360,
+      13361
     ],
     "amount": 5
-},
-{
+  },
+  {
     "id": 11,
     "name": "Full Mime Outfit",
     "tier": 1,
     "type": "collect",
     "icon": "mime_mask.png",
     "itemIds": [
-        3057,
-        3058,
-        3059,
-        3060,
-        3061
+      3057,
+      3058,
+      3059,
+      3060,
+      3061
     ],
     "amount": 5
-},
-{
+  },
+  {
     "id": 12,
     "name": "Full Beekeeper Outfit",
     "tier": 1,
     "type": "collect",
     "icon": "beekeepers_hat.png",
     "itemIds": [
-        25129,
-        25131,
-        25133,
-        25135,
-        25137
+      25129,
+      25131,
+      25133,
+      25135,
+      25137
     ],
     "amount": 5
-},
-{
+  },
+  {
     "id": 13,
     "name": "Full Camo Outfit",
     "tier": 1,
     "type": "collect",
     "icon": "camo_helmet.png",
     "itemIds": [
-        6656,
-        6654,
-        6655
+      6656,
+      6654,
+      6655
     ],
     "amount": 3
-},
-{
+  },
+  {
     "id": 14,
     "name": "Full Lederhosen Outfit",
     "tier": 1,
     "type": "collect",
     "icon": "lederhosen_hat.png",
     "itemIds": [
-        6180,
-        6181,
-        6182
+      6180,
+      6181,
+      6182
     ],
     "amount": 3
-},
-{
+  },
+  {
     "id": 15,
     "name": "Full Zombie Outfit",
     "tier": 1,
     "type": "collect",
     "icon": "zombie_mask.png",
     "itemIds": [
-        7592,
-        7593,
-        7594,
-        7595,
-        7596
+      7592,
+      7593,
+      7594,
+      7595,
+      7596
     ],
     "amount": 5
-},
-{
+  },
+  {
     "id": 16,
     "name": "Bruma Torch",
     "tier": 2,
     "type": "collect",
     "icon": "bruma_torch.png",
     "itemIds": [
-        20720
+      20720
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 17,
     "name": "Sturdy Beehive Parts",
     "tier": 2,
     "type": "collect",
     "icon": "sturdy_beehive_parts.png",
     "itemIds": [
-        28674
+      28674
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 18,
     "name": "Giant Key",
     "tier": 2,
     "type": "collect",
     "icon": "giant_key.png",
     "itemIds": [
-        20754
+      20754
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 19,
     "name": "Mossy Key",
     "tier": 2,
     "type": "collect",
     "icon": "mossy_key.png",
     "itemIds": [
-        22374
+      22374
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 20,
     "name": "1/4 Angler Outfit",
     "tier": 2,
     "type": "collect",
     "icon": "angler_hat.png",
     "itemIds": [
-        13258,
-        13259,
-        13260,
-        13261
+      13258,
+      13259,
+      13260,
+      13261
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 21,
     "name": "1/4 Pheasant Outfit",
     "tier": 2,
     "type": "collect",
     "icon": "pheasant_hat.png",
     "itemIds": [
-        28616,
-        28618,
-        28620,
-        28622
+      28616,
+      28618,
+      28620,
+      28622
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 22,
     "name": "Xeric's Talisman",
     "tier": 2,
     "type": "collect",
     "icon": "xerics_talisman.png",
     "itemIds": [
-        13392
+      13392
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 23,
     "name": "1 Pearl Fishing Rod",
     "tier": 2,
     "type": "collect",
     "icon": "pearl_fishing_rod.png",
     "itemIds": [
-        22846,
-        22844
+      22846,
+      22844
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 24,
     "name": "Sunfire Splinter(s)",
     "tier": 2,
     "type": "collect",
     "icon": "sunfire_splinters.png",
     "itemIds": [
-        28924
+      28924
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 25,
     "name": "All Protection Prayers",
     "tier": 2,
@@ -282,8 +282,8 @@
     "icon": "/skill_icons/prayer.png",
     "level": "Prayer",
     "goal": 43
-},
-{
+  },
+  {
     "id": 26,
     "name": "Tier 1: Farm Guild",
     "tier": 2,
@@ -291,52 +291,52 @@
     "icon": "/skill_icons/farming.png",
     "level": "farming",
     "goal": 45
-},
-{
+  },
+  {
     "id": 27,
     "name": "Total Level 750",
     "tier": 2,
     "type": "level",
     "level": "total",
     "goal": 750
-},
-{
+  },
+  {
     "id": 28,
     "name": "1/4 Farmer Outfit",
     "tier": 2,
     "type": "collect",
     "icon": "farmers_strawhat.png",
     "itemIds": [
-        13640,
-        13642,
-        13644,
-        13646
+      13640,
+      13642,
+      13644,
+      13646
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 29,
     "name": "10 Total CAs",
     "tier": 2,
     "type": "ca",
     "total": 10
-},
-{
+  },
+  {
     "id": 30,
     "name": "15 Total CAs",
     "tier": 2,
     "type": "ca",
     "total": 15
-},
-{
+  },
+  {
     "id": 31,
     "name": "Total Level 1000",
     "tier": 3,
     "type": "level",
     "level": "total",
     "goal": 1000
-},
-{
+  },
+  {
     "id": 32,
     "name": "55 Craft: Ring of Wealth",
     "tier": 3,
@@ -344,8 +344,8 @@
     "icon": "/skill_icons/crafting.png",
     "level": "Crafting",
     "goal": 55
-},
-{
+  },
+  {
     "id": 33,
     "name": "59 Smith: Mithril Grapple",
     "tier": 3,
@@ -353,8 +353,8 @@
     "icon": "/skill_icons/smithing.png",
     "level": "Smithing",
     "goal": 59
-},
-{
+  },
+  {
     "id": 34,
     "name": "62 Agility: Wyrm Agility ",
     "tier": 3,
@@ -362,8 +362,8 @@
     "icon": "/skill_icons/agility.png",
     "level": "Agility",
     "goal": 62
-},
-{
+  },
+  {
     "id": 35,
     "name": "64 Thieving: Stone Chest",
     "tier": 3,
@@ -371,8 +371,8 @@
     "icon": "/skill_icons/thieving.png",
     "level": "Thieving",
     "goal": 64
-},
-{
+  },
+  {
     "id": 36,
     "name": "Tier 2: Farm Guild",
     "tier": 3,
@@ -380,216 +380,216 @@
     "icon": "/skill_icons/farming.png",
     "level": "farming",
     "goal": 65
-},
-{
+  },
+  {
     "id": 37,
     "name": "2/4 Farmer Outfit",
     "tier": 3,
     "type": "collect",
     "icon": "farmers_strawhat.png",
     "itemIds": [
-        13640,
-        13642,
-        13644,
-        13646
+      13640,
+      13642,
+      13644,
+      13646
     ],
     "amount": 2
-},
-{
+  },
+  {
     "id": 38,
     "name": "Shayzien Tier 5 Set",
     "tier": 3,
     "type": "collect",
     "icon": "shayzien_helm_5.png",
     "itemIds": [
-        13377,
-        13380,
-        13381,
-        13379,
-        13378
+      13377,
+      13380,
+      13381,
+      13379,
+      13378
     ],
     "amount": 5
-},
-{
+  },
+  {
     "id": 39,
     "name": "Ancient Shard",
     "tier": 3,
     "type": "collect",
     "icon": "ancient_shard.png",
     "itemIds": [
-        19677
+      19677
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 40,
     "name": "Long Bone",
     "tier": 3,
     "type": "collect",
     "icon": "long_bone.png",
     "itemIds": [
-        10976
+      10976
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 41,
     "name": "3 Dark Totem Pieces",
     "tier": 3,
     "type": "collect",
     "icon": "dark_totem.png",
     "itemIds": [
-        19679,
-        19681,
-        19683
+      19679,
+      19681,
+      19683
     ],
     "amount": 3
-},
-{
+  },
+  {
     "id": 42,
     "name": "20 total CAs",
     "tier": 3,
     "type": "ca",
     "total": 20
-},
-{
+  },
+  {
     "id": 43,
     "name": "25 total CAs",
     "tier": 3,
     "type": "ca",
     "total": 25
-},
-{
+  },
+  {
     "id": 44,
     "name": "Defeat 5 Sarachnis",
     "tier": 3,
     "type": "kc",
     "boss": "Sarachnis",
     "total": 5
-},
-{
+  },
+  {
     "id": 45,
     "name": "Giant Egg Sac",
     "tier": 3,
     "type": "collect",
     "icon": "giant_egg_sac.png",
     "itemIds": [
-        23517
+      23517
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 46,
     "name": "Any Anima Seed",
     "tier": 3,
     "type": "collect",
     "icon": "hespori.png",
     "itemIds": [
-        22881,
-        22883,
-        22885
+      22881,
+      22883,
+      22885
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 47,
     "name": "Defeat 5 Hueycoatl",
     "tier": 3,
     "type": "kc",
     "boss": "Hueycoatl",
     "total": 5
-},
-{
+  },
+  {
     "id": 48,
     "name": "Huasca Seed",
     "tier": 3,
     "type": "collect",
     "icon": "huasca_seed.png",
     "itemIds": [
-        30088
+      30088
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 49,
     "name": "Colossal Wyrm Teleport",
     "tier": 3,
     "type": "collect",
     "icon": "colossal_wyrm_teleport_scroll.png",
     "itemIds": [
-        30040
+      30040
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 50,
     "name": "Full Pyromancer Outfit",
     "tier": 3,
     "type": "collect",
     "icon": "pyromancer_hood.png",
     "itemIds": [
-        20704,
-        20706,
-        20708,
-        20710
+      20704,
+      20706,
+      20708,
+      20710
     ],
     "amount": 4
-},
-{
+  },
+  {
     "id": 51,
     "name": "Big Bass",
     "tier": 3,
     "type": "collect",
     "icon": "big_bass.png",
     "itemIds": [
-        7989
+      7989
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 52,
     "name": "2/4 Pheasant Outfit",
     "tier": 3,
     "type": "collect",
     "icon": "pheasant_hat.png",
     "itemIds": [
-        28616,
-        28618,
-        28620,
-        28622
+      28616,
+      28618,
+      28620,
+      28622
     ],
     "amount": 2
-},
-{
+  },
+  {
     "id": 53,
     "name": "2/4 Angler Outfit",
     "tier": 3,
     "type": "collect",
     "icon": "angler_hat.png",
     "itemIds": [
-        13258,
-        13259,
-        13260,
-        13261
+      13258,
+      13259,
+      13260,
+      13261
     ],
     "amount": 2
-},
-{
+  },
+  {
     "id": 54,
     "name": "Kourend Easy Diary",
     "tier": 3,
     "type": "diary",
     "diary": "Easy"
-},
-{
+  },
+  {
     "id": 55,
     "name": "Total Level 1250",
     "tier": 4,
     "type": "level",
     "level": "total",
     "goal": 1250
-},
-{
+  },
+  {
     "id": 56,
     "name": "76 Magic: Greater Thralls",
     "tier": 4,
@@ -597,199 +597,199 @@
     "icon": "/skill_icons/magic.png",
     "level": "Magic",
     "goal": 76
-},
-{
+  },
+  {
     "id": 57,
     "name": "35 Total CAs",
     "tier": 4,
     "type": "ca",
     "total": 35
-},
-{
+  },
+  {
     "id": 58,
     "name": "30 Total CAs",
     "tier": 4,
     "type": "ca",
     "total": 30
-},
-{
+  },
+  {
     "id": 59,
     "name": "Complete 1 CoX",
     "tier": 4,
     "type": "kc",
     "boss": "Chambers of Xeric",
     "total": 1
-},
-{
+  },
+  {
     "id": 60,
     "name": "Tome of Fire",
     "tier": 4,
     "type": "collect",
     "icon": "tome_of_fire.png",
     "itemIds": [
-        20716
+      20716
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 61,
     "name": "Defeat 35 Hueycoatl",
     "tier": 4,
     "type": "kc",
     "boss": "Hueycoatl",
     "total": 35
-},
-{
+  },
+  {
     "id": 62,
     "name": "Soiled Page",
     "tier": 4,
     "type": "collect",
     "icon": "soiled_page.png",
     "itemIds": [
-        30068
+      30068
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 63,
     "name": "Defeat 5 Amoxliatl",
     "tier": 4,
     "type": "kc",
     "boss": "Amoxliatl",
     "total": 5
-},
-{
+  },
+  {
     "id": 64,
     "name": "Frozen Tear",
     "tier": 4,
     "type": "collect",
     "icon": "frozen_tear.png",
     "itemIds": [
-        29895
+      29895
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 65,
     "name": "Golden Tench",
     "tier": 4,
     "type": "collect",
     "icon": "golden_tench.png",
     "itemIds": [
-        22840
+      22840
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 66,
     "name": "Big Swordfish",
     "tier": 4,
     "type": "collect",
     "icon": "big_swordfish.png",
     "itemIds": [
-        7991
+      7991
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 67,
     "name": "Shield Left Half",
     "tier": 4,
     "type": "collect",
     "icon": "shield_left_half.png",
     "itemIds": [
-        2366
+      2366
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 68,
     "name": "Gricoller's Can",
     "tier": 4,
     "type": "collect",
     "icon": "gricollers_can.png",
     "itemIds": [
-        13353
+      13353
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 69,
     "name": "Herb Sack",
     "tier": 4,
     "type": "collect",
     "icon": "herb_sack.png",
     "itemIds": [
-        13226
+      13226
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 70,
     "name": "Seed Box",
     "tier": 4,
     "type": "collect",
     "icon": "seed_box.png",
     "itemIds": [
-        13639
+      13639
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 71,
     "name": "Full Farmer Outfit",
     "tier": 4,
     "type": "collect",
     "icon": "farmers_strawhat.png",
     "itemIds": [
-        13640,
-        13642,
-        13644,
-        13646
+      13640,
+      13642,
+      13644,
+      13646
     ],
     "amount": 4
-},
-{
+  },
+  {
     "id": 72,
     "name": "All Anima Seeds",
     "tier": 4,
     "type": "collect",
     "icon": "hespori.png",
     "itemIds": [
-        22881,
-        22883,
-        22885
+      22881,
+      22883,
+      22885
     ],
     "amount": 3
-},
-{
+  },
+  {
     "id": 73,
     "name": "Petal Garland",
     "tier": 4,
     "type": "collect",
     "icon": "petal_garland.png",
     "itemIds": [
-        28655
+      28655
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 74,
     "name": "1 Easy Clue",
     "tier": 4,
     "type": "kc",
     "boss": "Clue Scrolls (easy)",
     "total": 1
-},
-{
+  },
+  {
     "id": 75,
     "name": "Total Level 1500",
     "tier": 5,
     "type": "level",
     "level": "total",
     "goal": 1500
-},
-{
+  },
+  {
     "id": 76,
     "name": "72 Hunter: Sun Antelopes",
     "tier": 5,
@@ -797,8 +797,8 @@
     "icon": "/skill_icons/hunter.png",
     "level": "Hunter",
     "goal": 72
-},
-{
+  },
+  {
     "id": 77,
     "name": "82 Fishing: Angler Fish",
     "tier": 5,
@@ -806,8 +806,8 @@
     "icon": "/skill_icons/fishing.png",
     "level": "Fishing",
     "goal": 82
-},
-{
+  },
+  {
     "id": 78,
     "name": "84 Cooking: Angler Fish",
     "tier": 5,
@@ -815,8 +815,8 @@
     "icon": "/skill_icons/cooking.png",
     "level": "Cooking",
     "goal": 84
-},
-{
+  },
+  {
     "id": 79,
     "name": "Tier 3: Farm Guild",
     "tier": 5,
@@ -824,267 +824,267 @@
     "icon": "/skill_icons/farming.png",
     "level": "farming",
     "goal": 85
-},
-{
+  },
+  {
     "id": 80,
     "name": "40 Total CAs",
     "tier": 5,
     "type": "ca",
     "total": 40
-},
-{
+  },
+  {
     "id": 81,
     "name": "45 Total CAs",
     "tier": 5,
     "type": "ca",
     "total": 45
-},
-{
+  },
+  {
     "id": 82,
     "name": "Defeat 5 Skotizo",
     "tier": 5,
     "type": "kc",
     "boss": "Skotizo",
     "total": 5
-},
-{
+  },
+  {
     "id": 83,
     "name": "Defeat 35 Hespori",
     "tier": 5,
     "type": "kc",
     "boss": "Hespori",
     "total": 35
-},
-{
+  },
+  {
     "id": 84,
     "name": "Bottomless Bucket",
     "tier": 5,
     "type": "collect",
     "icon": "bottomless_compost_bucket.png",
     "itemIds": [
-        22994
+      22994
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 85,
     "name": "Defeat 50 Sarachnis",
     "tier": 5,
     "type": "kc",
     "boss": "Sarachnis",
     "total": 50
-},
-{
+  },
+  {
     "id": 86,
     "name": "Mask of Ranul",
     "tier": 5,
     "type": "collect",
     "icon": "mask_of_ranul.png",
     "itemIds": [
-        23522
+      23522
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 87,
     "name": "Blue or Orange Egg Sac",
     "tier": 5,
     "type": "collect",
     "icon": "giant_egg_sac.png",
     "itemIds": [
-        25846,
-        25844
+      25846,
+      25844
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 88,
     "name": "Obtain 5000 Glory",
     "tier": 5,
     "type": "kc",
     "boss": "Colosseum Glory",
     "total": 5000
-},
-{
+  },
+  {
     "id": 89,
     "name": "Preserve or Dark Relic",
     "tier": 5,
     "type": "collect",
     "icon": "torn_prayer_scroll.png",
     "itemIds": [
-        21027,
-        21047
+      21027,
+      21047
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 90,
     "name": "Defeat 100 Hueycoatl",
     "tier": 5,
     "type": "kc",
     "boss": "Hueycoatl",
     "total": 100
-},
-{
+  },
+  {
     "id": 91,
     "name": "Hueycoatl Hide",
     "tier": 5,
     "type": "collect",
     "icon": "hueycoatl_hide.png",
     "itemIds": [
-        30085
+      30085
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 92,
     "name": "Defeat 25 Amoxliatl",
     "tier": 5,
     "type": "kc",
     "boss": "Amoxliatl",
     "total": 25
-},
-{
+  },
+  {
     "id": 93,
     "name": "Pendant of Ates",
     "tier": 5,
     "type": "collect",
     "icon": "pendant_of_ates.png",
     "itemIds": [
-        29892
+      29892
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 94,
     "name": "Sulphur Blades",
     "tier": 5,
     "type": "collect",
     "icon": "sulphur_blades.png",
     "itemIds": [
-        29084
+      29084
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 95,
     "name": "Loot 100 Lunar chests",
     "tier": 5,
     "type": "kc",
     "boss": "Lunar Chests",
     "total": 100
-},
-{
+  },
+  {
     "id": 96,
     "name": "Full Pheasant Outfit",
     "tier": 5,
     "type": "collect",
     "icon": "pheasant_hat.png",
     "itemIds": [
-        28616,
-        28618,
-        28620,
-        28622
+      28616,
+      28618,
+      28620,
+      28622
     ],
     "amount": 4
-},
-{
+  },
+  {
     "id": 97,
     "name": "Full Angler Outfit",
     "tier": 5,
     "type": "collect",
     "icon": "angler_hat.png",
     "itemIds": [
-        13258,
-        13259,
-        13260,
-        13261
+      13258,
+      13259,
+      13260,
+      13261
     ],
     "amount": 4
-},
-{
+  },
+  {
     "id": 98,
     "name": "2 Pearl Rods",
     "tier": 5,
     "type": "collect",
     "icon": "pearl_fishing_rod.png",
     "itemIds": [
-        22846,
-        22844
+      22846,
+      22844
     ],
     "amount": 2
-},
-{
+  },
+  {
     "id": 99,
     "name": "Big Shark",
     "tier": 5,
     "type": "collect",
     "icon": "big_shark.png",
     "itemIds": [
-        7993
+      7993
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 100,
     "name": "Calcified Acorn",
     "tier": 5,
     "type": "collect",
     "icon": "calcified_acorn.png",
     "itemIds": [
-        30042
+      30042
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 101,
     "name": "5 Easy Clues",
     "tier": 5,
     "type": "kc",
     "boss": "Clue Scrolls (easy)",
     "total": 5
-},
-{
+  },
+  {
     "id": 102,
     "name": "1 Medium Clue",
     "tier": 5,
     "type": "kc",
     "boss": "Clue Scrolls (medium)",
     "total": 1
-},
-{
+  },
+  {
     "id": 103,
     "name": "Total Level 1750",
     "tier": 6,
     "type": "level",
     "level": "total",
     "goal": 1750
-},
-{
+  },
+  {
     "id": 104,
     "name": "Echo Crystal",
     "tier": 6,
     "type": "collect",
     "icon": "echo_crystal.png",
     "itemIds": [
-        28942
+      28942
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 105,
     "name": "1/3 Sunfire Fanatic Set",
     "tier": 6,
     "type": "collect",
     "icon": "sunfire_fanatic_helm.png",
     "itemIds": [
-        28933,
-        28936,
-        28939
+      28933,
+      28936,
+      28939
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 106,
     "name": "73 Smithing: Addy Bolts",
     "tier": 6,
@@ -1092,8 +1092,8 @@
     "icon": "/skill_icons/smithing.png",
     "level": "smithing",
     "goal": 73
-},
-{
+  },
+  {
     "id": 107,
     "name": "77 Runecrafting: Bloods",
     "tier": 6,
@@ -1101,8 +1101,8 @@
     "icon": "/skill_icons/runecraft.png",
     "level": "runecraft",
     "goal": 77
-},
-{
+  },
+  {
     "id": 108,
     "name": "77 Prayer: Augury ",
     "tier": 6,
@@ -1110,8 +1110,8 @@
     "icon": "/skill_icons/prayer.png",
     "level": "prayer",
     "goal": 77
-},
-{
+  },
+  {
     "id": 109,
     "name": "80 Craft: Amulet of Glory",
     "tier": 6,
@@ -1119,229 +1119,229 @@
     "icon": "/skill_icons/crafting.png",
     "level": "crafting",
     "goal": 80
-},
-{
+  },
+  {
     "id": 110,
     "name": "50 Total CAs",
     "tier": 6,
     "type": "ca",
     "total": 50
-},
-{
+  },
+  {
     "id": 111,
     "name": "60 Total CAs",
     "tier": 6,
     "type": "ca",
     "total": 60
-},
-{
+  },
+  {
     "id": 112,
     "name": "Loot 250 Lunar Chests",
     "tier": 6,
     "type": "kc",
     "boss": "Lunar Chests",
     "total": 250
-},
-{
+  },
+  {
     "id": 113,
     "name": "Defeat 25 Skotizo",
     "tier": 6,
     "type": "kc",
     "boss": "Skotizo",
     "total": 25
-},
-{
+  },
+  {
     "id": 114,
     "name": "Defeat 384 Sarachnis",
     "tier": 6,
     "type": "kc",
     "boss": "Sarachnis",
     "total": 384
-},
-{
+  },
+  {
     "id": 115,
     "name": "Sarachnis Cudgel",
     "tier": 6,
     "type": "collect",
     "icon": "sarachnis_cudgel.png",
     "itemIds": [
-        23528
+      23528
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 116,
     "name": "Blue and Orange Egg Sac",
     "tier": 6,
     "type": "collect",
     "icon": "giant_egg_sac.png",
     "itemIds": [
-        25846,
-        25844
+      25846,
+      25844
     ],
     "amount": 2
-},
-{
+  },
+  {
     "id": 117,
     "name": "Defeat 250 Hueycoatl",
     "tier": 6,
     "type": "kc",
     "boss": "Hueycoatl",
     "total": 250
-},
-{
+  },
+  {
     "id": 118,
     "name": "Tome of Earth",
     "tier": 6,
     "type": "collect",
     "icon": "tome_of_earth.png",
     "itemIds": [
-        30066
+      30066
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 119,
     "name": "Defeat 100 Amoxliatl",
     "tier": 6,
     "type": "kc",
     "boss": "Amoxliatl",
     "total": 100
-},
-{
+  },
+  {
     "id": 120,
     "name": "Glacial Temotli",
     "tier": 6,
     "type": "collect",
     "icon": "glacial_temotli.png",
     "itemIds": [
-        29889
+      29889
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 121,
     "name": "Complete AKD",
     "tier": 6,
     "type": "quest",
     "quest": "A Kingdom Divided"
-},
-{
+  },
+  {
     "id": 122,
     "name": "Curved Bone",
     "tier": 6,
     "type": "collect",
     "icon": "curved_bone.png",
     "itemIds": [
-        10977
+      10977
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 123,
     "name": "Dragon Spear",
     "tier": 6,
     "type": "collect",
     "icon": "dragon_spear.png",
     "itemIds": [
-        1249
+      1249
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 124,
     "name": "Fish Sack",
     "tier": 6,
     "type": "collect",
     "icon": "fish_sack.png",
     "itemIds": [
-        22838
+      22838
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 125,
     "name": "All Big Fish",
     "tier": 6,
     "type": "collect",
     "icon": "big_shark.png",
     "itemIds": [
-        7993,
-        7991,
-        7989
+      7993,
+      7991,
+      7989
     ],
     "amount": 3
-},
-{
+  },
+  {
     "id": 126,
     "name": "Prescription Goggles",
     "tier": 6,
     "type": "collect",
     "icon": "prescription_goggles.png",
     "itemIds": [
-        29974
+      29974
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 127,
     "name": "1 Boss Pet",
     "tier": 6,
     "type": "collect",
     "icon": "pet_icon.png",
     "itemIds": [
-        30152,
-        30154,
-        20851,
-        20693,
-        23495,
-        21273,
-        28960
+      30152,
+      30154,
+      20851,
+      20693,
+      23495,
+      21273,
+      28960
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 128,
     "name": "1 Skilling Pet",
     "tier": 6,
     "type": "collect",
     "icon": "pet_icon.png",
     "itemIds": [
-        13322,
-        20659,
-        13320,
-        13321,
-        20663,
-        20661,
-        20665
+      13322,
+      20659,
+      13320,
+      13321,
+      20663,
+      20661,
+      20665
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 129,
     "name": "10 Easy Clues",
     "tier": 6,
     "type": "kc",
     "boss": "Clue Scrolls (easy)",
     "total": 10
-},
-{
+  },
+  {
     "id": 130,
     "name": "5 Medium Clues",
     "tier": 6,
     "type": "kc",
     "boss": "Clue Scrolls (medium)",
     "total": 5
-},
-{
+  },
+  {
     "id": 131,
     "name": "Total Level 1900",
     "tier": 7,
     "type": "level",
     "level": "total",
     "goal": 1900
-},
-{
+  },
+  {
     "id": 132,
     "name": "78 Herb: C.O.X. brews",
     "tier": 7,
@@ -1349,8 +1349,8 @@
     "icon": "/skill_icons/herblore.png",
     "level": "herblore",
     "goal": 78
-},
-{
+  },
+  {
     "id": 133,
     "name": "91 Hunt: Moon Antelopes",
     "tier": 7,
@@ -1358,256 +1358,256 @@
     "icon": "/skill_icons/hunter.png",
     "level": "hunter",
     "goal": 91
-},
-{
+  },
+  {
     "id": 134,
     "name": "70 Total CAs",
     "tier": 7,
     "type": "ca",
     "total": 70
-},
-{
+  },
+  {
     "id": 135,
     "name": "80 Total CAs",
     "tier": 7,
     "type": "ca",
     "total": 80
-},
-{
+  },
+  {
     "id": 136,
     "name": "Dragon Warhammer",
     "tier": 7,
     "type": "collect",
     "icon": "dragon_warhammer.png",
     "itemIds": [
-        13576
+      13576
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 137,
     "name": "2/3 Sunfire Fanatic Set",
     "tier": 7,
     "type": "collect",
     "icon": "sunfire_fanatic_helm.png",
     "itemIds": [
-        28933,
-        28936,
-        28939
+      28933,
+      28936,
+      28939
     ],
     "amount": 2
-},
-{
+  },
+  {
     "id": 138,
     "name": "Obtain 10000 Glory",
     "tier": 7,
     "type": "kc",
     "boss": "Colosseum Glory",
     "total": 10000
-},
-{
+  },
+  {
     "id": 139,
     "name": "Dark Claw",
     "tier": 7,
     "type": "collect",
     "icon": "dark_claw.png",
     "itemIds": [
-        21275
+      21275
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 140,
     "name": "Any CoX Purple",
     "tier": 7,
     "type": "collect",
     "icon": "cox_chest.png",
     "itemIds": [
-        20997,
-        21034,
-        21079,
-        21000,
-        21012,
-        21015,
-        21018,
-        21021,
-        21024,
-        13652,
-        21003,
-        21043
+      20997,
+      21034,
+      21079,
+      21000,
+      21012,
+      21015,
+      21018,
+      21021,
+      21024,
+      13652,
+      21003,
+      21043
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 141,
     "name": "Complete 100 CoX",
     "tier": 7,
     "type": "kc",
     "boss": "Chambers of Xeric",
     "total": 100
-},
-{
+  },
+  {
     "id": 142,
     "name": "Defeat 400 Hueycoatl",
     "tier": 7,
     "type": "kc",
     "boss": "Hueycoatl",
     "total": 400
-},
-{
+  },
+  {
     "id": 143,
     "name": "Dragon Hunter Wand",
     "tier": 7,
     "type": "collect",
     "icon": "dragon_hunter_wand.png",
     "itemIds": [
-        30070
+      30070
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 144,
     "name": "Defeat 500 Amoxliatl",
     "tier": 7,
     "type": "kc",
     "boss": "Amoxliatl",
     "total": 500
-},
-{
+  },
+  {
     "id": 145,
     "name": "Fox Whistle",
     "tier": 7,
     "type": "collect",
     "icon": "fox_whistle.png",
     "itemIds": [
-        28626
+      28626
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 146,
     "name": "Golden Pheasant Egg",
     "tier": 7,
     "type": "collect",
     "icon": "golden_pheasant_egg.png",
     "itemIds": [
-        28663
+      28663
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 147,
     "name": "Greenlog Aerial Fishing",
     "tier": 7,
     "type": "collect",
     "icon": "golden_tench.png",
     "itemIds": [
-        13258,
-        13259,
-        13260,
-        13261,
-        22844,
-        22846,
-        22838,
-        22840
+      13258,
+      13259,
+      13260,
+      13261,
+      22844,
+      22846,
+      22838,
+      22840
     ],
     "amount": 8
-},
-{
+  },
+  {
     "id": 148,
     "name": "Greenlog Moons of Peril",
     "tier": 7,
     "type": "collect",
     "itemIds": [
-        29013,
-        29019,
-        28988,
-        29025,
-        29022,
-        29028,
-        28997,
-        29007,
-        29004,
-        29010,
-        29000,
-        29016
+      29013,
+      29019,
+      28988,
+      29025,
+      29022,
+      29028,
+      28997,
+      29007,
+      29004,
+      29010,
+      29000,
+      29016
     ],
     "amount": 12
-},
-{
+  },
+  {
     "id": 149,
     "name": "Loot 500 Lunar chests",
     "tier": 7,
     "type": "kc",
     "boss": "Lunar Chests",
     "total": 500
-},
-{
+  },
+  {
     "id": 150,
     "name": "Dragon Axe",
     "tier": 7,
     "type": "collect",
     "icon": "dragon_axe.png",
     "itemIds": [
-        6739
+      6739
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 151,
     "name": "Defeat 100 Hespori",
     "tier": 7,
     "type": "kc",
     "boss": "Hespori",
     "total": 100
-},
-{
+  },
+  {
     "id": 152,
     "name": "Full Alchimist's Outfit",
     "tier": 7,
     "type": "collect",
     "icon": "prescription_goggles.png",
     "itemIds": [
-        29978,
-        29982,
-        29986,
-        29974
+      29978,
+      29982,
+      29986,
+      29974
     ],
     "amount": 4
-},
-{
+  },
+  {
     "id": 153,
     "name": "25 Easy Clues",
     "tier": 7,
     "type": "kc",
     "boss": "Clue Scrolls (easy)",
     "total": 25
-},
-{
+  },
+  {
     "id": 154,
     "name": "10 Medium Clues",
     "tier": 7,
     "type": "kc",
     "boss": "Clue Scrolls (medium)",
     "total": 10
-},
-{
+  },
+  {
     "id": 155,
     "name": "1 Hard Clue",
     "tier": 7,
     "type": "kc",
     "boss": "Clue Scrolls (hard)",
     "total": 1
-},
-{
+  },
+  {
     "id": 156,
     "name": "Total Level 2000",
     "tier": 8,
     "type": "level",
     "level": "total",
     "goal": 2000
-},
-{
+  },
+  {
     "id": 157,
     "name": "90 Herblore: Overloads",
     "tier": 8,
@@ -1615,8 +1615,8 @@
     "icon": "/skill_icons/herblore.png",
     "level": "herblore",
     "goal": 90
-},
-{
+  },
+  {
     "id": 158,
     "name": "90 Craft: Amulet of Fury",
     "tier": 8,
@@ -1624,8 +1624,8 @@
     "icon": "/skill_icons/crafting.png",
     "level": "crafting",
     "goal": 90
-},
-{
+  },
+  {
     "id": 159,
     "name": "90 Woodcutting: Redwood",
     "tier": 8,
@@ -1633,867 +1633,868 @@
     "icon": "/skill_icons/woodcutting.png",
     "level": "woodcutting",
     "goal": 90
-},
-{
+  },
+  {
     "id": 160,
     "name": "Complete 250 CoX",
     "tier": 8,
     "type": "kc",
     "boss": "Chambers of Xeric",
     "total": 250
-},
-{
+  },
+  {
     "id": 161,
     "name": "Complete 500 CoX",
     "tier": 8,
     "type": "kc",
     "boss": "Chambers of Xeric",
     "total": 500
-},
-{
+  },
+  {
     "id": 162,
     "name": "5 Unique CoX Purples",
     "tier": 8,
     "type": "collect",
     "icon": "cox_chest.png",
     "itemIds": [
-        20997,
-        21034,
-        21079,
-        21000,
-        21012,
-        21015,
-        21018,
-        21021,
-        21024,
-        13652,
-        21003,
-        21043
+      20997,
+      21034,
+      21079,
+      21000,
+      21012,
+      21015,
+      21018,
+      21021,
+      21024,
+      13652,
+      21003,
+      21043
     ],
     "amount": 5
-},
-{
+  },
+  {
     "id": 163,
     "name": "90 Total CAs",
     "tier": 8,
     "type": "ca",
     "total": 90
-},
-{
+  },
+  {
     "id": 164,
     "name": "Complete 1 CoX CM",
     "tier": 8,
     "type": "kc",
     "boss": "Chambers of Xeric: Challenge Mode",
     "total": 1
-},
-{
+  },
+  {
     "id": 165,
     "name": "Defeat 50 Skotizo",
     "tier": 8,
     "type": "kc",
     "boss": "Skotizo",
     "total": 50
-},
-{
+  },
+  {
     "id": 166,
     "name": "Dizana's Quiver",
     "tier": 8,
     "type": "collect",
     "icon": "dizanas_quiver.png",
     "itemIds": [
-        28947
+      28947
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 167,
     "name": "Full Sunfire Fanatic Set",
     "tier": 8,
     "type": "collect",
     "icon": "sunfire_fanatic_helm.png",
     "itemIds": [
-        28933,
-        28936,
-        28939
+      28933,
+      28936,
+      28939
     ],
     "amount": 3
-},
-{
+  },
+  {
     "id": 168,
     "name": "Cut Onyx (Tekton)",
     "tier": 8,
     "type": "collect",
     "icon": "onyx.png",
     "itemIds": [
-        6573
+      6573
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 169,
     "name": "Loot 1000 Lunar chests",
     "tier": 8,
     "type": "kc",
     "boss": "Lunar Chests",
     "total": 1000
-},
-{
+  },
+  {
     "id": 170,
     "name": "Defeat 1000 Sarachnis",
     "tier": 8,
     "type": "kc",
     "boss": "Sarachnis",
     "total": 1000
-},
-{
+  },
+  {
     "id": 171,
     "name": "Jar of Eyes",
     "tier": 8,
     "type": "collect",
     "icon": "jar_of_eyes.png",
     "itemIds": [
-        23525
+      23525
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 172,
     "name": "Defeat 1000 Hueycoatl",
     "tier": 8,
     "type": "kc",
     "boss": "Hueycoatl",
     "total": 1000
-},
-{
+  },
+  {
     "id": 173,
     "name": "Defeat 3000 Amoxliatl",
     "tier": 8,
     "type": "kc",
     "boss": "Amoxliatl",
     "total": 1000
-},
-{
+  },
+  {
     "id": 174,
     "name": "3 Boss Pet",
     "tier": 8,
     "type": "collect",
     "icon": "pet_icon.png",
     "itemIds": [
-        30152,
-        30154,
-        20851,
-        20693,
-        23495,
-        21273,
-        28960
+      30152,
+      30154,
+      20851,
+      20693,
+      23495,
+      21273,
+      28960
     ],
     "amount": 3
-},
-{
+  },
+  {
     "id": 175,
     "name": "3 Skilling Pets",
     "tier": 8,
     "type": "collect",
     "icon": "pet_icon.png",
     "itemIds": [
-        13322,
-        20659,
-        13320,
-        13321,
-        20663,
-        20661,
-        20665
+      13322,
+      20659,
+      13320,
+      13321,
+      20663,
+      20661,
+      20665
     ],
     "amount": 3
-},
-{
+  },
+  {
     "id": 176,
     "name": "Defeat 250 Hespori",
     "tier": 8,
     "type": "kc",
     "boss": "Hespori",
     "total": 250
-},
-{
+  },
+  {
     "id": 177,
     "name": "Reagent Pouch",
     "tier": 8,
     "type": "collect",
     "icon": "reagent_pouch.png",
     "itemIds": [
-        29996
+      29996
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 178,
     "name": "100 Collection Log Slots",
     "tier": 8,
     "type": "collect",
     "itemIds": [],
     "amount": 100
-},
-{
+  },
+  {
     "id": 179,
     "name": "Level 99 in 1 Skill",
     "tier": 8,
     "type": "level",
     "level": "maxed",
     "goal": 1
-},
-{
+  },
+  {
     "id": 180,
     "name": "50 Easy Clues",
     "tier": 8,
     "type": "kc",
     "boss": "Clue Scrolls (easy)",
     "total": 50
-},
-{
+  },
+  {
     "id": 181,
     "name": "25 Mediums",
     "tier": 8,
     "type": "kc",
     "boss": "Clue Scrolls (medium)",
     "total": 25
-},
-{
+  },
+  {
     "id": 182,
     "name": "5 Hard Clues",
     "tier": 8,
     "type": "kc",
     "boss": "Clue Scrolls (hard)",
     "total": 5
-},
-{
+  },
+  {
     "id": 183,
     "name": "Defeat 3000 Amoxliatl",
     "tier": 9,
     "type": "kc",
     "boss": "Amoxliatl",
     "total": 3000
-},
-{
+  },
+  {
     "id": 184,
     "name": "Total Level 2100",
     "tier": 9,
     "type": "level",
     "level": "total",
     "goal": 2100
-},
-{
+  },
+  {
     "id": 185,
     "name": "Level 99 in 3 Skills",
     "tier": 9,
     "type": "level",
     "level": "maxed",
     "goal": 3
-},
-{
+  },
+  {
     "id": 186,
     "name": "Level 99 in 10 Skills",
     "tier": 9,
     "type": "level",
     "level": "maxed",
     "goal": 10
-},
-{
+  },
+  {
     "id": 187,
     "name": "1 CoX Megarare",
     "tier": 9,
     "type": "collect",
     "icon": "cox_chest.png",
     "itemIds": [
-        21003,
-        20997,
-        21043
+      21003,
+      20997,
+      21043
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 188,
     "name": "10 Unique CoX Purples",
     "tier": 9,
     "type": "collect",
     "icon": "cox_chest.png",
     "itemIds": [
-        20997,
-        21034,
-        21079,
-        21000,
-        21012,
-        21015,
-        21018,
-        21021,
-        21024,
-        13652,
-        21003,
-        21043
+      20997,
+      21034,
+      21079,
+      21000,
+      21012,
+      21015,
+      21018,
+      21021,
+      21024,
+      13652,
+      21003,
+      21043
     ],
     "amount": 10
-},
-{
+  },
+  {
     "id": 189,
     "name": "Complete 1000 CoX",
     "tier": 9,
     "type": "kc",
     "boss": "Chambers of Xeric",
     "total": 1000
-},
-{
+  },
+  {
     "id": 190,
     "name": "Complete 50 CoX CMs",
     "tier": 9,
     "type": "kc",
     "boss": "Chambers of Xeric: Challenge Mode",
     "total": 50
-},
-{
+  },
+  {
     "id": 191,
     "name": "1 Twisted Ancestral Kit",
     "tier": 9,
     "type": "collect",
     "icon": "twisted_ancestral_colour_kit.png",
     "itemIds": [
-        24670
+      24670
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 192,
     "name": "Defeat 100 Skotizo",
     "tier": 9,
     "type": "kc",
     "boss": "Skotizo",
     "total": 100
-},
-{
+  },
+  {
     "id": 193,
     "name": "Defeat 10 Sol Heredit",
     "tier": 9,
     "type": "kc",
     "boss": "Sol Heredit",
     "total": 10
-},
-{
+  },
+  {
     "id": 194,
     "name": "Tonalztics of Ralos",
     "tier": 9,
     "type": "collect",
     "icon": "tonalztics_of_ralos.png",
     "itemIds": [
-        28919
+      28919
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 195,
     "name": "Obtain 35000 Glory",
     "tier": 9,
     "type": "kc",
     "boss": "Colosseum Glory",
     "total": 35000
-},
-{
+  },
+  {
     "id": 196,
     "name": "1/4 Evil Chicken Outfit",
     "tier": 9,
     "type": "collect",
     "icon": "evil_chicken_head.png",
     "itemIds": [
-        20433,
-        20436,
-        20439,
-        20442
+      20433,
+      20436,
+      20439,
+      20442
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 197,
     "name": "Uncut Onyx (Skotizo/Colo)",
     "tier": 9,
     "type": "collect",
     "icon": "uncut_onyx.png",
     "itemIds": [
-        6571
+      6571
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 198,
     "name": "Chugging Barrel",
     "tier": 9,
     "type": "collect",
     "icon": "chugging_barrel.png",
     "itemIds": [
-        30002
+      30002
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 199,
     "name": "5 Boss Pets",
     "tier": 9,
     "type": "collect",
     "icon": "pet_icon.png",
     "itemIds": [
-        30152,
-        30154,
-        20851,
-        20693,
-        23495,
-        21273,
-        28960
+      30152,
+      30154,
+      20851,
+      20693,
+      23495,
+      21273,
+      28960
     ],
     "amount": 5
-},
-{
+  },
+  {
     "id": 200,
     "name": "5 Skilling Pets",
     "tier": 9,
     "type": "collect",
     "icon": "pet_icon.png",
     "itemIds": [
-        13322,
-        20659,
-        13320,
-        13321,
-        20663,
-        20661,
-        20665
+      13322,
+      20659,
+      13320,
+      13321,
+      20663,
+      20661,
+      20665
     ],
     "amount": 5
-},
-{
+  },
+  {
     "id": 201,
     "name": "200 Collection Log Slots",
     "tier": 9,
     "type": "collect",
     "itemIds": [],
     "amount": 200
-},
-{
+  },
+  {
     "id": 202,
     "name": "100 Total CAs",
     "tier": 9,
     "type": "ca",
     "total": 100
-},
-{
+  },
+  {
     "id": 203,
     "name": "50M XP in any Skill",
     "tier": 9,
     "type": "level",
     "level": "any",
     "goal": 50000000
-},
-{
+  },
+  {
     "id": 204,
     "name": "100 Easy Clues",
     "tier": 9,
     "type": "kc",
     "boss": "Clue Scrolls (easy)",
     "total": 100
-},
-{
+  },
+  {
     "id": 205,
     "name": "50 Medium Clues",
     "tier": 9,
     "type": "kc",
     "boss": "Clue Scrolls (medium)",
     "total": 50
-},
-{
+  },
+  {
     "id": 206,
     "name": "10 Hard Clues",
     "tier": 9,
     "type": "kc",
     "boss": "Clue Scrolls (hard)",
     "total": 10
-},
-{
+  },
+  {
     "id": 207,
     "name": "1 Elite Clue",
     "tier": 9,
     "type": "kc",
     "boss": "Clue Scrolls (elite)",
     "total": 1
-},
-{
+  },
+  {
     "id": 208,
     "name": "1 Master Clue",
     "tier": 9,
     "type": "kc",
     "boss": "Clue Scrolls (master)",
     "total": 1
-},
-{
+  },
+  {
     "id": 209,
     "name": "Draconic Visage",
     "tier": 10,
     "type": "collect",
     "icon": "draconic_visage.png",
     "itemIds": [
-        11286
+      11286
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 210,
     "name": "Smouldering Stone",
     "tier": 10,
     "type": "collect",
     "icon": "smouldering_stone.png",
     "itemIds": [
-        13233
+      13233
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 211,
     "name": "Total Level 2200+",
     "tier": 10,
     "type": "level",
     "level": "total",
     "goal": 2200
-},
-{
+  },
+  {
     "id": 212,
     "name": "99 All non-slay/sail Skills",
     "tier": 10,
     "type": "level",
     "level": "maxed",
     "goal": 22
-},
-{
+  },
+  {
     "id": 213,
     "name": "Complete 2000 CoX",
     "tier": 10,
     "type": "kc",
     "boss": "Chambers of Xeric",
     "total": 2000
-},
-{
+  },
+  {
     "id": 214,
     "name": "Twisted Bow",
     "tier": 10,
     "type": "collect",
     "icon": "twisted_bow.png",
     "itemIds": [
-        20997
+      20997
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 215,
     "name": "Complete 100 CoX CMs",
     "tier": 10,
     "type": "kc",
     "boss": "Chambers of Xeric: Challenge Mode",
     "total": 100
-},
-{
+  },
+  {
     "id": 216,
     "name": "Metamorphic Dust",
     "tier": 10,
     "type": "collect",
     "icon": "metamorphic_dust.png",
     "itemIds": [
-        22386
+      22386
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 217,
     "name": "Xeric's Warrior(200 CMs)",
     "tier": 10,
     "type": "collect",
     "icon": "xerics_warrior.png",
     "itemIds": [
-        22390
+      22390
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 218,
     "name": "Xeric's Sentinel(500 CMs)",
     "tier": 10,
     "type": "collect",
     "icon": "xerics_sentinel.png",
     "itemIds": [
-        22392
+      22392
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 219,
     "name": "Xeric's General(1.5k CMs)",
     "tier": 10,
     "type": "collect",
     "icon": "xerics_general.png",
     "itemIds": [
-        22394
+      22394
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 220,
     "name": "Xeric's Champion(2k CMs)",
     "tier": 10,
     "type": "collect",
     "icon": "xerics_champion.png",
     "itemIds": [
-        22396
+      22396
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 221,
     "name": "Greenlog CoX",
     "tier": 10,
     "type": "collect",
     "icon": "cox_chest.png",
     "itemIds": [
-        20997,
-        21034,
-        21079,
-        21000,
-        21012,
-        21015,
-        21018,
-        21021,
-        21024,
-        13652,
-        21003,
-        21043,
-        22396,
-        24670,
-        6571,
-        22836
+      20997,
+      21034,
+      21079,
+      21000,
+      21012,
+      21015,
+      21018,
+      21021,
+      21024,
+      13652,
+      21003,
+      21043,
+      22396,
+      24670,
+      6571,
+      22836
     ],
     "amount": 16
-},
-{
+  },
+  {
     "id": 222,
     "name": "Defeat 100 Sol Heredit",
     "tier": 10,
     "type": "kc",
     "boss": "Sol Heredit",
     "total": 100
-},
-{
+  },
+  {
     "id": 223,
     "name": "Defeat 500 Hespori",
     "tier": 10,
     "type": "kc",
     "boss": "Hespori",
     "total": 500
-},
-{
+  },
+  {
     "id": 224,
     "name": "Defeat 200 Skotizo",
     "tier": 10,
     "type": "kc",
     "boss": "Skotizo",
     "total": 200
-},
-{
+  },
+  {
     "id": 225,
     "name": "Obtain 40000 Glory",
     "tier": 10,
     "type": "kc",
     "boss": "Colosseum Glory",
     "total": 40000
-},
-{
+  },
+  {
     "id": 226,
     "name": "7 Boss Pets",
     "tier": 10,
     "type": "collect",
     "icon": "pet_icon.png",
     "itemIds": [
-        30152,
-        30154,
-        20851,
-        20693,
-        23495,
-        21273,
-        28960
+      30152,
+      30154,
+      20851,
+      20693,
+      23495,
+      21273,
+      28960
     ],
     "amount": 7
-},
-{
+  },
+  {
     "id": 227,
     "name": "7 Skilling Pets",
     "tier": 10,
     "type": "collect",
     "icon": "pet_icon.png",
     "itemIds": [
-        13322,
-        20659,
-        13320,
-        13321,
-        20663,
-        20661,
-        20665
+      13322,
+      20659,
+      13320,
+      13321,
+      20663,
+      20661,
+      20665
     ],
     "amount": 7
-},
-{
+  },
+  {
     "id": 228,
     "name": "300 Collection Log Slots",
     "tier": 10,
     "type": "collect",
     "itemIds": [],
     "amount": 300
-},
-{
+  },
+  {
     "id": 229,
     "name": "Full Evil Chicken Outfit",
     "tier": 10,
     "type": "collect",
     "icon": "evil_chicken_head.png",
     "itemIds": [
-        20433,
-        20436,
-        20439,
-        20442
+      20433,
+      20436,
+      20439,
+      20442
     ],
     "amount": 4
-},
-{
+  },
+  {
     "id": 230,
     "name": "Stale Baguette",
     "tier": 10,
     "type": "collect",
     "icon": "stale_baguette.png",
     "itemIds": [
-        20590
+      20590
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 231,
     "name": "Jar of Darkness",
     "tier": 10,
     "type": "collect",
     "icon": "jar_of_darkness.png",
     "itemIds": [
-        19701
+      19701
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 232,
     "name": "Dragon Chainbody",
     "tier": 10,
     "type": "collect",
     "icon": "dragon_chainbody.png",
     "itemIds": [
-        3140
+      3140
     ],
     "amount": 1
-},
-{
+  },
+  {
     "id": 233,
     "name": "110 Total CA's",
     "tier": 10,
     "type": "ca",
     "total": 110
-},
-{
+  },
+  {
     "id": 234,
     "name": "Max CA's (118)",
     "tier": 10,
     "type": "ca",
     "total": 118
-},
-{
+  },
+  {
     "id": 235,
     "name": "100M XP in any Skill",
     "tier": 10,
     "type": "level",
     "level": "any",
     "goal": 100000000
-},
-{
+  },
+  {
     "id": 236,
     "name": "200M XP in any Skill",
     "tier": 10,
     "type": "level",
     "level": "any",
     "goal": 200000000
-},
-{
+  },
+  {
     "id": 237,
     "name": "250 Easy Clues",
     "tier": 10,
     "type": "kc",
     "boss": "Clue Scrolls (easy)",
     "total": 250
-},
-{
+  },
+  {
     "id": 238,
     "name": "100 Medium Clues",
     "tier": 10,
     "type": "kc",
     "boss": "Clue Scrolls (medium)",
     "total": 100
-},
-{
+  },
+  {
     "id": 239,
     "name": "250 Medium Clues",
     "tier": 10,
     "type": "kc",
     "boss": "Clue Scrolls (medium)",
     "total": 250
-},
-{
+  },
+  {
     "id": 240,
     "name": "25 Hard Clues",
     "tier": 10,
     "type": "kc",
     "boss": "Clue Scrolls (hard)",
     "total": 25
-},
-{
+  },
+  {
     "id": 241,
     "name": "50 Hard Clues",
     "tier": 10,
     "type": "kc",
     "boss": "Clue Scrolls (hard)",
     "total": 50
-},
-{
+  },
+  {
     "id": 242,
     "name": "5 Elite Clues",
     "tier": 10,
     "type": "kc",
     "boss": "Clue Scrolls (elite)",
     "total": 5
-},
-{
+  },
+  {
     "id": 243,
     "name": "10 Elite Clues",
     "tier": 10,
     "type": "kc",
     "boss": "Clue Scrolls (elite)",
     "total": 10
-},
-{
+  },
+  {
     "id": 244,
     "name": "5 Master Clues",
     "tier": 10,
     "type": "kc",
     "boss": "Clue Scrolls (master)",
     "total": 5
-},
-{
+  },
+  {
     "id": 245,
     "name": "10 Master Clues",
     "tier": 10,
     "type": "kc",
     "boss": "Clue Scrolls (master)",
     "total": 10
-}]
+  }
+]
