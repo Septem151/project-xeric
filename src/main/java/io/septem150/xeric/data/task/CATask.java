@@ -1,9 +1,13 @@
 package io.septem150.xeric.data.task;
 
 import io.septem150.xeric.data.player.PlayerInfo;
+import java.awt.image.BufferedImage;
+import java.util.Objects;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import net.runelite.client.game.SpriteManager;
+import net.runelite.client.util.ImageUtil;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -13,5 +17,10 @@ public class CATask extends Task {
   @Override
   public boolean checkCompletion(@NonNull PlayerInfo playerInfo) {
     return playerInfo.getCombatAchievements().size() >= total;
+  }
+
+  @Override
+  public BufferedImage getIcon(SpriteManager spriteManager) {
+    return ImageUtil.resizeImage(Objects.requireNonNull(spriteManager.getSprite(3389, 0)), 20, 20);
   }
 }

@@ -2,9 +2,13 @@ package io.septem150.xeric.data.task;
 
 import io.septem150.xeric.data.Level;
 import io.septem150.xeric.data.player.PlayerInfo;
+import java.awt.image.BufferedImage;
+import java.util.Objects;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import net.runelite.client.game.SpriteManager;
+import net.runelite.client.util.ImageUtil;
 import org.apache.commons.text.WordUtils;
 
 @Data
@@ -40,5 +44,10 @@ public class LevelTask extends Task {
         if (playerLevel == null) return false;
         return playerLevel.getAmount() >= goal;
     }
+  }
+
+  @Override
+  public BufferedImage getIcon(SpriteManager spriteManager) {
+    return ImageUtil.resizeImage(Objects.requireNonNull(spriteManager.getSprite(3387, 0)), 20, 20);
   }
 }
