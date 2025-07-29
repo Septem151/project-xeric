@@ -79,9 +79,10 @@ public final class ProjectXericPanel extends PluginPanel {
         createTab(SummaryPanel.TOOLTIP, SummaryPanel.TAB_ICON, summaryPanel, tabGroup);
     eventBus.register(summaryPanel);
 
-    MaterialTab leaderboardTab =
-        createTab(LeaderboardPanel.TOOLTIP, LeaderboardPanel.TAB_ICON, leaderboardPanel, tabGroup);
-    eventBus.register(leaderboardPanel);
+    //    MaterialTab leaderboardTab =
+    //        createTab(LeaderboardPanel.TOOLTIP, LeaderboardPanel.TAB_ICON, leaderboardPanel,
+    // tabGroup);
+    //    eventBus.register(leaderboardPanel);
     layoutPanel.add(tabGroup);
 
     add(layoutPanel, BorderLayout.NORTH);
