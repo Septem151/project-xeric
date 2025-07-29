@@ -36,7 +36,7 @@ public class CollectTask extends Task {
   @Override
   public BufferedImage getIcon(SpriteManager spriteManager) {
     if (this.getIcon() != null) {
-      return ResourceUtil.getImage(this.getIcon(), ICON_SIZE, ICON_SIZE);
+      return ResourceUtil.getImage(this.getIcon(), ICON_SIZE, ICON_SIZE, true);
     }
     return ImageUtil.resizeImage(Objects.requireNonNull(spriteManager.getSprite(3390, 0)), 20, 20);
   }

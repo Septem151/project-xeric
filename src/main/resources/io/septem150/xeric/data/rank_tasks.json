@@ -1510,7 +1510,6 @@
     "name": "Greenlog Moons of Peril",
     "tier": 7,
     "type": "collect",
-    "icon": "lunar_chest.png",
     "itemIds": [
       29013,
       29019,
