@@ -183,7 +183,6 @@ public class ProjectXericManager {
 
   public void reset(long accountId) {
     if (lastAccountId == accountId) return;
-    log.debug("RESETTING!");
     lastAccountId = accountId;
     playerInfo = new PlayerInfo();
     playerInfo.setUsername(client.getLocalPlayer().getName());
@@ -252,7 +251,6 @@ public class ProjectXericManager {
                 });
             playerInfo.setKillCounts(kcs);
             updateTasks = 2;
-            log.debug("High scores updated!");
           } catch (IOException exc) {
             log.warn(
                 "IOException while looking up hiscores for player '{}'",
@@ -376,7 +374,6 @@ public class ProjectXericManager {
     if (level.getExp() == event.getXp()) return;
     level.setAmount(event.getLevel());
     level.setExp(event.getXp());
-    log.debug("UPDATED STAT! {}: {} ({})", level.getName(), level.getAmount(), level.getExp());
     if (updateLevels <= 0 && level.isAccurate()) updateLevels = 5;
   }
 
@@ -493,11 +490,9 @@ public class ProjectXericManager {
   }
 
   private void updateObtainedItem(ItemStack itemStack) {
-    log.debug("Called updateObtainedItem");
     if (clogItemIds.contains(itemStack.getId())) {
       ClogItem clogItem = ClogItem.from(client, itemStack.getId());
       playerInfo.getCollectionLog().add(clogItem);
-      log.debug("Item added to player clog: {}", clogItem.getName());
       if (updateTasks <= 0) updateTasks = 1;
     }
     obtainedItemName = null;

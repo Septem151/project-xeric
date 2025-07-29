@@ -47,10 +47,7 @@ public class ProjectXericApiClient {
     //noinspection ConstantValue
     baseUrl =
         isDevMode
-            ? new HttpUrl.Builder()
-                .scheme("https")
-                .host("38d6a7bd-5c8f-4047-90a9-26305c8e30e9.mock.pstmn.io")
-                .build()
+            ? new HttpUrl.Builder().scheme("http").host("localhost:8085").build()
             : new HttpUrl.Builder().scheme("https").host("api.projectxeric.com").build();
   }
 
@@ -146,23 +143,7 @@ public class ProjectXericApiClient {
     }
   }
 
-  //  public CompletableFuture<Void> updateProfileAsync(PlayerData data) {
-  //    HttpUrl url = buildApiUrl("hiscores", data.getId());
-  //    return postHttpRequestAsync(url, gson.toJson(data))
-  //        .thenApply((response) -> handleResponse(response, null));
-  //  }
-
-  //  public CompletableFuture<ProfileSearchResult[]> getHiscores(String query) {
-  //    HttpUrl url = buildApiUrl("profiles")
-  //        .newBuilder()
-  //        .addQueryParameter("q", query)
-  //        .build();
-  //    return getHttpRequestAsync(url)
-  //        .thenApplyAsync((response -> handleResponse(response, ProfileSearchResult[].class)));
-  //  }
-
   public @NonNull CompletableFuture<List<Hiscore>> getAllHiscoresAsync() {
-
     HttpUrl url = buildApiUrl("players");
     return getHttpRequestAsync(url)
         .thenApplyAsync(

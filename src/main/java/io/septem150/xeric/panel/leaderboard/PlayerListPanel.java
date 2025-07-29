@@ -120,8 +120,6 @@ public class PlayerListPanel extends JPanel {
         nonSlayerHiscores.stream()
             .sorted(Comparator.comparingInt(Hiscore::getPoints).reversed())
             .collect(Collectors.toList());
-    log.debug("Non-Slayer Hiscores:\n{}", gson.toJson(nonSlayerHiscores));
-    log.debug("Slayer Hiscores:\n{}", gson.toJson(slayerHiscores));
   }
 
   private JPanel createHiscorePanel(int rank, Hiscore hiscore) {

@@ -35,7 +35,6 @@ public class HiscoresTableModel extends AbstractTableModel {
 
   @Override
   public Class<?> getColumnClass(int col) {
-    log.debug("Getting column class: {} {}", col, getValueAt(0, col).getClass());
     return getValueAt(0, col).getClass();
   }
 

@@ -19,13 +19,9 @@ import net.runelite.client.game.SpriteManager;
 import net.runelite.client.util.ImageUtil;
 
 public class ExceptionsRenderer extends JPanel implements TableCellRenderer {
-  private final ClientThread clientThread;
-  private final SpriteManager spriteManager;
   private final Map<String, ImageIcon> imageMap = new HashMap<>();
 
   public ExceptionsRenderer(ClientThread clientThread, SpriteManager spriteManager) {
-    this.clientThread = clientThread;
-    this.spriteManager = spriteManager;
     clientThread.invokeLater(
         () -> {
           imageMap.put(

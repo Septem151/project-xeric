@@ -19,7 +19,6 @@ public class LeaderboardPanel extends JPanel {
   public static final String TOOLTIP = "Leaderboard";
   public static final String TAB_ICON = "/skill_icons/overall.png";
 
-  private final JTable hiscoresTable;
   private final HiscoresTableModel hiscoresTableModel;
   private final HiscoreStore hiscoreStore;
 
@@ -30,7 +29,7 @@ public class LeaderboardPanel extends JPanel {
 
     setLayout(new BorderLayout());
     hiscoresTableModel = new HiscoresTableModel();
-    hiscoresTable = new JTable(hiscoresTableModel);
+    final JTable hiscoresTable = new JTable(hiscoresTableModel);
     hiscoresTable.setCellSelectionEnabled(false);
     hiscoresTable.setColumnSelectionAllowed(false);
     hiscoresTable.setRowSelectionAllowed(false);
@@ -71,7 +70,6 @@ public class LeaderboardPanel extends JPanel {
   public void shutDown() {}
 
   public void refresh() {
-    log.debug("refreshing LeaderboardPanel");
     revalidate();
   }
 }

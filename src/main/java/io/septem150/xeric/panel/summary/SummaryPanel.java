@@ -75,7 +75,6 @@ public class SummaryPanel extends JPanel {
   public void startUp() {}
 
   public void refresh() {
-    log.debug("reloading SummaryPanel");
     makeLayout();
     makeStaticData();
     if (manager.getPlayerInfo().getUsername() == null) {

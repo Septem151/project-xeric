@@ -17,13 +17,9 @@ import net.runelite.client.util.ImageUtil;
 import org.apache.commons.text.WordUtils;
 
 public class RankRenderer extends JLabel implements TableCellRenderer {
-  private final ClientThread clientThread;
-  private final SpriteManager spriteManager;
   private final Map<ClanRank, ImageIcon> imageMap = new HashMap<>();
 
   public RankRenderer(ClientThread clientThread, SpriteManager spriteManager) {
-    this.clientThread = clientThread;
-    this.spriteManager = spriteManager;
     clientThread.invokeLater(
         () -> {
           Arrays.stream(ClanRank.values())

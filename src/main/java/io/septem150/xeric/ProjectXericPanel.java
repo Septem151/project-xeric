@@ -104,7 +104,6 @@ public final class ProjectXericPanel extends PluginPanel {
   }
 
   public void refresh() {
-    log.debug("refreshing ProjectXericPanel");
     summaryPanel.refresh();
     leaderboardPanel.refresh();
     revalidate();

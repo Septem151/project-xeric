@@ -42,23 +42,4 @@ public final class LocalHiscoreStore implements HiscoreStore {
   public @NonNull List<Hiscore> getAll() {
     return hiscoresList;
   }
-  //
-  //  @Override
-  //  public Optional<Hiscore> getById(int id) {
-  //    return Optional.ofNullable(hiscoresMap.get(id));
-  //  }
-  //
-  //  @Override
-  //  public Optional<Hiscore> getByUsername(@NonNull String username) {
-  //    return hiscoresList.stream()
-  //        .filter(hiscore -> hiscore.getUsername().equalsIgnoreCase(username))
-  //        .findFirst();
-  //  }
-  //
-  //  @Override
-  //  public Optional<Hiscore> getByUsername(@NonNull Pattern pattern) {
-  //    return hiscoresList.stream()
-  //        .filter(hiscore -> pattern.matcher(hiscore.getUsername()).matches())
-  //        .findFirst();
-  //  }
 }
