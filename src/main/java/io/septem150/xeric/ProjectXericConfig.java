@@ -11,6 +11,7 @@ import net.runelite.client.config.ConfigItem;
  */
 @ConfigGroup(ProjectXericConfig.GROUP)
 public interface ProjectXericConfig extends Config {
+  String NAME = "Project Xeric";
   String GROUP = "projectxeric";
   String DATA_KEY = "clog";
   String SLAYER = "slayer";

@@ -27,11 +27,12 @@ import net.runelite.client.plugins.PluginDescriptor;
  * @author <a href="mailto:carson.mullins@proton.me">Septem 150</a>
  */
 @Slf4j
-@PluginDescriptor(name = "Project Xeric")
+@PluginDescriptor(name = ProjectXericConfig.NAME)
 public final class ProjectXericPlugin extends Plugin {
   @Inject
   private @Named("xericGson") Gson gson;
 
+  @Inject private ConfigManager configManager;
   @Inject private ProjectXericManager manager;
 
   private ProjectXericPanel panel;
@@ -56,7 +57,10 @@ public final class ProjectXericPlugin extends Plugin {
   @Subscribe
   public void onCommandExecuted(CommandExecuted event) {
     if (event.getCommand().equals("xeric")) {
+      // ::xeric - resets your saved collection log data and refreshes the side panel
       SwingUtilities.invokeLater(panel::refresh);
+      configManager.unsetRSProfileConfiguration(
+          ProjectXericConfig.GROUP, ProjectXericConfig.DATA_KEY);
     }
   }
 

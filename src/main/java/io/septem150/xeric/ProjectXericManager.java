@@ -517,6 +517,16 @@ public class ProjectXericManager {
               if (onlyLevels) remainingTasks.remove(task);
               else levelTasks.remove(task);
               refresh = true;
+              clientThread.invokeLater(
+                  () -> {
+                    client.addChatMessage(
+                        ChatMessageType.GAMEMESSAGE,
+                        ProjectXericConfig.NAME,
+                        String.format(
+                            "You have completed a Xeric Task: %s (+%d Points)",
+                            task.getName(), task.getTier()),
+                        "");
+                  });
             }
           }
           if (refresh) {
