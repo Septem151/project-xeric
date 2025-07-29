@@ -22,6 +22,6 @@ public class CATask extends Task {
   @Override
   public BufferedImage getIcon(SpriteManager spriteManager) {
     return ImageUtil.resizeImage(
-        Objects.requireNonNull(spriteManager.getSprite(3389, 0)), ICON_SIZE, ICON_SIZE);
+        Objects.requireNonNull(spriteManager.getSprite(3389, 0)), ICON_SIZE, ICON_SIZE, true);
   }
 }

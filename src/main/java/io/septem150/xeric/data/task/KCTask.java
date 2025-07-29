@@ -66,6 +66,6 @@ public class KCTask extends Task {
     }
     ImageCoord coord = iconMap.get(name);
     return ImageUtil.resizeImage(
-        Objects.requireNonNull(spriteManager.getSprite(coord.archive, coord.file)), 20, 20);
+        Objects.requireNonNull(spriteManager.getSprite(coord.archive, coord.file)), 20, 20, true);
   }
 }

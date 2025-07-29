@@ -26,6 +26,6 @@ public class QuestTask extends Task {
 
   @Override
   public BufferedImage getIcon(SpriteManager spriteManager) {
-    return ImageUtil.resizeImage(Objects.requireNonNull(spriteManager.getSprite(899, 0)), 20, 20);
+    return ImageUtil.resizeImage(Objects.requireNonNull(spriteManager.getSprite(899, 0)), 20, 20, true);
   }
 }
