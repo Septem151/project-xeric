@@ -17,7 +17,6 @@ public class TaskTypeAdapter extends TypeAdapter<Task> {
   @Override
   public void write(JsonWriter out, Task value) throws IOException {
     out.beginObject();
-    out.name("icon").jsonValue('"' + value.getIcon() + '"');
     out.name("id").value(value.getId());
     out.name("name").jsonValue('"' + value.getName() + '"');
     out.name("type").jsonValue('"' + value.getType() + '"');
@@ -53,7 +52,6 @@ public class TaskTypeAdapter extends TypeAdapter<Task> {
     while (in.hasNext()) {
       String key = in.nextName();
       switch (key) {
-        case "icon":
         case "name":
         case "type":
           properties.put(key, in.nextString());
@@ -129,7 +127,6 @@ public class TaskTypeAdapter extends TypeAdapter<Task> {
     }
     task.setType((String) properties.get("type"));
     task.setId((int) properties.get("id"));
-    task.setIcon((String) properties.get("icon"));
     task.setName((String) properties.get("name"));
     task.setTier((int) properties.get("tier"));
     return task;
