@@ -1,6 +1,6 @@
 package io.septem150.xeric.data.task;
 
-import io.septem150.xeric.data.Level;
+import io.septem150.xeric.data.player.Level;
 import io.septem150.xeric.data.player.PlayerInfo;
 import java.awt.image.BufferedImage;
 import java.util.Objects;

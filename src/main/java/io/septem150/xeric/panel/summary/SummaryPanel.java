@@ -72,7 +72,9 @@ public class SummaryPanel extends JPanel {
     clogLabel.setForeground(ColorScheme.BRAND_ORANGE);
   }
 
-  public void reload() {
+  public void startUp() {}
+
+  public void refresh() {
     log.debug("reloading SummaryPanel");
     makeLayout();
     makeStaticData();

@@ -19,3 +19,4 @@ bin/
 .vscode/
 null-ignored.json
 dump/
+python/

@@ -1,6 +1,6 @@
 package io.septem150.xeric.data.task;
 
-import io.septem150.xeric.data.KillCount;
+import io.septem150.xeric.data.player.KillCount;
 import io.septem150.xeric.data.player.PlayerInfo;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;

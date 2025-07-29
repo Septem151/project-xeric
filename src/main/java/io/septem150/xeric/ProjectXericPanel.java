@@ -56,9 +56,9 @@ public final class ProjectXericPanel extends PluginPanel {
             .priority(SIDEPANEL_PRIORITY)
             .panel(this)
             .build();
+
     this.summaryPanel = summaryPanel;
     this.leaderboardPanel = leaderboardPanel;
-
     setLayout(new BorderLayout());
     setBackground(ColorScheme.DARK_GRAY_COLOR);
     setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -78,8 +78,11 @@ public final class ProjectXericPanel extends PluginPanel {
     MaterialTab summaryTab =
         createTab(SummaryPanel.TOOLTIP, SummaryPanel.TAB_ICON, summaryPanel, tabGroup);
     eventBus.register(summaryPanel);
-    createTab(LeaderboardPanel.TOOLTIP, LeaderboardPanel.TAB_ICON, leaderboardPanel, tabGroup);
-    eventBus.register(leaderboardPanel);
+
+    //    MaterialTab leaderboardTab =
+    //        createTab(LeaderboardPanel.TOOLTIP, LeaderboardPanel.TAB_ICON, leaderboardPanel,
+    // tabGroup);
+    //    eventBus.register(leaderboardPanel);
     layoutPanel.add(tabGroup);
 
     add(layoutPanel, BorderLayout.NORTH);
@@ -89,26 +92,23 @@ public final class ProjectXericPanel extends PluginPanel {
   }
 
   /** Adds this Side Panel to the RuneLite client toolbar */
-  public void init() {
+  public void startUp() {
     clientToolbar.addNavigation(navigationButton);
+    summaryPanel.startUp();
+    leaderboardPanel.startUp();
   }
 
   /** Removes this Side Panel from the RuneLite client toolbar */
-  public void stop() {
+  public void shutDown() {
     clientToolbar.removeNavigation(navigationButton);
   }
 
-  public void reload() {
-    log.debug("reloading ProjectXericPanel");
-    summaryPanel.reload();
-    leaderboardPanel.reload();
+  public void refresh() {
+    log.debug("refreshing ProjectXericPanel");
+    summaryPanel.refresh();
+    leaderboardPanel.refresh();
     revalidate();
   }
-
-  //  @Subscribe
-  //  public void onPlayerInfoUpdated(PanelUpdate event) {
-  //    SwingUtilities.invokeLater(this::reload);
-  //  }
 
   /**
    * Creates a new {@link MaterialTab} with a given image and tooltip text. The {@code imageName} is
