@@ -1,5 +1,6 @@
 package io.septem150.xeric;
 
+import io.septem150.xeric_v2.ProjectXericPlugin;
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 

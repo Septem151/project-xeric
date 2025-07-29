@@ -1,4 +1,4 @@
-package io.septem150.xeric.data;
+package io.septem150.xeric_v2;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -48,9 +48,9 @@ public class ProjectXericApiClient {
     baseUrl =
         isDevMode
             ? new HttpUrl.Builder()
-                .scheme("https")
-                .host("38d6a7bd-5c8f-4047-90a9-26305c8e30e9.mock.pstmn.io")
-                .build()
+            .scheme("https")
+            .host("38d6a7bd-5c8f-4047-90a9-26305c8e30e9.mock.pstmn.io")
+            .build()
             : new HttpUrl.Builder().scheme("https").host("api.projectxeric.com").build();
   }
 
@@ -146,11 +146,17 @@ public class ProjectXericApiClient {
     }
   }
 
-  public @NonNull CompletableFuture<List<Hiscore>> getAllHiscoresAsync() {
-
-    HttpUrl url = buildApiUrl("players");
-    return getHttpRequestAsync(url)
-        .thenApplyAsync(
-            response -> handleResponse(response, new TypeToken<List<Hiscore>>() {}.getType()));
+  public CompletableFuture<Void> updateProfileAsync(PlayerData data) {
+    HttpUrl url = buildApiUrl("profiles");
+    return postHttpRequestAsync(url, gson.toJson(data))
+        .thenApply((response) -> handleResponse(response, null));
   }
+
+//  public @NonNull CompletableFuture<List<Hiscore>> getAllHiscoresAsync() {
+//
+//    HttpUrl url = buildApiUrl("players");
+//    return getHttpRequestAsync(url)
+//        .thenApplyAsync(
+//            response -> handleResponse(response, new TypeToken<List<Hiscore>>() {}.getType()));
+//  }
 }
