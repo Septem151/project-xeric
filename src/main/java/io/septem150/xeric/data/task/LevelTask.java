@@ -2,6 +2,7 @@ package io.septem150.xeric.data.task;
 
 import io.septem150.xeric.data.player.Level;
 import io.septem150.xeric.data.player.PlayerInfo;
+import io.septem150.xeric.util.ResourceUtil;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 import lombok.Data;
@@ -48,6 +49,9 @@ public class LevelTask extends Task {
 
   @Override
   public BufferedImage getIcon(SpriteManager spriteManager) {
+    if (this.getIcon() != null) {
+      return ResourceUtil.getImage(this.getIcon(), ICON_SIZE, ICON_SIZE, true);
+    }
     return ImageUtil.resizeImage(Objects.requireNonNull(spriteManager.getSprite(3387, 0)), 20, 20);
   }
 }
