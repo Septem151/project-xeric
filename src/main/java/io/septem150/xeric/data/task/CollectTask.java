@@ -1,6 +1,7 @@
 package io.septem150.xeric.data.task;
 
 import io.septem150.xeric.data.player.PlayerInfo;
+import io.septem150.xeric.util.ResourceUtil;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 import java.util.Set;
@@ -34,6 +35,9 @@ public class CollectTask extends Task {
 
   @Override
   public BufferedImage getIcon(SpriteManager spriteManager) {
+    if (this.getIcon() != null) {
+      return ResourceUtil.getImage(this.getIcon(), ICON_SIZE, ICON_SIZE);
+    }
     return ImageUtil.resizeImage(Objects.requireNonNull(spriteManager.getSprite(3390, 0)), 20, 20);
   }
 }
