@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Test Client" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="io.septem150.xeric.ProjectXericPluginTest" />
-    <module name="Project_Xeric.test" />
+    <module name="ProjectXeric.test" />
     <option name="PROGRAM_PARAMETERS" value="--debug --developer-mode" />
     <option name="VM_PARAMETERS" value="-ea" />
     <option name="WORKING_DIRECTORY" value="$ProjectFileDir$" />
