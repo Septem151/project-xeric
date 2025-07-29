@@ -13,17 +13,18 @@ import net.runelite.client.util.ImageUtil;
 @RequiredArgsConstructor
 @Getter
 public enum AccountType {
-  INVALID(-1, -1, HiscoreEndpoint.NORMAL),
-  DEFAULT(0, 32, HiscoreEndpoint.NORMAL),
-  IRONMAN(1, 2, HiscoreEndpoint.IRONMAN),
-  ULTIMATE(2, 3, HiscoreEndpoint.ULTIMATE_IRONMAN),
-  HARDCORE(3, 10, HiscoreEndpoint.HARDCORE_IRONMAN),
-  RANKED_GIM(4, 41, HiscoreEndpoint.NORMAL),
-  HARDCORE_GIM(5, 42, HiscoreEndpoint.NORMAL),
-  UNRANKED_GIM(6, 43, HiscoreEndpoint.NORMAL);
+  INVALID("Invalid", -1, -1, HiscoreEndpoint.NORMAL),
+  DEFAULT("Default", 0, 32, HiscoreEndpoint.NORMAL),
+  IRONMAN("Ironman", 1, 2, HiscoreEndpoint.IRONMAN),
+  ULTIMATE("Ultimate", 2, 3, HiscoreEndpoint.ULTIMATE_IRONMAN),
+  HARDCORE("Hardcore", 3, 10, HiscoreEndpoint.HARDCORE_IRONMAN),
+  RANKED_GIM("Ranked GIM", 4, 41, HiscoreEndpoint.NORMAL),
+  HARDCORE_GIM("Hardcore GIM", 5, 42, HiscoreEndpoint.NORMAL),
+  UNRANKED_GIM("Unranked GIM", 6, 43, HiscoreEndpoint.NORMAL);
 
   private static final int MODICONS_ARCHIVE_ID = 423;
 
+  private final String refName;
   private final int varbValue;
   private final int spriteId;
   private final HiscoreEndpoint hiscoreEndpoint;
@@ -31,6 +32,15 @@ public enum AccountType {
   public static AccountType fromVarbValue(int varbValue) {
     for (AccountType accountType : AccountType.values()) {
       if (accountType.varbValue == varbValue) {
+        return accountType;
+      }
+    }
+    return AccountType.INVALID;
+  }
+
+  public static AccountType fromName(String name) {
+    for (AccountType accountType : AccountType.values()) {
+      if (accountType.refName.equals(name)) {
         return accountType;
       }
     }

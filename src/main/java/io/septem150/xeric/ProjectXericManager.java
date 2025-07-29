@@ -1,15 +1,5 @@
 package io.septem150.xeric;
 
-import static io.septem150.xeric.data.CombatAchievement.CA_STRUCT_ID_PARAM_ID;
-import static io.septem150.xeric.data.CombatAchievement.CA_STRUCT_NAME_PARAM_ID;
-import static io.septem150.xeric.data.CombatAchievement.CA_STRUCT_TIER_PARAM_ID;
-import static io.septem150.xeric.data.CombatAchievement.EASY_TIER_ENUM_ID;
-import static io.septem150.xeric.data.CombatAchievement.ELITE_TIER_ENUM_ID;
-import static io.septem150.xeric.data.CombatAchievement.GM_TIER_ENUM_ID;
-import static io.septem150.xeric.data.CombatAchievement.HARD_TIER_ENUM_ID;
-import static io.septem150.xeric.data.CombatAchievement.MASTER_TIER_ENUM_ID;
-import static io.septem150.xeric.data.CombatAchievement.MEDIUM_TIER_ENUM_ID;
-import static io.septem150.xeric.data.CombatAchievement.SCRIPT_4834_VARP_IDS;
 import static io.septem150.xeric.data.clog.CollectionLog.CLOG_SUB_TABS_PARAM_ID;
 import static io.septem150.xeric.data.clog.CollectionLog.CLOG_SUB_TAB_ITEMS_PARAM_ID;
 import static io.septem150.xeric.data.clog.CollectionLog.CLOG_TOP_TABS_ENUM_ID;
@@ -17,6 +7,15 @@ import static io.septem150.xeric.data.clog.CollectionLog.COLLECTION_LOG_SETUP_SC
 import static io.septem150.xeric.data.clog.CollectionLog.COLLECTION_LOG_TRANSMIT_SCRIPT_ID;
 import static io.septem150.xeric.data.clog.CollectionLog.ITEM_REPLACEMENT_MAPPING_ENUM_ID;
 import static io.septem150.xeric.data.clog.CollectionLog.UNUSED_PROSPECTOR_ITEM_IDS;
+import static io.septem150.xeric.data.player.CombatAchievement.CA_STRUCT_ID_PARAM_ID;
+import static io.septem150.xeric.data.player.CombatAchievement.CA_STRUCT_NAME_PARAM_ID;
+import static io.septem150.xeric.data.player.CombatAchievement.CA_STRUCT_TIER_PARAM_ID;
+import static io.septem150.xeric.data.player.CombatAchievement.EASY_TIER_ENUM_ID;
+import static io.septem150.xeric.data.player.CombatAchievement.ELITE_TIER_ENUM_ID;
+import static io.septem150.xeric.data.player.CombatAchievement.GM_TIER_ENUM_ID;
+import static io.septem150.xeric.data.player.CombatAchievement.HARD_TIER_ENUM_ID;
+import static io.septem150.xeric.data.player.CombatAchievement.MASTER_TIER_ENUM_ID;
+import static io.septem150.xeric.data.player.CombatAchievement.MEDIUM_TIER_ENUM_ID;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
@@ -24,15 +23,15 @@ import com.google.common.collect.Multisets;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import io.septem150.xeric.data.CombatAchievement;
-import io.septem150.xeric.data.KillCount;
-import io.septem150.xeric.data.Level;
-import io.septem150.xeric.data.QuestProgress;
 import io.septem150.xeric.data.clog.ClogItem;
 import io.septem150.xeric.data.clog.CollectionLog;
 import io.septem150.xeric.data.diary.DiaryProgress;
 import io.septem150.xeric.data.player.AccountType;
+import io.septem150.xeric.data.player.CombatAchievement;
+import io.septem150.xeric.data.player.KillCount;
+import io.septem150.xeric.data.player.Level;
 import io.septem150.xeric.data.player.PlayerInfo;
+import io.septem150.xeric.data.player.QuestProgress;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.event.PanelUpdate;
@@ -540,8 +539,8 @@ public class ProjectXericManager {
       int caStructId = iterator.next();
       StructComposition struct = client.getStructComposition(caStructId);
       int caTaskId = struct.getIntValue(CA_STRUCT_ID_PARAM_ID);
-      boolean unlocked =
-          (client.getVarpValue(SCRIPT_4834_VARP_IDS[caTaskId / 32]) & (1 << (caTaskId % 32))) != 0;
+      client.runScript(4834, caTaskId);
+      boolean unlocked = client.getIntStack()[client.getIntStackSize() - 1] != 0;
       if (unlocked) {
         CombatAchievement combatAchievement = new CombatAchievement();
         combatAchievement.setId(caTaskId);

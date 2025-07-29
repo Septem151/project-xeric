@@ -10,21 +10,16 @@ import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.data.task.TaskTypeAdapter;
 import io.septem150.xeric.event.PanelUpdate;
-import java.awt.Color;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.ChatMessageType;
-import net.runelite.api.Client;
 import net.runelite.api.events.CommandExecuted;
 import net.runelite.api.events.GameTick;
-import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.util.ColorUtil;
 
 /**
  * Project Xeric plugin.
@@ -34,11 +29,6 @@ import net.runelite.client.util.ColorUtil;
 @Slf4j
 @PluginDescriptor(name = "Project Xeric")
 public final class ProjectXericPlugin extends Plugin {
-  @Inject private Client client;
-  @Inject private ClientThread clientThread;
-  @Inject private ProjectXericConfig config;
-  @Inject private ConfigManager configManager;
-
   @Inject
   private @Named("xericGson") Gson gson;
 
@@ -52,37 +42,28 @@ public final class ProjectXericPlugin extends Plugin {
     log.info("Project Xeric started!");
     panel = injector.getInstance(ProjectXericPanel.class);
     manager.startUp();
-    panel.init();
-    SwingUtilities.invokeLater(panel::reload);
+    panel.startUp();
+    SwingUtilities.invokeLater(panel::refresh);
   }
 
   @Override
   protected void shutDown() throws Exception {
     log.info("Project Xeric stopped!");
-    panel.stop();
+    panel.shutDown();
     manager.shutDown();
   }
 
   @Subscribe
   public void onCommandExecuted(CommandExecuted event) {
     if (event.getCommand().equals("xeric")) {
-      //      configManager.unsetRSProfileConfiguration(
-      //          ProjectXericConfig.GROUP, ProjectXericConfig.DATA_KEY);
-      //      manager.reset(client.getAccountHash());
-      log.debug(gson.toJson(manager.getPlayerInfo()));
-      client.addChatMessage(
-          ChatMessageType.GAMEMESSAGE,
-          "",
-          "Your Hueycoatl kill count is: " + ColorUtil.wrapWithColorTag("400", Color.RED) + ".",
-          null,
-          true);
+      SwingUtilities.invokeLater(panel::refresh);
     }
   }
 
   @Subscribe
   public void onGameTick(GameTick event) {
     if (updatePanel > 0 && --updatePanel == 0) {
-      SwingUtilities.invokeLater(panel::reload);
+      SwingUtilities.invokeLater(panel::refresh);
     }
   }
 

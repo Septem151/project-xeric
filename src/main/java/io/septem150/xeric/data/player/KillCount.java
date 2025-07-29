@@ -1,4 +1,4 @@
-package io.septem150.xeric.data;
+package io.septem150.xeric.data.player;
 
 import java.util.List;
 import lombok.Data;
