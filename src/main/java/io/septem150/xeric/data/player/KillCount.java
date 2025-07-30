@@ -23,6 +23,8 @@ public class KillCount {
           HiscoreSkill.SOL_HEREDIT,
           HiscoreSkill.WINTERTODT,
           HiscoreSkill.MIMIC,
+          HiscoreSkill.YAMA,
+          HiscoreSkill.DOOM_OF_MOKHAIOTL,
           HiscoreSkill.CLUE_SCROLL_ALL,
           HiscoreSkill.CLUE_SCROLL_EASY,
           HiscoreSkill.CLUE_SCROLL_MEDIUM,
