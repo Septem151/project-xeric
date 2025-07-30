@@ -34,7 +34,10 @@ public class QuestProgress {
           Quest.AT_FIRST_LIGHT,
           Quest.DEATH_ON_THE_ISLE,
           Quest.MEAT_AND_GREET,
-          Quest.ETHICALLY_ACQUIRED_ANTIQUITIES);
+          Quest.ETHICALLY_ACQUIRED_ANTIQUITIES,
+          Quest.THE_FINAL_DAWN,
+          Quest.SHADOWS_OF_CUSTODIA,
+          Quest.SCRAMBLED);
 
   public static QuestProgress from(Client client, Quest quest) {
     if (client == null || !client.isClientThread()) {
