@@ -568,16 +568,21 @@ public class ProjectXericManager {
               refresh = true;
               if (config.chatMessages()) {
                 clientThread.invokeLater(
-                    () ->
-                        client.addChatMessage(
-                            ChatMessageType.GAMEMESSAGE,
-                            ProjectXericConfig.NAME,
-                            String.format(
-                                "Xeric task completed for %d points: %s.",
-                                task.getTier(),
-                                ColorUtil.wrapWithColorTag(
-                                    task.getName(), Color.decode("#006600"))),
-                            ""));
+                    () -> {
+                      int points =
+                          task.getSlayerPoints() != null && config.slayer()
+                              ? task.getSlayerPoints()
+                              : task.getTier();
+                      client.addChatMessage(
+                          ChatMessageType.GAMEMESSAGE,
+                          ProjectXericConfig.NAME,
+                          String.format(
+                              "Xeric task completed for %d point%s: %s.",
+                              points,
+                              points > 1 ? "s" : "",
+                              ColorUtil.wrapWithColorTag(task.getName(), Color.decode("#006600"))),
+                          "");
+                    });
               }
             }
           }
