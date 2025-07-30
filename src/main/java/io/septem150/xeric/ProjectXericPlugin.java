@@ -64,6 +64,7 @@ public final class ProjectXericPlugin extends Plugin {
           ProjectXericConfig.GROUP, ProjectXericConfig.CLOG_DATA_KEY);
       configManager.unsetRSProfileConfiguration(
           ProjectXericConfig.GROUP, ProjectXericConfig.TASKS_DATA_KEY);
+      manager.getPlayerInfo().clear();
       manager.shutDown();
       manager.startUp();
       SwingUtilities.invokeLater(panel::refresh);
