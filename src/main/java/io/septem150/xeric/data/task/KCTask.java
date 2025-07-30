@@ -37,6 +37,8 @@ public class KCTask extends Task {
       iconMap.put(HiscoreSkill.COLOSSEUM_GLORY.getName(), new ImageCoord(5862, 0));
       iconMap.put(HiscoreSkill.WINTERTODT.getName(), new ImageCoord(4266, 0));
       iconMap.put(HiscoreSkill.MIMIC.getName(), new ImageCoord(4260, 0));
+      iconMap.put(HiscoreSkill.YAMA.getName(), new ImageCoord(6346, 0));
+      iconMap.put(HiscoreSkill.DOOM_OF_MOKHAIOTL.getName(), new ImageCoord(6347, 0));
       iconMap.put("Clues", new ImageCoord(5853, 0));
     }
   }

@@ -38,7 +38,7 @@ public enum ClanRank {
   MAXED(Integer.MAX_VALUE, 3247, 0);
 
   /** All ranks sorted by points needed to obtain. */
-  public static final List<ClanRank> allRanks =
+  public static final List<ClanRank> ALL_RANKS =
       Arrays.stream(ClanRank.values())
           .sorted(Comparator.comparingInt(r -> r.pointsNeeded))
           .collect(Collectors.toList());
@@ -49,7 +49,7 @@ public enum ClanRank {
 
   public static ClanRank fromPoints(int points) {
     ClanRank obtainedRank = ClanRank.CARRY;
-    for (ClanRank rank : allRanks) {
+    for (ClanRank rank : ALL_RANKS) {
       if (points < rank.pointsNeeded) break;
       obtainedRank = rank;
     }
@@ -57,7 +57,7 @@ public enum ClanRank {
   }
 
   public ClanRank getNextRank() {
-    return allRanks.get(Math.min(allRanks.indexOf(this) + 1, allRanks.size() - 1));
+    return ALL_RANKS.get(Math.min(ALL_RANKS.indexOf(this) + 1, ALL_RANKS.size() - 1));
   }
 
   @Override

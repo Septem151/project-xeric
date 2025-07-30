@@ -17,11 +17,16 @@ public class TaskTypeAdapter extends TypeAdapter<Task> {
   @Override
   public void write(JsonWriter out, Task value) throws IOException {
     out.beginObject();
-    out.name("icon").jsonValue('"' + value.getIcon() + '"');
+    if (value.getIcon() != null) {
+      out.name("icon").jsonValue('"' + value.getIcon() + '"');
+    }
     out.name("id").value(value.getId());
     out.name("name").jsonValue('"' + value.getName() + '"');
     out.name("type").jsonValue('"' + value.getType() + '"');
     out.name("tier").value(value.getTier());
+    if (value.getSlayerPoints() != null) {
+      out.name("slayerPoints").value(value.getSlayerPoints());
+    }
     if (value instanceof LevelTask) {
       out.name("level").jsonValue('"' + ((LevelTask) value).getLevel() + '"');
       out.name("goal").value(((LevelTask) value).getGoal());
@@ -60,7 +65,9 @@ public class TaskTypeAdapter extends TypeAdapter<Task> {
           break;
         case "id":
         case "tier":
+        case "slayerPoints":
           properties.put(key, in.nextInt());
+          break;
         default:
           JsonToken token = in.peek();
           switch (token) {
@@ -82,11 +89,13 @@ public class TaskTypeAdapter extends TypeAdapter<Task> {
                   case NUMBER:
                     list.add(in.nextInt());
                     break;
+                  default:
                 }
               }
               in.endArray();
               properties.put(key, list);
               break;
+            default:
           }
           break;
       }
@@ -128,10 +137,15 @@ public class TaskTypeAdapter extends TypeAdapter<Task> {
         throw new JsonParseException("Unknown value for Task 'type'");
     }
     task.setType((String) properties.get("type"));
-    task.setId((int) properties.get("id"));
-    task.setIcon((String) properties.get("icon"));
+    task.setId((Integer) properties.get("id"));
+    if (properties.containsKey("icon")) {
+      task.setIcon((String) properties.get("icon"));
+    }
     task.setName((String) properties.get("name"));
     task.setTier((int) properties.get("tier"));
+    if (properties.containsKey("slayerPoints")) {
+      task.setSlayerPoints((Integer) properties.get("slayerPoints"));
+    }
     return task;
   }
 }

@@ -32,7 +32,6 @@ import net.runelite.client.util.SwingUtil;
 @Slf4j
 @Singleton
 public final class ProjectXericPanel extends PluginPanel {
-  private static final String SIDEPANEL_TOOLTIP = "Project Xeric";
   private static final String SIDEPANEL_ICON = "sidepanel_icon.png";
   private static final int SIDEPANEL_PRIORITY = 3;
 
@@ -51,7 +50,7 @@ public final class ProjectXericPanel extends PluginPanel {
     this.clientToolbar = clientToolbar;
     navigationButton =
         NavigationButton.builder()
-            .tooltip(SIDEPANEL_TOOLTIP)
+            .tooltip(ProjectXericConfig.NAME)
             .icon(ResourceUtil.getImage(SIDEPANEL_ICON))
             .priority(SIDEPANEL_PRIORITY)
             .panel(this)
@@ -79,8 +78,7 @@ public final class ProjectXericPanel extends PluginPanel {
         createTab(SummaryPanel.TOOLTIP, SummaryPanel.TAB_ICON, summaryPanel, tabGroup);
     eventBus.register(summaryPanel);
 
-    MaterialTab leaderboardTab =
-        createTab(LeaderboardPanel.TOOLTIP, LeaderboardPanel.TAB_ICON, leaderboardPanel, tabGroup);
+    createTab(LeaderboardPanel.TOOLTIP, LeaderboardPanel.TAB_ICON, leaderboardPanel, tabGroup);
 
     eventBus.register(leaderboardPanel);
     layoutPanel.add(tabGroup);
@@ -137,7 +135,7 @@ public final class ProjectXericPanel extends PluginPanel {
     JPanel titlePanel = new JPanel(new BorderLayout());
     titlePanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
-    JLabel title = new JLabel("Project Xeric");
+    JLabel title = new JLabel(ProjectXericConfig.NAME);
     title.setForeground(Color.WHITE);
     titlePanel.add(title, BorderLayout.WEST);
 

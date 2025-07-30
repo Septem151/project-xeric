@@ -22,10 +22,10 @@ public class CollectTask extends Task {
     if (itemIds.isEmpty()) {
       return playerInfo.getCollectionLog().size() >= amount;
     }
-    Set<Integer> itemIds = playerInfo.getCollectionLog().getItemIds();
+    Set<Integer> playerItemIds = playerInfo.getCollectionLog().getItemIds();
     int amountRemaining = amount;
-    for (int itemId : itemIds) {
-      if (this.itemIds.contains(itemId)) {
+    for (int itemId : playerItemIds) {
+      if (itemIds.contains(itemId)) {
         amountRemaining--;
       }
       if (amountRemaining == 0) break;

@@ -1,7 +1,9 @@
 package io.septem150.xeric.panel.summary;
 
 import com.google.common.collect.Iterables;
+import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.ProjectXericManager;
+import io.septem150.xeric.data.player.ClanRank;
 import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
@@ -35,12 +37,18 @@ import org.apache.commons.text.WordUtils;
 @Singleton
 public class IdCard extends JPanel {
   private final ProjectXericManager manager;
+  private final ProjectXericConfig config;
   private final TaskStore taskStore;
   private final SpriteManager spriteManager;
 
   @Inject
-  private IdCard(ProjectXericManager manager, TaskStore taskStore, SpriteManager spriteManager) {
+  private IdCard(
+      ProjectXericManager manager,
+      ProjectXericConfig config,
+      TaskStore taskStore,
+      SpriteManager spriteManager) {
     this.manager = manager;
+    this.config = config;
     this.taskStore = taskStore;
     this.spriteManager = spriteManager;
 
@@ -121,9 +129,10 @@ public class IdCard extends JPanel {
 
   private void makeDynamicData() {
     PlayerInfo playerInfo = manager.getPlayerInfo();
-    int playerPoints = playerInfo.getTasks().stream().mapToInt(Task::getTier).sum();
-    playerInfo.getRank().getImageAsync(spriteManager, image -> rank.setIcon(new ImageIcon(image)));
-    rank.setToolTipText(WordUtils.capitalizeFully(playerInfo.getRank().name()));
+    int playerPoints = playerInfo.getPoints();
+    ClanRank playerRank = playerInfo.getRank();
+    playerRank.getImageAsync(spriteManager, image -> rank.setIcon(new ImageIcon(image)));
+    rank.setToolTipText(WordUtils.capitalizeFully(playerRank.name()));
     playerInfo
         .getAccountType()
         .getImageAsync(spriteManager, image -> username.setIcon(new ImageIcon(image)));
@@ -159,7 +168,7 @@ public class IdCard extends JPanel {
     }
     slayException.setEnabled(playerInfo.isSlayerException());
     tasksCompleted.setValue(playerInfo.getTasks().size());
-    pointsToNextRank.setValue(playerInfo.getRank().getNextRank().getPointsNeeded() - playerPoints);
+    pointsToNextRank.setValue(playerRank.getNextRank().getPointsNeeded() - playerPoints);
     highestTierCompleted.setValue(getHighestTierCompleted());
   }
 

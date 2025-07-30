@@ -3,7 +3,7 @@ package io.septem150.xeric.panel.leaderboard;
 import io.septem150.xeric.data.player.ClanRank;
 import java.awt.Component;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -17,20 +17,19 @@ import net.runelite.client.util.ImageUtil;
 import org.apache.commons.text.WordUtils;
 
 public class RankRenderer extends JLabel implements TableCellRenderer {
-  private final Map<ClanRank, ImageIcon> imageMap = new HashMap<>();
+  private final Map<ClanRank, ImageIcon> imageMap = new EnumMap<>(ClanRank.class);
 
   public RankRenderer(ClientThread clientThread, SpriteManager spriteManager) {
     clientThread.invokeLater(
-        () -> {
-          Arrays.stream(ClanRank.values())
-              .forEach(
-                  clanRank ->
-                      imageMap.put(
-                          clanRank,
-                          new ImageIcon(
-                              ImageUtil.resizeImage(
-                                  clanRank.getImage(spriteManager), 14, 14, true))));
-        });
+        () ->
+            Arrays.stream(ClanRank.values())
+                .forEach(
+                    clanRank ->
+                        imageMap.put(
+                            clanRank,
+                            new ImageIcon(
+                                ImageUtil.resizeImage(
+                                    clanRank.getImage(spriteManager), 14, 14, true)))));
   }
 
   @Override

@@ -15,7 +15,8 @@ public abstract class Task {
   @Nullable private String icon;
   private String name;
   private String type;
-  private int tier;
+  private Integer tier;
+  @Nullable Integer slayerPoints;
 
   public abstract boolean checkCompletion(@NonNull PlayerInfo playerInfo);
 

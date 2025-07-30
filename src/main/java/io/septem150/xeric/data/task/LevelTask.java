@@ -25,8 +25,8 @@ public class LevelTask extends Task {
         int total = playerInfo.getLevels().values().stream().mapToInt(Level::getAmount).sum();
         return total >= goal;
       case "any":
-        for (Level level : playerInfo.getLevels().values()) {
-          int currentExp = level.getExp();
+        for (Level playerLevel : playerInfo.getLevels().values()) {
+          int currentExp = playerLevel.getExp();
           if (currentExp >= goal) {
             return true;
           }
@@ -34,8 +34,8 @@ public class LevelTask extends Task {
         return false;
       case "maxed":
         int maxed = 0;
-        for (Level level : playerInfo.getLevels().values()) {
-          if (level.getAmount() >= 99) {
+        for (Level playerLevel : playerInfo.getLevels().values()) {
+          if (playerLevel.getAmount() >= 99) {
             maxed++;
           }
         }

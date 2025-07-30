@@ -31,5 +31,6 @@ public class CollectionLog {
   public static final int CLOG_SUB_TABS_PARAM_ID = 683;
   public static final int CLOG_SUB_TAB_ITEMS_PARAM_ID = 690;
   public static final int ITEM_REPLACEMENT_MAPPING_ENUM_ID = 3721;
-  public static final int[] UNUSED_PROSPECTOR_ITEM_IDS = new int[] {29472, 29474, 29476, 29478};
+  public static final List<Integer> UNUSED_PROSPECTOR_ITEM_IDS =
+      List.of(29472, 29474, 29476, 29478);
 }

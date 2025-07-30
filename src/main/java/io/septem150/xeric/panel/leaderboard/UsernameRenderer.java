@@ -3,7 +3,7 @@ package io.septem150.xeric.panel.leaderboard;
 import io.septem150.xeric.data.player.AccountType;
 import java.awt.Component;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -17,23 +17,22 @@ import net.runelite.client.util.ImageUtil;
 public class UsernameRenderer extends JLabel implements TableCellRenderer {
   private final ClientThread clientThread;
   private final SpriteManager spriteManager;
-  private final Map<AccountType, ImageIcon> imageMap = new HashMap<>();
+  private final Map<AccountType, ImageIcon> imageMap = new EnumMap<>(AccountType.class);
 
   public UsernameRenderer(ClientThread clientThread, SpriteManager spriteManager) {
     this.clientThread = clientThread;
     this.spriteManager = spriteManager;
     clientThread.invokeLater(
-        () -> {
-          Arrays.stream(AccountType.values())
-              .forEach(
-                  accountType -> {
-                    imageMap.put(
-                        accountType,
-                        new ImageIcon(
-                            ImageUtil.resizeImage(
-                                accountType.getImage(spriteManager), 14, 14, true)));
-                  });
-        });
+        () ->
+            Arrays.stream(AccountType.values())
+                .forEach(
+                    accountType -> {
+                      imageMap.put(
+                          accountType,
+                          new ImageIcon(
+                              ImageUtil.resizeImage(
+                                  accountType.getImage(spriteManager), 14, 14, true)));
+                    }));
   }
 
   @Override

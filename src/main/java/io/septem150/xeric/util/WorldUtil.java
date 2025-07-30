@@ -6,6 +6,8 @@ import net.runelite.api.Client;
 import net.runelite.api.WorldType;
 
 public class WorldUtil {
+  private WorldUtil() {}
+
   private static final Set<WorldType> invalidWorldTypes =
       Set.of(
           WorldType.NOSAVE_MODE,

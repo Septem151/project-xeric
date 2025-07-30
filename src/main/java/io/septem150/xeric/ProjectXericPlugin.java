@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.Client;
 import net.runelite.api.events.CommandExecuted;
 import net.runelite.api.events.GameTick;
 import net.runelite.client.config.ConfigManager;
@@ -34,6 +35,7 @@ public final class ProjectXericPlugin extends Plugin {
 
   @Inject private ConfigManager configManager;
   @Inject private ProjectXericManager manager;
+  @Inject private Client client;
 
   private ProjectXericPanel panel;
   private int updatePanel;
@@ -62,6 +64,8 @@ public final class ProjectXericPlugin extends Plugin {
           ProjectXericConfig.GROUP, ProjectXericConfig.CLOG_DATA_KEY);
       configManager.unsetRSProfileConfiguration(
           ProjectXericConfig.GROUP, ProjectXericConfig.TASKS_DATA_KEY);
+      manager.shutDown();
+      manager.startUp();
       SwingUtilities.invokeLater(panel::refresh);
     }
   }

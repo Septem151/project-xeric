@@ -160,7 +160,7 @@ public class ProjectXericManager {
 
   public void startUp() {
     lastAccountId = -1L;
-    playerInfo = new PlayerInfo();
+    playerInfo = new PlayerInfo(config);
     eventBus.register(this);
     clientThread.invokeLater(
         () -> {
@@ -195,9 +195,10 @@ public class ProjectXericManager {
   }
 
   public void reset(long accountId) {
+    log.debug("Last account ID: {}\nNew account ID: {}", lastAccountId, accountId);
     if (lastAccountId == accountId) return;
     lastAccountId = accountId;
-    playerInfo = new PlayerInfo();
+    playerInfo = new PlayerInfo(config);
     playerInfo.setUsername(client.getLocalPlayer().getName());
     playerInfo.setAccountType(AccountType.fromVarbValue(client.getVarbitValue(VarbitID.IRONMAN)));
     playerInfo.setSlayerException(config.slayer());
@@ -531,7 +532,7 @@ public class ProjectXericManager {
   @Subscribe
   public void onConfigChanged(ConfigChanged event) {
     if (!event.getGroup().equals(ProjectXericConfig.GROUP)) return;
-    if (event.getKey().equals(ProjectXericConfig.SLAYER)) {
+    if (event.getKey().equals(ProjectXericConfig.SLAYER_CONFIG_KEY)) {
       playerInfo.setSlayerException(Boolean.parseBoolean(event.getNewValue()));
       eventBus.post(new PanelUpdate());
     }
@@ -567,16 +568,16 @@ public class ProjectXericManager {
               refresh = true;
               if (config.chatMessages()) {
                 clientThread.invokeLater(
-                    () -> {
-                      client.addChatMessage(
-                          ChatMessageType.GAMEMESSAGE,
-                          ProjectXericConfig.NAME,
-                          String.format(
-                              "Xeric task completed for %d points: %s.",
-                              task.getTier(),
-                              ColorUtil.wrapWithColorTag(task.getName(), Color.decode("#006600"))),
-                          "");
-                    });
+                    () ->
+                        client.addChatMessage(
+                            ChatMessageType.GAMEMESSAGE,
+                            ProjectXericConfig.NAME,
+                            String.format(
+                                "Xeric task completed for %d points: %s.",
+                                task.getTier(),
+                                ColorUtil.wrapWithColorTag(
+                                    task.getName(), Color.decode("#006600"))),
+                            ""));
               }
             }
           }
