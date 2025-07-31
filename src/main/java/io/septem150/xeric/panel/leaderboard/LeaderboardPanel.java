@@ -72,7 +72,9 @@ public class LeaderboardPanel extends JPanel {
 
   private void makeStaticData() {
     setBackground(ColorScheme.DARK_GRAY_COLOR);
-    wipLabel.setText("Leaderboard coming soon! Check out the Wise Old Man group in the meantime.");
+    wipLabel.setText(
+        "<html><body style='text-align: center'>Leaderboard coming soon!<br>Check out the Wise Old"
+            + " Man group in the meantime.</body></html>");
     wipLabel.setFont(FontManager.getRunescapeSmallFont());
     wipLabel.setForeground(ColorScheme.BRAND_ORANGE);
     womButton.setIcon(new ImageIcon(ResourceUtil.getImage("wiseoldman_icon.png")));

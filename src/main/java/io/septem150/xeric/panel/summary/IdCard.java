@@ -9,13 +9,20 @@ import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.panel.JLabeledValue;
 import io.septem150.xeric.util.ResourceUtil;
+import io.septem150.xeric.util.TransferableBufferedImage;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,21 +30,24 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.plaf.basic.BasicButtonUI;
 import net.runelite.api.Quest;
 import net.runelite.api.QuestState;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.util.ImageUtil;
+import net.runelite.client.util.SwingUtil;
 import org.apache.commons.text.WordUtils;
 
 @Singleton
 public class IdCard extends JPanel {
   private final ProjectXericManager manager;
-  private final ProjectXericConfig config;
   private final TaskStore taskStore;
   private final SpriteManager spriteManager;
 
@@ -48,11 +58,41 @@ public class IdCard extends JPanel {
       TaskStore taskStore,
       SpriteManager spriteManager) {
     this.manager = manager;
-    this.config = config;
     this.taskStore = taskStore;
     this.spriteManager = spriteManager;
 
     add(wrappedPanel, BorderLayout.NORTH);
+
+    SwingUtil.removeButtonDecorations(screenshotButton);
+    screenshotButton.setToolTipText("Copy ID Card to your clipboard");
+    screenshotButton.setUI(new BasicButtonUI());
+    screenshotButton.setBorder(new EmptyBorder(0, 0, 0, 0));
+    screenshotButton.setFocusable(false);
+    screenshotButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    screenshotButton.addActionListener(
+        actionEvent -> {
+          BufferedImage image =
+              new BufferedImage(
+                  wrappedPanel.getWidth(), wrappedPanel.getHeight(), BufferedImage.TYPE_INT_RGB);
+          screenshotButton.setVisible(false);
+          wrappedPanel.paint(image.getGraphics());
+          screenshotButton.setVisible(true);
+          Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+          TransferableBufferedImage transferableImage = new TransferableBufferedImage(image);
+          clipboard.setContents(transferableImage, null);
+        });
+    screenshotButton.addMouseListener(
+        new MouseAdapter() {
+          @Override
+          public void mouseEntered(MouseEvent e) {
+            screenshotButton.setBorder(new EmptyBorder(0, 0, 0, 0));
+          }
+
+          @Override
+          public void mouseExited(MouseEvent e) {
+            screenshotButton.setBorder(new EmptyBorder(0, 0, 0, 0));
+          }
+        });
   }
 
   private final JPanel wrappedPanel = new JPanel(new GridBagLayout());
@@ -65,6 +105,7 @@ public class IdCard extends JPanel {
   private final JLabeledValue tasksCompleted = new JLabeledValue();
   private final JLabeledValue pointsToNextRank = new JLabeledValue();
   private final JLabeledValue highestTierCompleted = new JLabeledValue();
+  private final JButton screenshotButton = new JButton();
 
   private void makeLayout() {
     removeAll();
@@ -101,8 +142,10 @@ public class IdCard extends JPanel {
 
     wrappedPanel.add(
         highestTierCompleted,
-        gbc(0, 3, 4, 1, 0, GridBagConstraints.CENTER, new Insets(5, 0, 5, 0)));
+        gbc(0, 3, 3, 1, 0, GridBagConstraints.CENTER, new Insets(5, 10, 5, 5)));
 
+    wrappedPanel.add(
+        screenshotButton, gbc(3, 3, 1, 1, 0, GridBagConstraints.CENTER, new Insets(5, 5, 5, 10)));
     add(wrappedPanel, BorderLayout.NORTH);
   }
 
@@ -125,6 +168,9 @@ public class IdCard extends JPanel {
     tasksCompleted.setLabel("Tasks completed");
     pointsToNextRank.setLabel("Points to next rank");
     highestTierCompleted.setLabel("Highest tier completed");
+    screenshotButton.setIcon(
+        new ImageIcon(
+            ResourceUtil.getImage("/net/runelite/client/plugins/screenshot/screenshot.png")));
   }
 
   private void makeDynamicData() {
