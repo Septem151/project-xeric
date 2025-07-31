@@ -18,24 +18,23 @@ import org.apache.commons.text.WordUtils;
 @Getter
 public enum ClanRank {
   CARRY(0, 3235, 0),
-  ARTISAN(25, 3334, 0),
-  PRODIGY(50, 3332, 0),
-  PYROMANCER(100, 3331, 0),
-  FIRESTARTER(150, 3328, 0),
-  LEGACY(200, 3335, 0),
-  IGNITOR(250, 3333, 0),
-  RED_TOPAZ(300, 3129, 0),
-  SAPPHIRE(400, 3130, 0),
-  EMERALD(500, 3131, 0),
-  RUBY(600, 3132, 0),
-  DIAMOND(700, 3133, 0),
-  DRAGONSTONE(850, 3134, 0),
-  ONYX(1000, 3135, 0),
-  SPELLCASTER(1100, 3256, 0),
-  SNIPER(1200, 3254, 0),
-  XERICIAN(1300, 3229, 0),
-  COMPETITOR(1400, 3211, 0),
-  MAXED(Integer.MAX_VALUE, 3247, 0);
+  BRONZE(25, 3153, 0),
+  IRON(50, 3154, 0),
+  STEEL(100, 3155, 0),
+  OPAL(150, 3127, 0),
+  JADE(200, 3128, 0),
+  RED_TOPAZ(250, 3129, 0),
+  SAPPHIRE(300, 3130, 0),
+  EMERALD(400, 3131, 0),
+  RUBY(500, 3132, 0),
+  DIAMOND(600, 3133, 0),
+  DRAGONSTONE(700, 3134, 0),
+  ONYX(850, 3135, 0),
+  ZENYTE(1000, 3136, 0),
+  SPELLCASTER(1150, 3256, 0),
+  SNIPER(1300, 3254, 0),
+  XERICIAN(1450, 3229, 0),
+  MAXED(1650, 3247, 0);
 
   /** All ranks sorted by points needed to obtain. */
   public static final List<ClanRank> ALL_RANKS =
