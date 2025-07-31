@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id('com.diffplug.spotless') version '7.0.2'
+//    id('com.diffplug.spotless') version '7.0.2'
 }
 
 repositories {
@@ -14,32 +14,32 @@ repositories {
     mavenCentral()
 }
 
-spotless {
-    format 'misc', {
-        target '*.gradle', '.gitattributes', '.gitignore'
-
-        trimTrailingWhitespace()
-        leadingTabsToSpaces(4)
-        endWithNewline()
-    }
-
-    java {
-        toggleOffOn()
-        importOrder()
-        removeUnusedImports()
-        cleanthat()
-        googleJavaFormat().reflowLongStrings().formatJavadoc(true).reorderImports(false)
-        formatAnnotations()
-    }
-    flexmark {
-        target '**/*.md'
-        flexmark()
-    }
-    json {
-        target 'src/**/*.json'
-        gson().indentWithSpaces(2)
-    }
-}
+//spotless {
+//    format 'misc', {
+//        target '*.gradle', '.gitattributes', '.gitignore'
+//
+//        trimTrailingWhitespace()
+//        leadingTabsToSpaces(4)
+//        endWithNewline()
+//    }
+//
+//    java {
+//        toggleOffOn()
+//        importOrder()
+//        removeUnusedImports()
+//        cleanthat()
+//        googleJavaFormat().reflowLongStrings().formatJavadoc(true).reorderImports(false)
+//        formatAnnotations()
+//    }
+//    flexmark {
+//        target '**/*.md'
+//        flexmark()
+//    }
+//    json {
+//        target 'src/**/*.json'
+//        gson().indentWithSpaces(2)
+//    }
+//}
 
 def runeLiteVersion = 'latest.release'
 
