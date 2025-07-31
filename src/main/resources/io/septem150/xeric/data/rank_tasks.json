@@ -1824,7 +1824,7 @@
   },
   {
     "id": 173,
-    "name": "Full Alchimist's Outfit",
+    "name": "Full Alchemist's Outfit",
     "tier": 7,
     "type": "collect",
     "icon": "prescription_goggles.png",
@@ -2361,20 +2361,6 @@
   },
   {
     "id": 224,
-    "name": "2/4 Evil Chicken",
-    "tier": 9,
-    "type": "collect",
-    "icon": "evil_chicken_head.png",
-    "itemIds": [
-      20433,
-      20436,
-      20439,
-      20442
-    ],
-    "amount": 2
-  },
-  {
-    "id": 225,
     "name": "1 Twisted Ancestral Kit",
     "tier": 9,
     "type": "collect",
@@ -2385,7 +2371,7 @@
     "amount": 1
   },
   {
-    "id": 226,
+    "id": 225,
     "name": "Defeat 100 Skotizo",
     "tier": 9,
     "type": "kc",
@@ -2393,7 +2379,7 @@
     "total": 100
   },
   {
-    "id": 227,
+    "id": 226,
     "name": "Defeat 10 Sol Heredit",
     "tier": 9,
     "type": "kc",
@@ -2401,7 +2387,7 @@
     "total": 10
   },
   {
-    "id": 228,
+    "id": 227,
     "name": "Tonalztics of Ralos",
     "tier": 9,
     "type": "collect",
@@ -2412,7 +2398,7 @@
     "amount": 1
   },
   {
-    "id": 229,
+    "id": 228,
     "name": "Obtain 35000 Glory",
     "tier": 9,
     "type": "kc",
@@ -2420,7 +2406,7 @@
     "total": 35000
   },
   {
-    "id": 230,
+    "id": 229,
     "name": "1/4 Evil Chicken Outfit",
     "tier": 9,
     "type": "collect",
@@ -2432,6 +2418,20 @@
       20442
     ],
     "amount": 1
+  },
+  {
+    "id": 230,
+    "name": "2/4 Evil Chicken Outfit",
+    "tier": 9,
+    "type": "collect",
+    "icon": "evil_chicken_head.png",
+    "itemIds": [
+      20433,
+      20436,
+      20439,
+      20442
+    ],
+    "amount": 2
   },
   {
     "id": 231,
@@ -2771,7 +2771,7 @@
   },
   {
     "id": 261,
-    "name": "3/4 Evil Chicken",
+    "name": "3/4 Evil Chicken Outfit",
     "tier": 10,
     "type": "collect",
     "icon": "evil_chicken_head.png",
