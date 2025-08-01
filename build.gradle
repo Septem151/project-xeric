@@ -1,6 +1,16 @@
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    if (gradle.startParameter.taskNames.any { it.contains('spotless') }) {
+        dependencies {
+            classpath("com.diffplug.gradle.spotless:com.diffplug.gradle.spotless.gradle.plugin:7.2.1")
+        }
+    }
+}
+
 plugins {
     id 'java'
-    id('com.diffplug.spotless') version '7.0.2'
 }
 
 repositories {
@@ -12,33 +22,6 @@ repositories {
         }
     }
     mavenCentral()
-}
-
-spotless {
-    format 'misc', {
-        target '*.gradle', '.gitattributes', '.gitignore'
-
-        trimTrailingWhitespace()
-        leadingTabsToSpaces(4)
-        endWithNewline()
-    }
-
-    java {
-        toggleOffOn()
-        importOrder()
-        removeUnusedImports()
-        cleanthat()
-        googleJavaFormat().reflowLongStrings().formatJavadoc(true).reorderImports(false)
-        formatAnnotations()
-    }
-    flexmark {
-        target '**/*.md'
-        flexmark()
-    }
-    json {
-        target 'src/**/*.json'
-        gson().indentWithSpaces(2)
-    }
 }
 
 def runeLiteVersion = 'latest.release'
@@ -86,4 +69,34 @@ tasks.register('shadowJar', Jar) {
     group = BasePlugin.BUILD_GROUP
     archiveClassifier.set('shadow')
     archiveFileName.set("${rootProject.name}-${project.version}-all.jar")
+}
+
+if (gradle.startParameter.taskNames.any { it.contains('spotless') }) {
+    apply plugin: 'com.diffplug.spotless'
+    spotless {
+        format 'misc', {
+            target '*.gradle', '.gitattributes', '.gitignore'
+
+            trimTrailingWhitespace()
+            leadingTabsToSpaces(4)
+            endWithNewline()
+        }
+
+        java {
+            toggleOffOn()
+            importOrder()
+            removeUnusedImports()
+            cleanthat()
+            googleJavaFormat().reflowLongStrings().formatJavadoc(true).reorderImports(false)
+            formatAnnotations()
+        }
+        flexmark {
+            target '**/*.md'
+            flexmark()
+        }
+        json {
+            target 'src/**/*.json'
+            gson().indentWithSpaces(2)
+        }
+    }
 }
