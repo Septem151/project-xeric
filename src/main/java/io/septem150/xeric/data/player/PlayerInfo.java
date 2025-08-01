@@ -1,6 +1,5 @@
 package io.septem150.xeric.data.player;
 
-import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.data.clog.CollectionLog;
 import io.septem150.xeric.data.diary.DiaryProgress;
 import io.septem150.xeric.data.task.Task;

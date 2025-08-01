@@ -30,7 +30,7 @@ public class ProjectXericApiClient {
   private final String userAgent;
 
   // increment when making breaking changes to how the plugin uses the API
-  private static final String version = "1.0.0";
+  private static final String API_VERSION = "1";
 
   private final HttpUrl baseUrl;
 
@@ -42,7 +42,7 @@ public class ProjectXericApiClient {
     this.gson = gson;
 
     String runeliteVersion = RuneLiteProperties.getVersion();
-    userAgent = "RuneLite:" + runeliteVersion + "," + "Client:" + version;
+    userAgent = "RuneLite:" + runeliteVersion + "," + "Client:" + API_VERSION;
 
     //noinspection ConstantValue
     baseUrl =
