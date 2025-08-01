@@ -37,16 +37,16 @@ public class ProjectXericApiClient {
   private final Gson gson;
 
   @Inject
-  public ProjectXericApiClient(@Named("xericGson") Gson gson) {
+  public ProjectXericApiClient(
+      @Named("xericGson") Gson gson, @Named("developerMode") boolean developerMode) {
     this.gson = gson;
-    boolean isDevMode = true;
 
     String runeliteVersion = RuneLiteProperties.getVersion();
     userAgent = "RuneLite:" + runeliteVersion + "," + "Client:" + version;
 
     //noinspection ConstantValue
     baseUrl =
-        isDevMode
+        developerMode
             ? new HttpUrl.Builder().scheme("http").host("localhost:8085").build()
             : new HttpUrl.Builder().scheme("https").host("api.projectxeric.com").build();
   }
