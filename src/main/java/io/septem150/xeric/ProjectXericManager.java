@@ -160,7 +160,7 @@ public class ProjectXericManager {
 
   public void startUp() {
     lastAccountId = -1L;
-    playerInfo = new PlayerInfo(config);
+    playerInfo = new PlayerInfo();
     eventBus.register(this);
     clientThread.invokeLater(
         () -> {
@@ -198,7 +198,7 @@ public class ProjectXericManager {
     log.debug("Last account ID: {}\nNew account ID: {}", lastAccountId, accountId);
     if (lastAccountId == accountId) return;
     lastAccountId = accountId;
-    playerInfo = new PlayerInfo(config);
+    playerInfo = new PlayerInfo();
     playerInfo.setUsername(client.getLocalPlayer().getName());
     playerInfo.setAccountType(AccountType.fromVarbValue(client.getVarbitValue(VarbitID.IRONMAN)));
     playerInfo.setSlayerException(config.slayer());
