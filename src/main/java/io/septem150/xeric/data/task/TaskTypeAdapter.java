@@ -13,39 +13,56 @@ import java.util.List;
 import java.util.Map;
 
 public class TaskTypeAdapter extends TypeAdapter<Task> {
+  private static final String ICON = "icon";
+  private static final String ID = "id";
+  private static final String NAME = "name";
+  private static final String TYPE = "type";
+  private static final String TIER = "tier";
+  private static final String SLAYER_POINTS = "slayerPoints";
+  private static final String LEVEL = "level";
+  private static final String GOAL = "goal";
+  private static final String AMOUNT = "amount";
+  private static final String ITEM_IDS = "itemIds";
+  private static final String TOTAL = "total";
+  private static final String QUEST = "quest";
+  private static final String DIARY = "diary";
+  private static final String BOSS = "boss";
+  private static final String COLLECT = "collect";
+  private static final String KC = "kc";
+  private static final String CA = "ca";
 
   @Override
-  public void write(JsonWriter out, Task value) throws IOException {
+  public void write(JsonWriter out, Task task) throws IOException {
     out.beginObject();
-    if (value.getIcon() != null) {
-      out.name("icon").jsonValue('"' + value.getIcon() + '"');
+    if (task.getIcon() != null) {
+      out.name(ICON).value(task.getIcon());
     }
-    out.name("id").value(value.getId());
-    out.name("name").jsonValue('"' + value.getName() + '"');
-    out.name("type").jsonValue('"' + value.getType() + '"');
-    out.name("tier").value(value.getTier());
-    if (value.getSlayerPoints() != null) {
-      out.name("slayerPoints").value(value.getSlayerPoints());
+    out.name(ID).value(task.getId());
+    out.name(NAME).value(task.getName());
+    out.name(TYPE).value(task.getType());
+    out.name(TIER).value(task.getTier());
+    if (task.getSlayerPoints() != null) {
+      out.name(SLAYER_POINTS).value(task.getSlayerPoints());
     }
-    if (value instanceof LevelTask) {
-      out.name("level").jsonValue('"' + ((LevelTask) value).getLevel() + '"');
-      out.name("goal").value(((LevelTask) value).getGoal());
-    } else if (value instanceof CollectTask) {
-      out.name("amount").value(((CollectTask) value).getAmount());
-      out.name("itemIds").beginArray();
-      for (int itemId : ((CollectTask) value).getItemIds()) {
+    if (task instanceof LevelTask) {
+      out.name(LEVEL).value(((LevelTask) task).getLevel());
+      out.name(GOAL).value(((LevelTask) task).getGoal());
+    } else if (task instanceof CollectTask) {
+      out.name(AMOUNT).value(((CollectTask) task).getAmount());
+      out.name(ITEM_IDS).beginArray();
+      for (int itemId : ((CollectTask) task).getItemIds()) {
         out.value(itemId);
       }
       out.endArray();
-    } else if (value instanceof CATask) {
-      out.name("total").value(((CATask) value).getTotal());
-    } else if (value instanceof QuestTask) {
-      out.name("quest").jsonValue("'" + ((QuestTask) value).getQuest() + "'");
-    } else if (value instanceof DiaryTask) {
-      out.name("tier").jsonValue("'" + ((DiaryTask) value).getDiary() + "'");
-    } else if (value instanceof KCTask) {
-      out.name("boss").jsonValue("'" + ((KCTask) value).getBoss() + "'");
-      out.name("total").value(((KCTask) value).getTotal());
+    } else if (task instanceof CATask) {
+      out.name(TOTAL).value(((CATask) task).getTotal());
+    } else if (task instanceof QuestTask) {
+      out.name(QUEST).value(((QuestTask) task).getQuest());
+    } else if (task instanceof DiaryTask) {
+      out.name(DIARY).value(((DiaryTask) task).getDiary());
+    } else if (task instanceof KCTask) {
+      out.name(BOSS).value(((KCTask) task).getBoss());
+      out.name(TOTAL).value(((KCTask) task).getTotal());
     }
     out.endObject();
   }
@@ -58,14 +75,14 @@ public class TaskTypeAdapter extends TypeAdapter<Task> {
     while (in.hasNext()) {
       String key = in.nextName();
       switch (key) {
-        case "icon":
-        case "name":
-        case "type":
+        case ICON:
+        case NAME:
+        case TYPE:
           properties.put(key, in.nextString());
           break;
-        case "id":
-        case "tier":
-        case "slayerPoints":
+        case ID:
+        case TIER:
+        case SLAYER_POINTS:
           properties.put(key, in.nextInt());
           break;
         default:
@@ -102,49 +119,49 @@ public class TaskTypeAdapter extends TypeAdapter<Task> {
     }
     in.endObject();
 
-    if (!properties.containsKey("type")) {
-      throw new JsonParseException("'type' key missing from Task json");
+    if (!properties.containsKey(TYPE)) {
+      throw new JsonParseException("'" + TYPE + "' key missing from Task json");
     }
-    switch (((String) properties.get("type")).toLowerCase()) {
-      case "collect":
+    switch (((String) properties.get(TYPE)).toLowerCase()) {
+      case COLLECT:
         task = new CollectTask();
-        ((CollectTask) task).setAmount((int) properties.get("amount"));
-        ((CollectTask) task).setItemIds(new HashSet<>((List<Integer>) properties.get("itemIds")));
+        ((CollectTask) task).setAmount((int) properties.get(AMOUNT));
+        ((CollectTask) task).setItemIds(new HashSet<>((List<Integer>) properties.get(ITEM_IDS)));
         break;
-      case "level":
+      case LEVEL:
         task = new LevelTask();
-        ((LevelTask) task).setLevel((String) properties.get("level"));
-        ((LevelTask) task).setGoal((int) properties.get("goal"));
+        ((LevelTask) task).setLevel((String) properties.get(LEVEL));
+        ((LevelTask) task).setGoal((int) properties.get(GOAL));
         break;
-      case "ca":
+      case CA:
         task = new CATask();
-        ((CATask) task).setTotal((int) properties.get("total"));
+        ((CATask) task).setTotal((int) properties.get(TOTAL));
         break;
-      case "quest":
+      case QUEST:
         task = new QuestTask();
-        ((QuestTask) task).setQuest((String) properties.get("quest"));
+        ((QuestTask) task).setQuest((String) properties.get(QUEST));
         break;
-      case "diary":
+      case DIARY:
         task = new DiaryTask();
-        ((DiaryTask) task).setDiary((String) properties.get("diary"));
+        ((DiaryTask) task).setDiary((String) properties.get(DIARY));
         break;
-      case "kc":
+      case KC:
         task = new KCTask();
-        ((KCTask) task).setBoss((String) properties.get("boss"));
-        ((KCTask) task).setTotal((int) properties.get("total"));
+        ((KCTask) task).setBoss((String) properties.get(BOSS));
+        ((KCTask) task).setTotal((int) properties.get(TOTAL));
         break;
       default:
-        throw new JsonParseException("Unknown value for Task 'type'");
+        throw new JsonParseException("Unknown value for Task '" + TYPE + "'");
     }
-    task.setType((String) properties.get("type"));
-    task.setId((Integer) properties.get("id"));
-    if (properties.containsKey("icon")) {
-      task.setIcon((String) properties.get("icon"));
+    task.setType((String) properties.get(TYPE));
+    task.setId((Integer) properties.get(ID));
+    if (properties.containsKey(ICON)) {
+      task.setIcon((String) properties.get(ICON));
     }
-    task.setName((String) properties.get("name"));
-    task.setTier((int) properties.get("tier"));
-    if (properties.containsKey("slayerPoints")) {
-      task.setSlayerPoints((Integer) properties.get("slayerPoints"));
+    task.setName((String) properties.get(NAME));
+    task.setTier((int) properties.get(TIER));
+    if (properties.containsKey(SLAYER_POINTS)) {
+      task.setSlayerPoints((Integer) properties.get(SLAYER_POINTS));
     }
     return task;
   }

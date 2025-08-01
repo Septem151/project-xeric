@@ -100,7 +100,6 @@ public final class ProjectXericPlugin extends Plugin {
   public Gson provideGson(Gson gson) {
     return gson.newBuilder()
         .disableHtmlEscaping()
-        .serializeNulls()
         .registerTypeAdapter(Task.class, new TaskTypeAdapter())
         .create();
   }
