@@ -120,6 +120,8 @@ public class ProjectXericManager {
   private final TaskStore taskStore;
   private final Gson gson;
 
+  @Getter private final List<Task> allTasks = new ArrayList<>();
+
   private long lastAccountId;
   private Set<Integer> remainingCaStructIds;
   private Set<Integer> completedTaskIds;
@@ -127,6 +129,7 @@ public class ProjectXericManager {
   private Set<Task> remainingTasks;
   private Set<Task> levelTasks;
   private boolean clogOpened;
+  private boolean dataLoaded;
   private Multiset<Integer> inventoryItems;
   private String obtainedItemName;
   private int updateGeneral;
@@ -168,6 +171,19 @@ public class ProjectXericManager {
             updateGeneral = 1;
           }
         });
+    dataLoaded = false;
+    taskStore
+        .getAllAsync()
+        .whenComplete(
+            (result, ex) -> {
+              if (ex != null) {
+                log.error("Error retrieving tasks", ex);
+                throw new RuntimeException(ex);
+              }
+              allTasks.clear();
+              allTasks.addAll(result);
+              dataLoaded = true;
+            });
   }
 
   public void shutDown() {
@@ -262,7 +278,8 @@ public class ProjectXericManager {
           ProjectXericConfig.TASKS_DATA_KEY,
           gson.toJson(completedTaskIds));
     }
-    remainingTasks = new HashSet<>(taskStore.getAll());
+
+    remainingTasks = new HashSet<>(allTasks);
     List<Task> completedTasks = new ArrayList<>();
     Iterator<Task> iterator = remainingTasks.iterator();
     while (iterator.hasNext()) {
@@ -272,11 +289,11 @@ public class ProjectXericManager {
         completedTasks.add(task);
       }
     }
+    playerInfo.setTasks(completedTasks);
     levelTasks =
         remainingTasks.stream()
             .filter(task -> "level".equals(task.getType()))
             .collect(Collectors.toSet());
-    playerInfo.setTasks(completedTasks);
 
     HiscoreEndpoint hiscoreEndpoint =
         AccountType.fromVarbValue(client.getVarbitValue(VarbitID.IRONMAN)).getHiscoreEndpoint();
@@ -326,6 +343,7 @@ public class ProjectXericManager {
 
   @Subscribe
   public void onGameTick(GameTick event) {
+    if (!dataLoaded) return;
     if (updateGeneral > 0 && --updateGeneral == 0) {
       reset(client.getAccountHash());
       return;

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import io.septem150.xeric.data.hiscore.Hiscore;
+import io.septem150.xeric.data.task.Task;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -14,18 +15,18 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.RuneLiteProperties;
 import okhttp3.*;
 
 @Slf4j
-@RequiredArgsConstructor
 public class ProjectXericApiClient {
   private static final MediaType JSON_MEDIA_TYPE =
       Objects.requireNonNull(MediaType.parse("application/json; charset=utf-8"));
+  private static final String PLAYERS_ENDPOINT = "players";
+  private static final String TASKS_ENDPOINT = "tasks";
 
-  @Inject private OkHttpClient okHttpClient;
+  private final OkHttpClient okHttpClient;
 
   private final String userAgent;
 
@@ -38,22 +39,37 @@ public class ProjectXericApiClient {
 
   @Inject
   public ProjectXericApiClient(
-      @Named("xericGson") Gson gson, @Named("developerMode") boolean developerMode) {
+      OkHttpClient okHttpClient,
+      @Named("xericGson") Gson gson,
+      @Named("developerMode") boolean developerMode) {
+    this.okHttpClient = okHttpClient;
     this.gson = gson;
 
     String runeliteVersion = RuneLiteProperties.getVersion();
     userAgent = "RuneLite:" + runeliteVersion + "," + "Client:" + API_VERSION;
 
-    //noinspection ConstantValue
-    baseUrl =
-        developerMode
-            ? new HttpUrl.Builder().scheme("http").host("localhost:8085").build()
-            : new HttpUrl.Builder().scheme("https").host("api.projectxeric.com").build();
+    if (developerMode) {
+      baseUrl =
+          new HttpUrl.Builder()
+              .scheme("http")
+              .host("localhost")
+              .port(8080)
+              .addPathSegment("api")
+              .build();
+    } else {
+      baseUrl =
+          new HttpUrl.Builder()
+              .scheme("https")
+              .host("api.projectxeric.com")
+              .addPathSegment(API_VERSION)
+              .build();
+    }
   }
 
   private HttpUrl buildApiUrl(String... pathSegments) {
     HttpUrl.Builder urlBuilder = baseUrl.newBuilder();
     for (String segment : pathSegments) {
+      if (segment == null) break;
       urlBuilder.addPathSegment(segment);
     }
     return urlBuilder.build();
@@ -144,9 +160,30 @@ public class ProjectXericApiClient {
   }
 
   public @NonNull CompletableFuture<List<Hiscore>> getAllHiscoresAsync() {
-    HttpUrl url = buildApiUrl("players");
+    HttpUrl url = buildApiUrl(PLAYERS_ENDPOINT);
     return getHttpRequestAsync(url)
         .thenApplyAsync(
             response -> handleResponse(response, new TypeToken<List<Hiscore>>() {}.getType()));
+  }
+
+  public @NonNull CompletableFuture<Hiscore> getHiscoreAsync(int playerId) {
+    HttpUrl url = buildApiUrl(PLAYERS_ENDPOINT, String.valueOf(playerId));
+    return getHttpRequestAsync(url)
+        .thenApplyAsync(response -> handleResponse(response, Hiscore.class));
+  }
+
+  public @NonNull CompletableFuture<Integer> postHiscoreAsync(@NonNull final Hiscore hiscore) {
+    HttpUrl url =
+        buildApiUrl(
+            PLAYERS_ENDPOINT, hiscore.getId() != null ? String.valueOf(hiscore.getId()) : null);
+    return postHttpRequestAsync(url, gson.toJson(hiscore))
+        .thenApplyAsync(response -> handleResponse(response, Integer.class));
+  }
+
+  public @NonNull CompletableFuture<List<Task>> getAllTasksAsync() {
+    HttpUrl url = buildApiUrl(TASKS_ENDPOINT);
+    return getHttpRequestAsync(url)
+        .thenApplyAsync(
+            response -> handleResponse(response, new TypeToken<List<Task>>() {}.getType()));
   }
 }

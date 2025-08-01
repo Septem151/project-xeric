@@ -8,14 +8,14 @@ import lombok.Data;
 
 @Data
 public class Hiscore {
-  private int id;
+  private Integer id;
   private String username;
 
   @SerializedName("account_type")
   private String accountType;
 
   private List<String> exceptions;
-  private int points;
+  private Integer points;
 
   public ClanRank getRank() {
     return ClanRank.fromPoints(points);
