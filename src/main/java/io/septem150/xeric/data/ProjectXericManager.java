@@ -1,4 +1,4 @@
-package io.septem150.xeric;
+package io.septem150.xeric.data;
 
 import static io.septem150.xeric.data.clog.CollectionLog.CLOG_SUB_TABS_PARAM_ID;
 import static io.septem150.xeric.data.clog.CollectionLog.CLOG_SUB_TAB_ITEMS_PARAM_ID;
@@ -23,6 +23,7 @@ import com.google.common.collect.Multisets;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.data.clog.ClogItem;
 import io.septem150.xeric.data.clog.CollectionLog;
 import io.septem150.xeric.data.diary.DiaryProgress;
@@ -34,7 +35,7 @@ import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.player.QuestProgress;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
-import io.septem150.xeric.event.PanelUpdate;
+import io.septem150.xeric.panel.PanelUpdateEvent;
 import io.septem150.xeric.util.WorldUtil;
 import java.awt.Color;
 import java.io.IOException;
@@ -301,7 +302,7 @@ public class ProjectXericManager {
         });
     updateLevels = 2;
     updateTasks = 2;
-    eventBus.post(new PanelUpdate());
+    eventBus.post(new PanelUpdateEvent());
   }
 
   @Subscribe
@@ -532,7 +533,7 @@ public class ProjectXericManager {
     if (!event.getGroup().equals(ProjectXericConfig.GROUP)) return;
     if (event.getKey().equals(ProjectXericConfig.SLAYER_CONFIG_KEY)) {
       playerInfo.setSlayerException(Boolean.parseBoolean(event.getNewValue()));
-      eventBus.post(new PanelUpdate());
+      eventBus.post(new PanelUpdateEvent());
     }
   }
 
@@ -586,7 +587,7 @@ public class ProjectXericManager {
           }
           if (refresh) {
             playerInfo.setTasks(new ArrayList<>(completedTasks));
-            eventBus.post(new PanelUpdate());
+            eventBus.post(new PanelUpdateEvent());
           }
         });
   }

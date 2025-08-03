@@ -1,7 +1,7 @@
 package io.septem150.xeric.panel.summary;
 
 import com.google.common.collect.Iterables;
-import io.septem150.xeric.ProjectXericManager;
+import io.septem150.xeric.data.ProjectXericManager;
 import io.septem150.xeric.data.player.ClanRank;
 import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.task.Task;

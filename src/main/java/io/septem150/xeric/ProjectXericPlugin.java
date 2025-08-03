@@ -3,11 +3,13 @@ package io.septem150.xeric;
 import com.google.gson.Gson;
 import com.google.inject.Binder;
 import com.google.inject.Provides;
+import io.septem150.xeric.data.ProjectXericManager;
 import io.septem150.xeric.data.task.LocalTaskStore;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.data.task.TaskTypeAdapter;
-import io.septem150.xeric.event.PanelUpdate;
+import io.septem150.xeric.panel.PanelUpdateEvent;
+import io.septem150.xeric.panel.ProjectXericPanel;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.swing.SwingUtilities;
@@ -83,7 +85,7 @@ public final class ProjectXericPlugin extends Plugin {
   }
 
   @Subscribe
-  public void onPanelUpdate(PanelUpdate event) {
+  public void onPanelUpdate(PanelUpdateEvent event) {
     if (updatePanel <= 0) updatePanel = 3;
   }
 

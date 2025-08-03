@@ -1,6 +1,6 @@
 package io.septem150.xeric.panel.summary;
 
-import io.septem150.xeric.ProjectXericManager;
+import io.septem150.xeric.data.ProjectXericManager;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import javax.inject.Inject;

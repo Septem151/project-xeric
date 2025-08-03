@@ -1,5 +1,6 @@
-package io.septem150.xeric;
+package io.septem150.xeric.panel;
 
+import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.panel.leaderboard.LeaderboardPanel;
 import io.septem150.xeric.panel.summary.SummaryPanel;
 import io.septem150.xeric.util.ResourceUtil;
