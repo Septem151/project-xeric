@@ -35,7 +35,7 @@ import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.player.QuestProgress;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
-import io.septem150.xeric.panel.PanelUpdateEvent;
+import io.septem150.xeric.panel.PanelUpdate;
 import io.septem150.xeric.util.WorldUtil;
 import java.awt.Color;
 import java.io.IOException;
@@ -302,7 +302,7 @@ public class ProjectXericManager {
         });
     updateLevels = 2;
     updateTasks = 2;
-    eventBus.post(new PanelUpdateEvent());
+    eventBus.post(new PanelUpdate());
   }
 
   @Subscribe
@@ -533,7 +533,7 @@ public class ProjectXericManager {
     if (!event.getGroup().equals(ProjectXericConfig.GROUP)) return;
     if (event.getKey().equals(ProjectXericConfig.SLAYER_CONFIG_KEY)) {
       playerInfo.setSlayerException(Boolean.parseBoolean(event.getNewValue()));
-      eventBus.post(new PanelUpdateEvent());
+      eventBus.post(new PanelUpdate());
     }
   }
 
@@ -587,7 +587,7 @@ public class ProjectXericManager {
           }
           if (refresh) {
             playerInfo.setTasks(new ArrayList<>(completedTasks));
-            eventBus.post(new PanelUpdateEvent());
+            eventBus.post(new PanelUpdate());
           }
         });
   }

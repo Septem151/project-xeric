@@ -8,7 +8,7 @@ import io.septem150.xeric.data.task.LocalTaskStore;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.data.task.TaskTypeAdapter;
-import io.septem150.xeric.panel.PanelUpdateEvent;
+import io.septem150.xeric.panel.PanelUpdate;
 import io.septem150.xeric.panel.ProjectXericPanel;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -85,7 +85,7 @@ public final class ProjectXericPlugin extends Plugin {
   }
 
   @Subscribe
-  public void onPanelUpdate(PanelUpdateEvent event) {
+  public void onPanelUpdate(PanelUpdate event) {
     if (updatePanel <= 0) updatePanel = 3;
   }
 
