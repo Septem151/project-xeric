@@ -161,7 +161,6 @@ public class ProjectXericManager {
   public void startUp() {
     lastAccountId = -1L;
     playerInfo = new PlayerInfo(config);
-    eventBus.register(this);
     clientThread.invokeLater(
         () -> {
           if (client.getGameState() == GameState.LOGGED_IN && WorldUtil.isValidWorldType(client)) {
@@ -179,7 +178,6 @@ public class ProjectXericManager {
         ProjectXericConfig.GROUP,
         ProjectXericConfig.TASKS_DATA_KEY,
         gson.toJson(playerInfo.getTasks().stream().map(Task::getId).collect(Collectors.toSet())));
-    eventBus.unregister(this);
     playerInfo = null;
     lastAccountId = -1L;
     clogOpened = false;

@@ -44,6 +44,7 @@ public final class ProjectXericPlugin extends Plugin {
   protected void startUp() throws Exception {
     log.info("Project Xeric started!");
     panel = injector.getInstance(ProjectXericPanel.class);
+    eventBus.register(manager);
     eventBus.register(panel);
     manager.startUp();
     panel.startUp();
@@ -53,6 +54,7 @@ public final class ProjectXericPlugin extends Plugin {
   @Override
   protected void shutDown() throws Exception {
     log.info("Project Xeric stopped!");
+    eventBus.unregister(manager);
     eventBus.unregister(panel);
     panel.shutDown();
     manager.shutDown();

@@ -18,7 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.NavigationButton;
@@ -42,10 +41,7 @@ public final class ProjectXericPanel extends PluginPanel {
 
   @Inject
   private ProjectXericPanel(
-      EventBus eventBus,
-      ClientToolbar clientToolbar,
-      SummaryPanel summaryPanel,
-      LeaderboardPanel leaderboardPanel) {
+      ClientToolbar clientToolbar, SummaryPanel summaryPanel, LeaderboardPanel leaderboardPanel) {
     super(false);
     this.clientToolbar = clientToolbar;
     navigationButton =
