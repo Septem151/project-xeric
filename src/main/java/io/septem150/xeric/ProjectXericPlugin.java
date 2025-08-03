@@ -3,8 +3,6 @@ package io.septem150.xeric;
 import com.google.gson.Gson;
 import com.google.inject.Binder;
 import com.google.inject.Provides;
-import io.septem150.xeric.data.hiscore.HiscoreStore;
-import io.septem150.xeric.data.hiscore.LocalHiscoreStore;
 import io.septem150.xeric.data.task.LocalTaskStore;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
@@ -18,6 +16,7 @@ import net.runelite.api.Client;
 import net.runelite.api.events.CommandExecuted;
 import net.runelite.api.events.GameTick;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -36,6 +35,7 @@ public final class ProjectXericPlugin extends Plugin {
   @Inject private ConfigManager configManager;
   @Inject private ProjectXericManager manager;
   @Inject private Client client;
+  @Inject private EventBus eventBus;
 
   private ProjectXericPanel panel;
   private int updatePanel;
@@ -44,6 +44,7 @@ public final class ProjectXericPlugin extends Plugin {
   protected void startUp() throws Exception {
     log.info("Project Xeric started!");
     panel = injector.getInstance(ProjectXericPanel.class);
+    eventBus.register(panel);
     manager.startUp();
     panel.startUp();
     SwingUtilities.invokeLater(panel::refresh);
@@ -52,6 +53,7 @@ public final class ProjectXericPlugin extends Plugin {
   @Override
   protected void shutDown() throws Exception {
     log.info("Project Xeric stopped!");
+    eventBus.unregister(panel);
     panel.shutDown();
     manager.shutDown();
   }
@@ -87,7 +89,6 @@ public final class ProjectXericPlugin extends Plugin {
   public void configure(Binder binder) {
     super.configure(binder);
     binder.bind(TaskStore.class).to(LocalTaskStore.class);
-    binder.bind(HiscoreStore.class).to(LocalHiscoreStore.class);
   }
 
   @Provides

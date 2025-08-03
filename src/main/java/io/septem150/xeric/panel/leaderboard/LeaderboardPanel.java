@@ -1,6 +1,5 @@
 package io.septem150.xeric.panel.leaderboard;
 
-import io.septem150.xeric.data.hiscore.HiscoreStore;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.Component;
 import javax.inject.Inject;
@@ -12,8 +11,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.client.callback.ClientThread;
-import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.util.LinkBrowser;
@@ -24,38 +21,12 @@ public class LeaderboardPanel extends JPanel {
   public static final String TOOLTIP = "Leaderboard";
   public static final String TAB_ICON = "/skill_icons/overall.png";
 
-  //  private final HiscoresTableModel hiscoresTableModel;
-  //  private final HiscoreStore hiscoreStore;
-
   private final BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
   private final JLabel wipLabel = new JLabel();
   private final JButton womButton = new JButton();
 
   @Inject
-  private LeaderboardPanel(
-      HiscoreStore hiscoreStore, ClientThread clientThread, SpriteManager spriteManager) {
-    //    this.hiscoreStore = hiscoreStore;
-    //    hiscoresTableModel = new HiscoresTableModel();
-    //    final JTable hiscoresTable = new JTable(hiscoresTableModel);
-    //    hiscoresTable.setCellSelectionEnabled(false);
-    //    hiscoresTable.setColumnSelectionAllowed(false);
-    //    hiscoresTable.setRowSelectionAllowed(false);
-    //    hiscoresTable.setDefaultRenderer(
-    //        AbstractCollection.class, new ExceptionsRenderer(clientThread, spriteManager));
-    //    hiscoresTable.setDefaultRenderer(ClanRank.class, new RankRenderer(clientThread,
-    // spriteManager));
-    //    hiscoresTable.setDefaultRenderer(
-    //        Username.class, new UsernameRenderer(clientThread, spriteManager));
-    //    hiscoresTable.setFillsViewportHeight(true);
-    //    hiscoresTable.getColumnModel().getColumn(0).setPreferredWidth(38);
-    //    hiscoresTable.getColumnModel().getColumn(1).setPreferredWidth(96);
-    //    hiscoresTable.getColumnModel().getColumn(2).setPreferredWidth(38);
-    //    hiscoresTable.getColumnModel().getColumn(3).setPreferredWidth(40);
-    //
-    //    JScrollPane scrollPane = new JScrollPane(hiscoresTable);
-    //    scrollPane.setWheelScrollingEnabled(true);
-    //
-    //    add(scrollPane, BorderLayout.CENTER);
+  private LeaderboardPanel() {
     makeLayout();
     makeStaticData();
   }
@@ -83,22 +54,7 @@ public class LeaderboardPanel extends JPanel {
     womButton.setToolTipText("View the Leaderboard on Wise Old Man");
   }
 
-  public void startUp() {
-    //    hiscoresTableModel.setData(
-    //        hiscoreStore.getAll().stream()
-    //            .map(
-    //                hiscore ->
-    //                    new Object[] {
-    //                      ClanRank.fromPoints(hiscore.getPoints()),
-    //                      Username.builder()
-    //                          .username(hiscore.getUsername())
-    //                          .accountType(hiscore.getAccountType())
-    //                          .build(),
-    //                      hiscore.getExceptions(),
-    //                      hiscore.getPoints()
-    //                    })
-    //            .toArray(Object[][]::new));
-  }
+  public void startUp() {}
 
   public void refresh() {
     revalidate();

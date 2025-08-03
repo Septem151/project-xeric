@@ -38,10 +38,6 @@ public class JLabeledValue extends JPanel {
     add(labeledValue, BorderLayout.CENTER);
   }
 
-  public JLabeledValue(int value, String label) {
-    this(String.valueOf(value), label);
-  }
-
   public JLabeledValue() {
     this(null, null);
   }

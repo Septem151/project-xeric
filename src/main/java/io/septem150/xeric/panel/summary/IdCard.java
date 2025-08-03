@@ -1,7 +1,6 @@
 package io.septem150.xeric.panel.summary;
 
 import com.google.common.collect.Iterables;
-import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.ProjectXericManager;
 import io.septem150.xeric.data.player.ClanRank;
 import io.septem150.xeric.data.player.PlayerInfo;
@@ -52,11 +51,7 @@ public class IdCard extends JPanel {
   private final SpriteManager spriteManager;
 
   @Inject
-  private IdCard(
-      ProjectXericManager manager,
-      ProjectXericConfig config,
-      TaskStore taskStore,
-      SpriteManager spriteManager) {
+  private IdCard(ProjectXericManager manager, TaskStore taskStore, SpriteManager spriteManager) {
     this.manager = manager;
     this.taskStore = taskStore;
     this.spriteManager = spriteManager;

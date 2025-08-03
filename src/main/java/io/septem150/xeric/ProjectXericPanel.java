@@ -73,14 +73,11 @@ public final class ProjectXericPanel extends PluginPanel {
     MaterialTabGroup tabGroup = new MaterialTabGroup(display);
     tabGroup.setLayout(new GridLayout(1, 0, 7, 7));
 
-    eventBus.register(this);
     MaterialTab summaryTab =
         createTab(SummaryPanel.TOOLTIP, SummaryPanel.TAB_ICON, summaryPanel, tabGroup);
-    eventBus.register(summaryPanel);
 
     createTab(LeaderboardPanel.TOOLTIP, LeaderboardPanel.TAB_ICON, leaderboardPanel, tabGroup);
 
-    eventBus.register(leaderboardPanel);
     layoutPanel.add(tabGroup);
 
     add(layoutPanel, BorderLayout.NORTH);

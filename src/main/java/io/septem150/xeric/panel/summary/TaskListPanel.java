@@ -76,10 +76,6 @@ public class TaskListPanel extends JPanel {
     add(scrollPane, BorderLayout.CENTER);
   }
 
-  private void makeStaticData() {}
-
-  private void makeDynamicData() {}
-
   public void init() {
     if (loaded) return;
     loaded = true;
@@ -117,8 +113,6 @@ public class TaskListPanel extends JPanel {
 
   public void reload() {
     makeLayout();
-    makeStaticData();
-    makeDynamicData();
     if (manager.getPlayerInfo().getUsername() == null) return;
     if (!loaded) {
       init();
@@ -137,9 +131,7 @@ public class TaskListPanel extends JPanel {
         JLabel taskLabel = new JLabel(task.getName());
         taskLabel.setHorizontalAlignment(SwingConstants.LEFT);
         clientThread.invokeLater(
-            () -> {
-              taskLabel.setIcon(new ImageIcon(task.getIcon(spriteManager)));
-            });
+            () -> taskLabel.setIcon(new ImageIcon(task.getIcon(spriteManager))));
         taskPanel.add(taskLabel);
         taskPanel.add(Box.createHorizontalGlue());
         JCheckBox completedCheckbox = new JCheckBox();
