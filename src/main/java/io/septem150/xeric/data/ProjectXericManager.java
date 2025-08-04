@@ -195,7 +195,6 @@ public class ProjectXericManager {
         ProjectXericConfig.GROUP,
         ProjectXericConfig.TASKS_DATA_KEY,
         gson.toJson(playerInfo.getTasks().stream().map(Task::getId).collect(Collectors.toSet())));
-    eventBus.unregister(this);
     playerInfo = null;
     lastAccountId = -1L;
     clogOpened = false;
