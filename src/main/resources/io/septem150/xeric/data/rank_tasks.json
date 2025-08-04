@@ -13,7 +13,7 @@
     "tier": 1,
     "type": "level",
     "icon": "/skill_icons/firemaking.png",
-    "level": "Firemaking",
+    "level": "firemaking",
     "goal": 50
   },
   {
@@ -316,7 +316,7 @@
     "tier": 2,
     "type": "level",
     "icon": "/skill_icons/prayer.png",
-    "level": "Prayer",
+    "level": "prayer",
     "goal": 43
   },
   {
@@ -378,7 +378,7 @@
     "tier": 3,
     "type": "level",
     "icon": "/skill_icons/crafting.png",
-    "level": "Crafting",
+    "level": "crafting",
     "goal": 55
   },
   {
@@ -387,7 +387,7 @@
     "tier": 3,
     "type": "level",
     "icon": "/skill_icons/smithing.png",
-    "level": "Smithing",
+    "level": "smithing",
     "goal": 59
   },
   {
@@ -396,7 +396,7 @@
     "tier": 3,
     "type": "level",
     "icon": "/skill_icons/agility.png",
-    "level": "Agility",
+    "level": "agility",
     "goal": 62
   },
   {
@@ -405,7 +405,7 @@
     "tier": 3,
     "type": "level",
     "icon": "/skill_icons/thieving.png",
-    "level": "Thieving",
+    "level": "thieving",
     "goal": 64
   },
   {
@@ -681,7 +681,7 @@
     "tier": 4,
     "type": "level",
     "icon": "/skill_icons/magic.png",
-    "level": "Magic",
+    "level": "magic",
     "goal": 76
   },
   {
@@ -936,7 +936,7 @@
     "tier": 5,
     "type": "level",
     "icon": "/skill_icons/hunter.png",
-    "level": "Hunter",
+    "level": "hunter",
     "goal": 72
   },
   {
@@ -945,7 +945,7 @@
     "tier": 5,
     "type": "level",
     "icon": "/skill_icons/fishing.png",
-    "level": "Fishing",
+    "level": "fishing",
     "goal": 82
   },
   {
@@ -954,7 +954,7 @@
     "tier": 5,
     "type": "level",
     "icon": "/skill_icons/cooking.png",
-    "level": "Cooking",
+    "level": "cooking",
     "goal": 84
   },
   {
