@@ -165,7 +165,6 @@ public class ProjectXericManager {
   public void startUp() {
     lastAccountId = -1L;
     playerInfo = new PlayerInfo();
-    eventBus.register(this);
     clientThread.invokeLater(
         () -> {
           if (client.getGameState() == GameState.LOGGED_IN && WorldUtil.isValidWorldType(client)) {
