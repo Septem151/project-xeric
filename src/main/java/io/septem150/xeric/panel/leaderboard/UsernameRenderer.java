@@ -26,13 +26,12 @@ public class UsernameRenderer extends JLabel implements TableCellRenderer {
         () ->
             Arrays.stream(AccountType.values())
                 .forEach(
-                    accountType -> {
-                      imageMap.put(
-                          accountType,
-                          new ImageIcon(
-                              ImageUtil.resizeImage(
-                                  accountType.getImage(spriteManager), 14, 14, true)));
-                    }));
+                    accountType ->
+                        imageMap.put(
+                            accountType,
+                            new ImageIcon(
+                                ImageUtil.resizeImage(
+                                    accountType.getImage(spriteManager), 14, 14, true)))));
   }
 
   @Override

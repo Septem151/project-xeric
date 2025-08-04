@@ -16,11 +16,11 @@ public enum AccountType {
   INVALID("Invalid", -1, -1, HiscoreEndpoint.NORMAL),
   DEFAULT("Default", 0, 32, HiscoreEndpoint.NORMAL),
   IRONMAN("Ironman", 1, 2, HiscoreEndpoint.IRONMAN),
-  ULTIMATE("Ultimate", 2, 3, HiscoreEndpoint.ULTIMATE_IRONMAN),
-  HARDCORE("Hardcore", 3, 10, HiscoreEndpoint.HARDCORE_IRONMAN),
-  RANKED_GIM("Ranked GIM", 4, 41, HiscoreEndpoint.NORMAL),
-  HARDCORE_GIM("Hardcore GIM", 5, 42, HiscoreEndpoint.NORMAL),
-  UNRANKED_GIM("Unranked GIM", 6, 43, HiscoreEndpoint.NORMAL);
+  ULTIMATE("Ultimate Ironman", 2, 3, HiscoreEndpoint.ULTIMATE_IRONMAN),
+  HARDCORE("Hardcore Ironman", 3, 10, HiscoreEndpoint.HARDCORE_IRONMAN),
+  RANKED_GIM("Ranked Group Ironman", 4, 41, HiscoreEndpoint.NORMAL),
+  HARDCORE_GIM("Hardcore Group Ironman", 5, 42, HiscoreEndpoint.NORMAL),
+  UNRANKED_GIM("Unranked Group Ironman", 6, 43, HiscoreEndpoint.NORMAL);
 
   private static final int MODICONS_ARCHIVE_ID = 423;
 
