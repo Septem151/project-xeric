@@ -105,7 +105,7 @@ public class ProjectXericManager {
               + " Diary has been updated");
   private static final Pattern KC_REGEX =
       Pattern.compile(
-          "Your (?:subdued |completed )?(?<name>.*) (?:kill)? count is: (?<count>\\d+)\\.");
+          "Your (?:subdued |completed )?(?<name>.*) (?:kill )?count is: (?<count>\\d+)\\.");
   private static final Pattern DELVE_KC_REGEX =
       Pattern.compile("Deep delves completed: (?<count>\\d+)");
   private static final Pattern DELVE_REGEX =
