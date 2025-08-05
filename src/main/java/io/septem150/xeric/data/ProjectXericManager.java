@@ -98,15 +98,23 @@ public class ProjectXericManager {
   private static final Pattern COMBAT_TASK_REGEX =
       Pattern.compile("Congratulations, you've completed an? \\w+ combat task:.*");
   private static final Pattern CLOG_REGEX =
-      Pattern.compile("New item added to your collection log: (.*)");
+      Pattern.compile("New item added to your collection log: (?<item>.*)");
   private static final Pattern DIARY_REGEX =
       Pattern.compile(
           "Well done! You have completed an? \\w+ task in the .* area\\. Your Achievement"
               + " Diary has been updated");
   private static final Pattern KC_REGEX =
-      Pattern.compile("Your (?:subdued |completed )?(.*) (?:kill)? count is: (\\d+)\\.");
+      Pattern.compile(
+          "Your (?:subdued |completed )?(?<name>.*) (?:kill)? count is: (?<count>\\d+)\\.");
+  private static final Pattern DELVE_KC_REGEX =
+      Pattern.compile("Deep delves completed: (?<count>\\d+)");
+  private static final Pattern DELVE_REGEX =
+      Pattern.compile(
+          "Delve level: (?<wave>\\d+|8\\+ \\((?<deepWave>\\d+)\\)) duration:"
+              + " (?<duration>(?:\\d+:)?\\d+:\\d+)(?:\\.\\d+)?(?: \\(new personal best\\)|\\."
+              + " Personal best: (?<pb>(?:\\d+:)?\\d+:\\d+)(?:\\.\\d+)?)");
   private static final Pattern CLUE_REGEX =
-      Pattern.compile("You have completed (\\d+) (.*) Treasure Trails\\.");
+      Pattern.compile("You have completed (?<count>\\d+) (?<tier>.*) Treasure Trails?\\.");
   private static final Pattern QUEST_REGEX =
       Pattern.compile("Congratulations, you've completed a quest:.*");
 
@@ -366,13 +374,13 @@ public class ProjectXericManager {
     }
     Matcher kcMatcher = KC_REGEX.matcher(message);
     if (kcMatcher.matches()) {
-      String name = kcMatcher.group(1);
+      String name = kcMatcher.group("name");
       if ("Lunar Chest".equals(name)) {
         name += "s";
       } else if ("Hueycoatl".equals(name)) {
         name = "The " + name;
       }
-      int count = Integer.parseInt(kcMatcher.group(2));
+      int count = Integer.parseInt(kcMatcher.group("count"));
       KillCount kc = playerInfo.getKillCounts().getOrDefault(name, null);
       if (kc != null) {
         kc.setCount(count);
@@ -382,8 +390,8 @@ public class ProjectXericManager {
     }
     Matcher clueMatcher = CLUE_REGEX.matcher(message);
     if (clueMatcher.matches()) {
-      int count = Integer.parseInt(clueMatcher.group(1));
-      String tier = clueMatcher.group(2);
+      int count = Integer.parseInt(clueMatcher.group("count"));
+      String tier = clueMatcher.group("tier");
       KillCount kc =
           playerInfo.getKillCounts().getOrDefault(String.format("Clue Scrolls (%s)", tier), null);
       if (kc != null) {
@@ -394,7 +402,7 @@ public class ProjectXericManager {
     }
     Matcher clogMatcher = CLOG_REGEX.matcher(message);
     if (clogMatcher.matches()) {
-      obtainedItemName = Text.removeTags(clogMatcher.group(1));
+      obtainedItemName = Text.removeTags(clogMatcher.group("item"));
 
       ItemContainer inventory = client.getItemContainer(InventoryID.INV);
       if (inventory == null) {
