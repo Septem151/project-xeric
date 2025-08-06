@@ -1,0 +1,150 @@
+{
+  "DELVE_REGEX": [
+    {
+      "text": "Delve level: 5 duration: 1:51.60. Personal best: 0:54.60",
+      "groups": {
+        "wave": "5",
+        "deepWave": null,
+        "duration": "1:51",
+        "pb": "0:54"
+      }
+    },
+    {
+      "text": "Delve level: 5 duration: 1:51. Personal best: 0:54.60",
+      "groups": {
+        "wave": "5",
+        "deepWave": null,
+        "duration": "1:51",
+        "pb": "0:54"
+      }
+    },
+    {
+      "text": "Delve level: 6 duration: 1:06.00 (new personal best)",
+      "groups": {
+        "wave": "6",
+        "deepWave": null,
+        "duration": "1:06",
+        "pb": null
+      }
+    },
+    {
+      "text": "Delve level: 6 duration: 1:06 (new personal best)",
+      "groups": {
+        "wave": "6",
+        "deepWave": null,
+        "duration": "1:06",
+        "pb": null
+      }
+    },
+    {
+      "text": "Delve level: 8+ (12) duration: 2:58.00. Personal best: 2:38.00",
+      "groups": {
+        "wave": "8+ (12)",
+        "deepWave": "12",
+        "duration": "2:58",
+        "pb": "2:38"
+      }
+    },
+    {
+      "text": "Delve level: 8+ (12) duration: 2:58. Personal best: 2:38",
+      "groups": {
+        "wave": "8+ (12)",
+        "deepWave": "12",
+        "duration": "2:58",
+        "pb": "2:38"
+      }
+    },
+    {
+      "text": "Delve level: 8+ (9) duration: 1:06.00 (new personal best)",
+      "groups": {
+        "wave": "8+ (9)",
+        "deepWave": "9",
+        "duration": "1:06",
+        "pb": null
+      }
+    },
+    {
+      "text": "Delve level: 8+ (9) duration: 1:06 (new personal best)",
+      "groups": {
+        "wave": "8+ (9)",
+        "deepWave": "9",
+        "duration": "1:06",
+        "pb": null
+      }
+    }
+  ],
+  "DELVE_KC_REGEX": [
+    {
+      "text": "Deep delves completed: 2",
+      "groups": {
+        "count": "2"
+      }
+    },
+    {
+      "text": "Deep delves completed: 103",
+      "groups": {
+        "count": "103"
+      }
+    }
+  ],
+  "KC_REGEX": [
+    {
+      "text": "Your subdued Wintertodt count is: 393.",
+      "groups": {
+        "name": "Wintertodt",
+        "count": "393"
+      }
+    },
+    {
+      "text": "Your Hespori kill count is: 78.",
+      "groups": {
+        "name": "Hespori",
+        "count": "78"
+      }
+    },
+    {
+      "text": "Your Lunar Chest count is: 731.",
+      "groups": {
+        "name": "Lunar Chest",
+        "count": "731"
+      }
+    },
+    {
+      "text": "Your completed Chambers of Xeric count is: 150.",
+      "groups": {
+        "name": "Chambers of Xeric",
+        "count": "150"
+      }
+    }
+  ],
+  "CLUE_REGEX": [
+    {
+      "text": "You have completed 1 easy Treasure Trail.",
+      "groups": {
+        "count": "1",
+        "tier": "easy"
+      }
+    },
+    {
+      "text": "You have completed 2 medium Treasure Trails.",
+      "groups": {
+        "count": "2",
+        "tier": "medium"
+      }
+    },
+    {
+      "text": "You have completed 23 hard Treasure Trails.",
+      "groups": {
+        "count": "23",
+        "tier": "hard"
+      }
+    },
+    {
+      "text": "You have completed 1 elite Treasure Trail.",
+      "groups": {
+        "count": "1",
+        "tier": "elite"
+      }
+    }
+  ]
+}
