@@ -2718,9 +2718,10 @@
   },
   {
     "id": 257,
-    "name": "Obtain 8 Boss Pets",
+    "name": "8 Boss Pets",
     "tier": 10,
     "type": "collect",
+    "icon": "pet_icon.png",
     "itemIds": [
       31130,
       30152,
@@ -2744,9 +2745,10 @@
   },
   {
     "id": 259,
-    "name": "Obtain 9 Boss Pets",
+    "name": "9 Boss Pets",
     "tier": 10,
     "type": "collect",
+    "icon": "pet_icon.png",
     "itemIds": [
       31130,
       30152,
