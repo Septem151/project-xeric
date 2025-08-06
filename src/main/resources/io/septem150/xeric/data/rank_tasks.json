@@ -316,7 +316,7 @@
     "tier": 2,
     "type": "level",
     "icon": "/skill_icons/prayer.png",
-    "level": "Prayer",
+    "level": "prayer",
     "goal": 43
   },
   {
