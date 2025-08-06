@@ -13,7 +13,7 @@
     "tier": 1,
     "type": "level",
     "icon": "/skill_icons/firemaking.png",
-    "level": "Firemaking",
+    "level": "firemaking",
     "goal": 50
   },
   {
@@ -378,7 +378,7 @@
     "tier": 3,
     "type": "level",
     "icon": "/skill_icons/crafting.png",
-    "level": "Crafting",
+    "level": "crafting",
     "goal": 55
   },
   {
@@ -387,7 +387,7 @@
     "tier": 3,
     "type": "level",
     "icon": "/skill_icons/smithing.png",
-    "level": "Smithing",
+    "level": "smithing",
     "goal": 59
   },
   {
@@ -396,7 +396,7 @@
     "tier": 3,
     "type": "level",
     "icon": "/skill_icons/agility.png",
-    "level": "Agility",
+    "level": "agility",
     "goal": 62
   },
   {
@@ -405,7 +405,7 @@
     "tier": 3,
     "type": "level",
     "icon": "/skill_icons/thieving.png",
-    "level": "Thieving",
+    "level": "thieving",
     "goal": 64
   },
   {
@@ -548,8 +548,8 @@
     "name": "Defeat 5 Sarachnis",
     "tier": 3,
     "type": "kc",
-    "boss": "Sarachnis",
-    "total": 5
+    "total": 5,
+    "boss": "Sarachnis"
   },
   {
     "id": 52,
@@ -580,8 +580,8 @@
     "name": "Defeat 5 Hueycoatl",
     "tier": 3,
     "type": "kc",
-    "boss": "Hueycoatl",
-    "total": 5
+    "total": 5,
+    "boss": "Hueycoatl"
   },
   {
     "id": 55,
@@ -681,7 +681,7 @@
     "tier": 4,
     "type": "level",
     "icon": "/skill_icons/magic.png",
-    "level": "Magic",
+    "level": "magic",
     "goal": 76
   },
   {
@@ -703,8 +703,8 @@
     "name": "Complete 1 CoX",
     "tier": 4,
     "type": "kc",
-    "boss": "Chambers of Xeric",
-    "total": 1
+    "total": 1,
+    "boss": "Chambers of Xeric"
   },
   {
     "id": 67,
@@ -722,8 +722,8 @@
     "name": "Defeat 35 Hueycoatl",
     "tier": 4,
     "type": "kc",
-    "boss": "Hueycoatl",
-    "total": 35
+    "total": 35,
+    "boss": "Hueycoatl"
   },
   {
     "id": 69,
@@ -918,8 +918,8 @@
     "name": "1 Easy Clue",
     "tier": 4,
     "type": "kc",
-    "boss": "Clue Scrolls (easy)",
-    "total": 1
+    "total": 1,
+    "boss": "Clue Scrolls (easy)"
   },
   {
     "id": 86,
@@ -936,7 +936,7 @@
     "tier": 5,
     "type": "level",
     "icon": "/skill_icons/hunter.png",
-    "level": "Hunter",
+    "level": "hunter",
     "goal": 72
   },
   {
@@ -945,7 +945,7 @@
     "tier": 5,
     "type": "level",
     "icon": "/skill_icons/fishing.png",
-    "level": "Fishing",
+    "level": "fishing",
     "goal": 82
   },
   {
@@ -954,7 +954,7 @@
     "tier": 5,
     "type": "level",
     "icon": "/skill_icons/cooking.png",
-    "level": "Cooking",
+    "level": "cooking",
     "goal": 84
   },
   {
@@ -985,16 +985,16 @@
     "name": "Defeat 5 Skotizo",
     "tier": 5,
     "type": "kc",
-    "boss": "Skotizo",
-    "total": 5
+    "total": 5,
+    "boss": "Skotizo"
   },
   {
     "id": 94,
     "name": "Defeat 35 Hespori",
     "tier": 5,
     "type": "kc",
-    "boss": "Hespori",
-    "total": 35
+    "total": 35,
+    "boss": "Hespori"
   },
   {
     "id": 95,
@@ -1012,8 +1012,8 @@
     "name": "Defeat 50 Sarachnis",
     "tier": 5,
     "type": "kc",
-    "boss": "Sarachnis",
-    "total": 50
+    "total": 50,
+    "boss": "Sarachnis"
   },
   {
     "id": 97,
@@ -1043,8 +1043,8 @@
     "name": "Obtain 5000 Glory",
     "tier": 5,
     "type": "kc",
-    "boss": "Colosseum Glory",
-    "total": 5000
+    "total": 5000,
+    "boss": "Colosseum Glory"
   },
   {
     "id": 100,
@@ -1063,8 +1063,8 @@
     "name": "Defeat 100 Hueycoatl",
     "tier": 5,
     "type": "kc",
-    "boss": "Hueycoatl",
-    "total": 100
+    "total": 100,
+    "boss": "Hueycoatl"
   },
   {
     "id": 102,
@@ -1083,8 +1083,8 @@
     "tier": 5,
     "type": "kc",
     "slayerPoints": 0,
-    "boss": "Amoxliatl",
-    "total": 25
+    "total": 25,
+    "boss": "Amoxliatl"
   },
   {
     "id": 104,
@@ -1150,8 +1150,8 @@
     "tier": 5,
     "type": "kc",
     "slayerPoints": 0,
-    "boss": "Lunar Chests",
-    "total": 100
+    "total": 100,
+    "boss": "Lunar Chests"
   },
   {
     "id": 110,
@@ -1206,16 +1206,16 @@
     "name": "5 Easy Clues",
     "tier": 5,
     "type": "kc",
-    "boss": "Clue Scrolls (easy)",
-    "total": 5
+    "total": 5,
+    "boss": "Clue Scrolls (easy)"
   },
   {
     "id": 115,
     "name": "1 Medium Clue",
     "tier": 5,
     "type": "kc",
-    "boss": "Clue Scrolls (medium)",
-    "total": 1
+    "total": 1,
+    "boss": "Clue Scrolls (medium)"
   },
   {
     "id": 116,
@@ -1268,8 +1268,8 @@
     "tier": 6,
     "type": "kc",
     "slayerPoints": 3,
-    "boss": "Yama",
-    "total": 120
+    "total": 120,
+    "boss": "Yama"
   },
   {
     "id": 121,
@@ -1359,24 +1359,24 @@
     "tier": 6,
     "type": "kc",
     "slayerPoints": 0,
-    "boss": "Lunar Chests",
-    "total": 250
+    "total": 250,
+    "boss": "Lunar Chests"
   },
   {
     "id": 131,
     "name": "Defeat 25 Skotizo",
     "tier": 6,
     "type": "kc",
-    "boss": "Skotizo",
-    "total": 25
+    "total": 25,
+    "boss": "Skotizo"
   },
   {
     "id": 132,
     "name": "Defeat 384 Sarachnis",
     "tier": 6,
     "type": "kc",
-    "boss": "Sarachnis",
-    "total": 384
+    "total": 384,
+    "boss": "Sarachnis"
   },
   {
     "id": 133,
@@ -1406,8 +1406,8 @@
     "name": "Defeat 250 Hueycoatl",
     "tier": 6,
     "type": "kc",
-    "boss": "Hueycoatl",
-    "total": 250
+    "total": 250,
+    "boss": "Hueycoatl"
   },
   {
     "id": 136,
@@ -1426,8 +1426,8 @@
     "tier": 6,
     "type": "kc",
     "slayerPoints": 0,
-    "boss": "Amoxliatl",
-    "total": 100
+    "total": 100,
+    "boss": "Amoxliatl"
   },
   {
     "id": 138,
@@ -1546,16 +1546,16 @@
     "name": "10 Easy Clues",
     "tier": 6,
     "type": "kc",
-    "boss": "Clue Scrolls (easy)",
-    "total": 10
+    "total": 10,
+    "boss": "Clue Scrolls (easy)"
   },
   {
     "id": 148,
     "name": "5 Medium Clues",
     "tier": 6,
     "type": "kc",
-    "boss": "Clue Scrolls (medium)",
-    "total": 5
+    "total": 5,
+    "boss": "Clue Scrolls (medium)"
   },
   {
     "id": 149,
@@ -1629,8 +1629,8 @@
     "name": "Obtain 10000 Glory",
     "tier": 7,
     "type": "kc",
-    "boss": "Colosseum Glory",
-    "total": 10000
+    "total": 10000,
+    "boss": "Colosseum Glory"
   },
   {
     "id": 157,
@@ -1670,16 +1670,16 @@
     "name": "Complete 100 CoX",
     "tier": 7,
     "type": "kc",
-    "boss": "Chambers of Xeric",
-    "total": 100
+    "total": 100,
+    "boss": "Chambers of Xeric"
   },
   {
     "id": 160,
     "name": "Defeat 400 Hueycoatl",
     "tier": 7,
     "type": "kc",
-    "boss": "Hueycoatl",
-    "total": 400
+    "total": 400,
+    "boss": "Hueycoatl"
   },
   {
     "id": 161,
@@ -1698,8 +1698,8 @@
     "tier": 7,
     "type": "kc",
     "slayerPoints": 0,
-    "boss": "Amoxliatl",
-    "total": 500
+    "total": 500,
+    "boss": "Amoxliatl"
   },
   {
     "id": 163,
@@ -1768,8 +1768,8 @@
     "name": "Defeat 100 Hespori",
     "tier": 7,
     "type": "kc",
-    "boss": "Hespori",
-    "total": 100
+    "total": 100,
+    "boss": "Hespori"
   },
   {
     "id": 168,
@@ -1777,16 +1777,16 @@
     "tier": 7,
     "type": "kc",
     "slayerPoints": 0,
-    "boss": "Lunar Chests",
-    "total": 500
+    "total": 500,
+    "boss": "Lunar Chests"
   },
   {
     "id": 169,
     "name": "600 Yama KC",
     "tier": 7,
     "type": "kc",
-    "boss": "Yama",
-    "total": 600
+    "total": 600,
+    "boss": "Yama"
   },
   {
     "id": 170,
@@ -1794,8 +1794,8 @@
     "tier": 7,
     "type": "kc",
     "slayerPoints": 0,
-    "boss": "Doom of Mokhaiotl",
-    "total": 5
+    "total": 5,
+    "boss": "Doom of Mokhaiotl"
   },
   {
     "id": 171,
@@ -1841,24 +1841,24 @@
     "name": "25 Easy Clues",
     "tier": 7,
     "type": "kc",
-    "boss": "Clue Scrolls (easy)",
-    "total": 25
+    "total": 25,
+    "boss": "Clue Scrolls (easy)"
   },
   {
     "id": 175,
     "name": "10 Medium Clues",
     "tier": 7,
     "type": "kc",
-    "boss": "Clue Scrolls (medium)",
-    "total": 10
+    "total": 10,
+    "boss": "Clue Scrolls (medium)"
   },
   {
     "id": 176,
     "name": "1 Hard Clue",
     "tier": 7,
     "type": "kc",
-    "boss": "Clue Scrolls (hard)",
-    "total": 1
+    "total": 1,
+    "boss": "Clue Scrolls (hard)"
   },
   {
     "id": 177,
@@ -1901,16 +1901,16 @@
     "name": "Complete 250 CoX",
     "tier": 8,
     "type": "kc",
-    "boss": "Chambers of Xeric",
-    "total": 250
+    "total": 250,
+    "boss": "Chambers of Xeric"
   },
   {
     "id": 182,
     "name": "Complete 500 CoX",
     "tier": 8,
     "type": "kc",
-    "boss": "Chambers of Xeric",
-    "total": 500
+    "total": 500,
+    "boss": "Chambers of Xeric"
   },
   {
     "id": 183,
@@ -1947,16 +1947,16 @@
     "name": "Complete 5 CoX CM's",
     "tier": 8,
     "type": "kc",
-    "boss": "Chambers of Xeric: Challenge Mode",
-    "total": 5
+    "total": 5,
+    "boss": "Chambers of Xeric: Challenge Mode"
   },
   {
     "id": 186,
     "name": "Defeat 50 Skotizo",
     "tier": 8,
     "type": "kc",
-    "boss": "Skotizo",
-    "total": 50
+    "total": 50,
+    "boss": "Skotizo"
   },
   {
     "id": 187,
@@ -1999,16 +1999,16 @@
     "tier": 8,
     "type": "kc",
     "slayerPoints": 0,
-    "boss": "Lunar Chests",
-    "total": 1000
+    "total": 1000,
+    "boss": "Lunar Chests"
   },
   {
     "id": 191,
     "name": "Defeat 1000 Sarachnis",
     "tier": 8,
     "type": "kc",
-    "boss": "Sarachnis",
-    "total": 1000
+    "total": 1000,
+    "boss": "Sarachnis"
   },
   {
     "id": 192,
@@ -2039,8 +2039,8 @@
     "name": "1000 Yama KC",
     "tier": 8,
     "type": "kc",
-    "boss": "Yama",
-    "total": 1000
+    "total": 1000,
+    "boss": "Yama"
   },
   {
     "id": 195,
@@ -2048,8 +2048,8 @@
     "tier": 8,
     "type": "kc",
     "slayerPoints": 0,
-    "boss": "Doom of Mokhaiotl",
-    "total": 50
+    "total": 50,
+    "boss": "Doom of Mokhaiotl"
   },
   {
     "id": 196,
@@ -2077,8 +2077,8 @@
     "name": "Defeat 250 Hespori",
     "tier": 8,
     "type": "kc",
-    "boss": "Hespori",
-    "total": 250
+    "total": 250,
+    "boss": "Hespori"
   },
   {
     "id": 199,
@@ -2096,8 +2096,8 @@
     "name": "Defeat 1000 Hueycoatl",
     "tier": 8,
     "type": "kc",
-    "boss": "Hueycoatl",
-    "total": 1000
+    "total": 1000,
+    "boss": "Hueycoatl"
   },
   {
     "id": 201,
@@ -2105,8 +2105,8 @@
     "tier": 8,
     "type": "kc",
     "slayerPoints": 0,
-    "boss": "Amoxliatl",
-    "total": 1000
+    "total": 1000,
+    "boss": "Amoxliatl"
   },
   {
     "id": 202,
@@ -2176,24 +2176,24 @@
     "name": "50 Easy Clues",
     "tier": 8,
     "type": "kc",
-    "boss": "Clue Scrolls (easy)",
-    "total": 50
+    "total": 50,
+    "boss": "Clue Scrolls (easy)"
   },
   {
     "id": 208,
     "name": "25 Mediums",
     "tier": 8,
     "type": "kc",
-    "boss": "Clue Scrolls (medium)",
-    "total": 25
+    "total": 25,
+    "boss": "Clue Scrolls (medium)"
   },
   {
     "id": 209,
     "name": "5 Hard Clues",
     "tier": 8,
     "type": "kc",
-    "boss": "Clue Scrolls (hard)",
-    "total": 5
+    "total": 5,
+    "boss": "Clue Scrolls (hard)"
   },
   {
     "id": 210,
@@ -2201,8 +2201,8 @@
     "tier": 9,
     "type": "kc",
     "slayerPoints": 0,
-    "boss": "Amoxliatl",
-    "total": 3000
+    "total": 3000,
+    "boss": "Amoxliatl"
   },
   {
     "id": 211,
@@ -2268,16 +2268,16 @@
     "name": "Complete 1000 CoX",
     "tier": 9,
     "type": "kc",
-    "boss": "Chambers of Xeric",
-    "total": 1000
+    "total": 1000,
+    "boss": "Chambers of Xeric"
   },
   {
     "id": 217,
     "name": "Complete 50 CoX CMs",
     "tier": 9,
     "type": "kc",
-    "boss": "Chambers of Xeric: Challenge Mode",
-    "total": 50
+    "total": 50,
+    "boss": "Chambers of Xeric: Challenge Mode"
   },
   {
     "id": 218,
@@ -2340,8 +2340,8 @@
     "tier": 9,
     "type": "kc",
     "slayerPoints": 0,
-    "boss": "Doom of Mokhaiotl",
-    "total": 100
+    "total": 100,
+    "boss": "Doom of Mokhaiotl"
   },
   {
     "id": 223,
@@ -2375,16 +2375,16 @@
     "name": "Defeat 100 Skotizo",
     "tier": 9,
     "type": "kc",
-    "boss": "Skotizo",
-    "total": 100
+    "total": 100,
+    "boss": "Skotizo"
   },
   {
     "id": 226,
     "name": "Defeat 10 Sol Heredit",
     "tier": 9,
     "type": "kc",
-    "boss": "Sol Heredit",
-    "total": 10
+    "total": 10,
+    "boss": "Sol Heredit"
   },
   {
     "id": 227,
@@ -2402,8 +2402,8 @@
     "name": "Obtain 35000 Glory",
     "tier": 9,
     "type": "kc",
-    "boss": "Colosseum Glory",
-    "total": 35000
+    "total": 35000,
+    "boss": "Colosseum Glory"
   },
   {
     "id": 229,
@@ -2521,40 +2521,40 @@
     "name": "100 Easy Clues",
     "tier": 9,
     "type": "kc",
-    "boss": "Clue Scrolls (easy)",
-    "total": 100
+    "total": 100,
+    "boss": "Clue Scrolls (easy)"
   },
   {
     "id": 239,
     "name": "50 Medium Clues",
     "tier": 9,
     "type": "kc",
-    "boss": "Clue Scrolls (medium)",
-    "total": 50
+    "total": 50,
+    "boss": "Clue Scrolls (medium)"
   },
   {
     "id": 240,
     "name": "10 Hard Clues",
     "tier": 9,
     "type": "kc",
-    "boss": "Clue Scrolls (hard)",
-    "total": 10
+    "total": 10,
+    "boss": "Clue Scrolls (hard)"
   },
   {
     "id": 241,
     "name": "1 Elite Clue",
     "tier": 9,
     "type": "kc",
-    "boss": "Clue Scrolls (elite)",
-    "total": 1
+    "total": 1,
+    "boss": "Clue Scrolls (elite)"
   },
   {
     "id": 242,
     "name": "1 Master Clue",
     "tier": 9,
     "type": "kc",
-    "boss": "Clue Scrolls (master)",
-    "total": 1
+    "total": 1,
+    "boss": "Clue Scrolls (master)"
   },
   {
     "id": 243,
@@ -2600,8 +2600,8 @@
     "name": "Complete 2000 CoX",
     "tier": 10,
     "type": "kc",
-    "boss": "Chambers of Xeric",
-    "total": 2000
+    "total": 2000,
+    "boss": "Chambers of Xeric"
   },
   {
     "id": 248,
@@ -2619,8 +2619,8 @@
     "name": "Complete 100 CoX CMs",
     "tier": 10,
     "type": "kc",
-    "boss": "Chambers of Xeric: Challenge Mode",
-    "total": 100
+    "total": 100,
+    "boss": "Chambers of Xeric: Challenge Mode"
   },
   {
     "id": 250,
@@ -2740,8 +2740,8 @@
     "name": "2500 Yama KC",
     "tier": 10,
     "type": "kc",
-    "boss": "Yama",
-    "total": 2500
+    "total": 2500,
+    "boss": "Yama"
   },
   {
     "id": 259,
@@ -2768,8 +2768,8 @@
     "tier": 10,
     "type": "kc",
     "slayerPoints": 0,
-    "boss": "Doom of Mokhaiotl",
-    "total": 500
+    "total": 500,
+    "boss": "Doom of Mokhaiotl"
   },
   {
     "id": 261,
@@ -2827,24 +2827,24 @@
     "name": "Defeat 500 Hespori",
     "tier": 10,
     "type": "kc",
-    "boss": "Hespori",
-    "total": 500
+    "total": 500,
+    "boss": "Hespori"
   },
   {
     "id": 268,
     "name": "Defeat 200 Skotizo",
     "tier": 10,
     "type": "kc",
-    "boss": "Skotizo",
-    "total": 200
+    "total": 200,
+    "boss": "Skotizo"
   },
   {
     "id": 269,
     "name": "Obtain 40000 Glory",
     "tier": 10,
     "type": "kc",
-    "boss": "Colosseum Glory",
-    "total": 40000
+    "total": 40000,
+    "boss": "Colosseum Glory"
   },
   {
     "id": 270,
@@ -2959,8 +2959,8 @@
     "name": "Defeat 100 Sol Heredit",
     "tier": 10,
     "type": "kc",
-    "boss": "Sol Heredit",
-    "total": 100
+    "total": 100,
+    "boss": "Sol Heredit"
   },
   {
     "id": 280,
@@ -2994,71 +2994,71 @@
     "name": "250 Easy Clues",
     "tier": 10,
     "type": "kc",
-    "boss": "Clue Scrolls (easy)",
-    "total": 250
+    "total": 250,
+    "boss": "Clue Scrolls (easy)"
   },
   {
     "id": 284,
     "name": "100 Medium Clues",
     "tier": 10,
     "type": "kc",
-    "boss": "Clue Scrolls (medium)",
-    "total": 100
+    "total": 100,
+    "boss": "Clue Scrolls (medium)"
   },
   {
     "id": 285,
     "name": "250 Medium Clues",
     "tier": 10,
     "type": "kc",
-    "boss": "Clue Scrolls (medium)",
-    "total": 250
+    "total": 250,
+    "boss": "Clue Scrolls (medium)"
   },
   {
     "id": 286,
     "name": "25 Hard Clues",
     "tier": 10,
     "type": "kc",
-    "boss": "Clue Scrolls (hard)",
-    "total": 25
+    "total": 25,
+    "boss": "Clue Scrolls (hard)"
   },
   {
     "id": 287,
     "name": "50 Hard Clues",
     "tier": 10,
     "type": "kc",
-    "boss": "Clue Scrolls (hard)",
-    "total": 50
+    "total": 50,
+    "boss": "Clue Scrolls (hard)"
   },
   {
     "id": 288,
     "name": "5 Elite Clues",
     "tier": 10,
     "type": "kc",
-    "boss": "Clue Scrolls (elite)",
-    "total": 5
+    "total": 5,
+    "boss": "Clue Scrolls (elite)"
   },
   {
     "id": 289,
     "name": "10 Elite Clues",
     "tier": 10,
     "type": "kc",
-    "boss": "Clue Scrolls (elite)",
-    "total": 10
+    "total": 10,
+    "boss": "Clue Scrolls (elite)"
   },
   {
     "id": 290,
     "name": "5 Master Clues",
     "tier": 10,
     "type": "kc",
-    "boss": "Clue Scrolls (master)",
-    "total": 5
+    "total": 5,
+    "boss": "Clue Scrolls (master)"
   },
   {
     "id": 291,
     "name": "10 Master Clues",
     "tier": 10,
     "type": "kc",
-    "boss": "Clue Scrolls (master)",
-    "total": 10
+    "total": 10,
+    "boss": "Clue Scrolls (master)"
   }
 ]
