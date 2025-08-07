@@ -663,7 +663,7 @@
     "name": "Kourend Easy Diary",
     "tier": 3,
     "type": "diary",
-    "slayerPoints": 3,
+    "slayerPoints": 0,
     "diary": "Easy"
   },
   {
@@ -671,7 +671,7 @@
     "name": "Total Level 1250",
     "tier": 4,
     "type": "level",
-    "slayerPoints": 3,
+    "slayerPoints": 0,
     "level": "total",
     "goal": 1250
   },
@@ -926,7 +926,7 @@
     "name": "Total Level 1500",
     "tier": 5,
     "type": "level",
-    "slayerPoints": 4,
+    "slayerPoints": 0,
     "level": "total",
     "goal": 1500
   },
@@ -1222,7 +1222,7 @@
     "name": "Total Level 1750",
     "tier": 6,
     "type": "level",
-    "slayerPoints": 5,
+    "slayerPoints": 0,
     "level": "total",
     "goal": 1750
   },
@@ -1232,7 +1232,7 @@
     "tier": 6,
     "type": "collect",
     "icon": "oathplate_shards.png",
-    "slayerPoints": 3,
+    "slayerPoints": 0,
     "itemIds": [
       30765
     ],
@@ -1244,7 +1244,7 @@
     "tier": 6,
     "type": "collect",
     "icon": "forgotten_lockbox.png",
-    "slayerPoints": 3,
+    "slayerPoints": 0,
     "itemIds": [
       30763
     ],
@@ -1256,7 +1256,7 @@
     "tier": 6,
     "type": "collect",
     "icon": "barrel_of_demonic_tallow.png",
-    "slayerPoints": 3,
+    "slayerPoints": 0,
     "itemIds": [
       30795
     ],
@@ -1267,7 +1267,7 @@
     "name": "120 Yama KC",
     "tier": 6,
     "type": "kc",
-    "slayerPoints": 3,
+    "slayerPoints": 0,
     "total": 120,
     "boss": "Yama"
   },
@@ -1562,7 +1562,7 @@
     "name": "Total Level 1900",
     "tier": 7,
     "type": "level",
-    "slayerPoints": 6,
+    "slayerPoints": 0,
     "level": "total",
     "goal": 1900
   },
@@ -1589,7 +1589,7 @@
     "name": "70 Total CAs",
     "tier": 7,
     "type": "ca",
-    "slayerPoints": 6,
+    "slayerPoints": 0,
     "total": 70
   },
   {
@@ -1597,7 +1597,7 @@
     "name": "80 Total CAs",
     "tier": 7,
     "type": "ca",
-    "slayerPoints": 6,
+    "slayerPoints": 0,
     "total": 80
   },
   {
@@ -1865,7 +1865,7 @@
     "name": "Total Level 2000",
     "tier": 8,
     "type": "level",
-    "slayerPoints": 7,
+    "slayerPoints": 0,
     "level": "total",
     "goal": 2000
   },
@@ -1939,7 +1939,7 @@
     "name": "90 Total CAs",
     "tier": 8,
     "type": "ca",
-    "slayerPoints": 7,
+    "slayerPoints": 0,
     "total": 90
   },
   {
@@ -2496,7 +2496,7 @@
     "name": "200 Collection Log Slots",
     "tier": 9,
     "type": "collect",
-    "slayerPoints": 8,
+    "slayerPoints": 0,
     "itemIds": [],
     "amount": 200
   },
@@ -2505,7 +2505,7 @@
     "name": "100 Total CAs",
     "tier": 9,
     "type": "ca",
-    "slayerPoints": 8,
+    "slayerPoints": 0,
     "total": 100
   },
   {
@@ -2583,7 +2583,7 @@
     "name": "Total Level 2200+",
     "tier": 10,
     "type": "level",
-    "slayerPoints": 9,
+    "slayerPoints": 0,
     "level": "total",
     "goal": 2200
   },
@@ -2790,7 +2790,7 @@
     "name": "110 Total CA's",
     "tier": 10,
     "type": "ca",
-    "slayerPoints": 9,
+    "slayerPoints": 0,
     "total": 110
   },
   {
@@ -2819,7 +2819,7 @@
     "name": "Max CA's (129)",
     "tier": 10,
     "type": "ca",
-    "slayerPoints": 9,
+    "slayerPoints": 0,
     "total": 129
   },
   {
