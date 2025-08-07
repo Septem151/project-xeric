@@ -14,6 +14,7 @@ import net.runelite.client.util.ImageUtil;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class CollectTask extends Task {
+  public static final String COLLECT_TASK_TYPE = "collect";
   private Set<Integer> itemIds;
   private int amount;
 

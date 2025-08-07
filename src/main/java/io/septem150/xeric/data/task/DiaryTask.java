@@ -12,6 +12,7 @@ import net.runelite.client.util.ImageUtil;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DiaryTask extends Task {
+  public static final String DIARY_TASK_TYPE = "diary";
   private String diary;
 
   @Override

@@ -79,7 +79,7 @@ public class TaskListPanel extends JPanel {
   public void init() {
     if (loaded) return;
     loaded = true;
-    for (Task task : manager.getAllTasks()) {
+    for (Task task : taskStore.getAll()) {
       List<Task> tasksInTier = tasksPerTier.getOrDefault(task.getTier(), new ArrayList<>());
       tasksInTier.add(task);
       tasksPerTier.put(task.getTier(), tasksInTier);

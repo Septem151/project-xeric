@@ -12,6 +12,7 @@ import net.runelite.client.util.ImageUtil;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class CATask extends Task {
+  public static final String CA_TASK_TYPE = "ca";
   private int total;
 
   @Override

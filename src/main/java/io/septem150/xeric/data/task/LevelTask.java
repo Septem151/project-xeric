@@ -15,6 +15,7 @@ import org.apache.commons.text.WordUtils;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class LevelTask extends Task {
+  public static final String LEVEL_TASK_TYPE = "level";
   private String level;
   private int goal;
 
