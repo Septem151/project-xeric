@@ -1,6 +1,5 @@
 package io.septem150.xeric.data.player;
 
-import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.data.clog.CollectionLog;
 import io.septem150.xeric.data.diary.DiaryProgress;
 import io.septem150.xeric.data.task.Task;
@@ -13,8 +12,6 @@ import lombok.NonNull;
 
 @Data
 public class PlayerInfo {
-  private final ProjectXericConfig config;
-
   private String username;
   private AccountType accountType;
   private boolean slayerException;
@@ -26,8 +23,7 @@ public class PlayerInfo {
   private @NonNull CollectionLog collectionLog = new CollectionLog();
   private @NonNull List<Task> tasks = new ArrayList<>();
 
-  public PlayerInfo(ProjectXericConfig config) {
-    this.config = config;
+  public PlayerInfo() {
     clear();
   }
 
@@ -48,7 +44,7 @@ public class PlayerInfo {
     return tasks.stream()
         .mapToInt(
             task -> {
-              if (task.getSlayerPoints() != null && config.slayer()) {
+              if (task.getSlayerPoints() != null && isSlayerException()) {
                 return task.getSlayerPoints();
               }
               return task.getTier();

@@ -4,17 +4,22 @@ import com.google.gson.Gson;
 import com.google.inject.Binder;
 import com.google.inject.Provides;
 import io.septem150.xeric.data.ProjectXericManager;
+import io.septem150.xeric.data.task.CATask;
+import io.septem150.xeric.data.task.CollectTask;
+import io.septem150.xeric.data.task.DiaryTask;
+import io.septem150.xeric.data.task.KCTask;
+import io.septem150.xeric.data.task.LevelTask;
 import io.septem150.xeric.data.task.LocalTaskStore;
+import io.septem150.xeric.data.task.QuestTask;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
-import io.septem150.xeric.data.task.TaskTypeAdapter;
 import io.septem150.xeric.panel.PanelUpdate;
 import io.septem150.xeric.panel.ProjectXericPanel;
+import io.septem150.xeric.util.RuntimeTypeAdapterFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Client;
 import net.runelite.api.events.CommandExecuted;
 import net.runelite.api.events.GameTick;
 import net.runelite.client.config.ConfigManager;
@@ -36,7 +41,6 @@ public final class ProjectXericPlugin extends Plugin {
 
   @Inject private ConfigManager configManager;
   @Inject private ProjectXericManager manager;
-  @Inject private Client client;
   @Inject private EventBus eventBus;
 
   private ProjectXericPanel panel;
@@ -103,9 +107,18 @@ public final class ProjectXericPlugin extends Plugin {
   @Provides
   @Named("xericGson")
   public Gson provideGson(Gson gson) {
+    RuntimeTypeAdapterFactory<Task> taskTypeAdapterFactory =
+        RuntimeTypeAdapterFactory.of(Task.class, "type", true)
+            .registerSubtype(CATask.class, CATask.CA_TASK_TYPE)
+            .registerSubtype(CollectTask.class, CollectTask.COLLECT_TASK_TYPE)
+            .registerSubtype(DiaryTask.class, DiaryTask.DIARY_TASK_TYPE)
+            .registerSubtype(KCTask.class, KCTask.KC_TASK_TYPE)
+            .registerSubtype(LevelTask.class, LevelTask.LEVEL_TASK_TYPE)
+            .registerSubtype(QuestTask.class, QuestTask.QUEST_TASK_TYPE);
+
     return gson.newBuilder()
         .disableHtmlEscaping()
-        .registerTypeAdapter(Task.class, new TaskTypeAdapter())
+        .registerTypeAdapterFactory(taskTypeAdapterFactory)
         .create();
   }
 }

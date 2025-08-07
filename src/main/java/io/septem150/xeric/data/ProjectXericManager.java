@@ -33,6 +33,7 @@ import io.septem150.xeric.data.player.KillCount;
 import io.septem150.xeric.data.player.Level;
 import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.player.QuestProgress;
+import io.septem150.xeric.data.task.LevelTask;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.panel.PanelUpdate;
@@ -50,6 +51,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -169,13 +171,19 @@ public class ProjectXericManager {
 
   public void startUp() {
     lastAccountId = -1L;
-    playerInfo = new PlayerInfo(config);
+    playerInfo = new PlayerInfo();
     clientThread.invokeLater(
         () -> {
           if (client.getGameState() == GameState.LOGGED_IN && WorldUtil.isValidWorldType(client)) {
             updateGeneral = 1;
           }
         });
+    taskStore
+        .getAllAsync(false)
+        .exceptionally(
+            err -> {
+              throw new RuntimeException(err);
+            });
   }
 
   public void shutDown() {
@@ -199,57 +207,20 @@ public class ProjectXericManager {
     updateGeneral = 0;
     updateTasks = 0;
     updateLevels = 0;
+    taskStore.reset();
   }
 
   public void reset(long accountId) {
-    log.debug("Last account ID: {}\nNew account ID: {}", lastAccountId, accountId);
     if (lastAccountId == accountId) return;
     lastAccountId = accountId;
-    playerInfo = new PlayerInfo(config);
-    playerInfo.setUsername(client.getLocalPlayer().getName());
-    playerInfo.setAccountType(AccountType.fromVarbValue(client.getVarbitValue(VarbitID.IRONMAN)));
-    playerInfo.setSlayerException(config.slayer());
+    playerInfo = new PlayerInfo();
+    updateAccountInfo();
     updateQuests();
     updateDiaries();
-
-    remainingCaStructIds = requestAllCaTaskStructIds();
     updateCombatAchievements();
+    updateCollectionLog();
 
-    // collection log
-    clogItemIds = requestAllClogItems();
-
-    Set<Integer> obtainedClogItemIds = null;
-    Instant clogUpdated = null;
-    try {
-      Type type = new TypeToken<Set<Integer>>() {}.getType();
-      obtainedClogItemIds =
-          gson.fromJson(
-              configManager.getRSProfileConfiguration(
-                  ProjectXericConfig.GROUP, ProjectXericConfig.CLOG_DATA_KEY),
-              type);
-    } catch (JsonSyntaxException exc) {
-      log.warn("malformed stored clog data found, will ignore and overwrite.");
-      configManager.unsetRSProfileConfiguration(
-          ProjectXericConfig.GROUP, ProjectXericConfig.CLOG_DATA_KEY);
-    }
-    if (obtainedClogItemIds == null) {
-      obtainedClogItemIds = new HashSet<>();
-      configManager.setRSProfileConfiguration(
-          ProjectXericConfig.GROUP,
-          ProjectXericConfig.CLOG_DATA_KEY,
-          gson.toJson(obtainedClogItemIds));
-    } else {
-      clogUpdated = Instant.now();
-    }
-
-    CollectionLog clog = new CollectionLog();
-    clog.setLastOpened(clogUpdated);
-    clog.setItems(
-        obtainedClogItemIds.stream()
-            .map(itemId -> ClogItem.from(client, itemId))
-            .collect(Collectors.toList()));
-    playerInfo.setCollectionLog(clog);
-
+    // Attempt to load collection log data from RuneLite Profile data first
     try {
       Type type = new TypeToken<Set<Integer>>() {}.getType();
       completedTaskIds =
@@ -262,6 +233,7 @@ public class ProjectXericManager {
       configManager.unsetRSProfileConfiguration(
           ProjectXericConfig.GROUP, ProjectXericConfig.TASKS_DATA_KEY);
     }
+    // Save empty clog to RuneLite Profile if malformed clog data or null key
     if (completedTaskIds == null) {
       completedTaskIds = new HashSet<>();
       configManager.setRSProfileConfiguration(
@@ -269,48 +241,17 @@ public class ProjectXericManager {
           ProjectXericConfig.TASKS_DATA_KEY,
           gson.toJson(completedTaskIds));
     }
-    remainingTasks = new HashSet<>(taskStore.getAll());
-    List<Task> completedTasks = new ArrayList<>();
-    Iterator<Task> iterator = remainingTasks.iterator();
-    while (iterator.hasNext()) {
-      Task task = iterator.next();
-      if (completedTaskIds.contains(task.getId())) {
-        iterator.remove();
-        completedTasks.add(task);
-      }
-    }
-    levelTasks =
-        remainingTasks.stream()
-            .filter(task -> "level".equals(task.getType()))
-            .collect(Collectors.toSet());
-    playerInfo.setTasks(completedTasks);
 
-    HiscoreEndpoint hiscoreEndpoint =
-        AccountType.fromVarbValue(client.getVarbitValue(VarbitID.IRONMAN)).getHiscoreEndpoint();
-    executor.execute(
-        () -> {
-          Map<String, KillCount> kcs = new HashMap<>();
-          try {
-            HiscoreResult result =
-                hiscoreManager.lookup(client.getLocalPlayer().getName(), hiscoreEndpoint);
-            KillCount.hiscoreSkills.forEach(
-                hiscoreSkill -> {
-                  KillCount killCount = new KillCount();
-                  killCount.setCount(Math.max(0, result.getSkill(hiscoreSkill).getLevel()));
-                  killCount.setName(hiscoreSkill.getName());
-                  kcs.put(killCount.getName(), killCount);
-                });
-            playerInfo.setKillCounts(kcs);
-            updateTasks = 2;
-          } catch (IOException exc) {
-            log.warn(
-                "IOException while looking up hiscores for player '{}'",
-                client.getLocalPlayer().getName());
-          }
-        });
-    updateLevels = 2;
-    updateTasks = 2;
-    eventBus.post(new PanelUpdate());
+    // Update player tasks and levels in the background, as these are both asynchronous processes
+    // that require network calls, and we don't want the panel or task-checking logic running until
+    // those calls are complete
+    CompletableFuture.allOf(updatePlayerTasks(), updatePlayerLevels())
+        .thenRun(
+            () -> {
+              updateLevels = 2;
+              updateTasks = 2;
+              eventBus.post(new PanelUpdate());
+            });
   }
 
   @Subscribe
@@ -600,7 +541,30 @@ public class ProjectXericManager {
         });
   }
 
+  private void updateAccountInfo() {
+    playerInfo.setUsername(client.getLocalPlayer().getName());
+    playerInfo.setAccountType(AccountType.fromVarbValue(client.getVarbitValue(VarbitID.IRONMAN)));
+    playerInfo.setSlayerException(config.slayer());
+  }
+
+  private void updateQuests() {
+    playerInfo.setQuests(
+        QuestProgress.trackedQuests.stream()
+            .map(quest -> QuestProgress.from(client, quest))
+            .collect(Collectors.toList()));
+  }
+
+  private void updateDiaries() {
+    playerInfo.setDiaries(
+        DiaryProgress.trackedDiaries.stream()
+            .map(diary -> DiaryProgress.from(client, diary))
+            .collect(Collectors.toList()));
+  }
+
   private boolean updateCombatAchievements() {
+    if (remainingCaStructIds == null) {
+      remainingCaStructIds = requestAllCaTaskStructIds();
+    }
     Set<CombatAchievement> cas = new HashSet<>(playerInfo.getCombatAchievements());
     boolean refresh = false;
     Iterator<Integer> iterator = remainingCaStructIds.iterator();
@@ -626,18 +590,94 @@ public class ProjectXericManager {
     return refresh;
   }
 
-  private void updateQuests() {
-    playerInfo.setQuests(
-        QuestProgress.trackedQuests.stream()
-            .map(quest -> QuestProgress.from(client, quest))
+  private void updateCollectionLog() {
+    clogItemIds = requestAllClogItems();
+    Set<Integer> obtainedClogItemIds = null;
+    Instant clogUpdated = null;
+
+    // Attempt to load collection log data from RuneLite Profile data first
+    try {
+      Type type = new TypeToken<Set<Integer>>() {}.getType();
+      obtainedClogItemIds =
+          gson.fromJson(
+              configManager.getRSProfileConfiguration(
+                  ProjectXericConfig.GROUP, ProjectXericConfig.CLOG_DATA_KEY),
+              type);
+    } catch (JsonSyntaxException exc) {
+      log.warn("malformed stored clog data found, will ignore and overwrite.");
+      configManager.unsetRSProfileConfiguration(
+          ProjectXericConfig.GROUP, ProjectXericConfig.CLOG_DATA_KEY);
+    }
+    // Save empty clog to RuneLite Profile if malformed clog data or null key
+    if (obtainedClogItemIds == null) {
+      obtainedClogItemIds = new HashSet<>();
+      configManager.setRSProfileConfiguration(
+          ProjectXericConfig.GROUP,
+          ProjectXericConfig.CLOG_DATA_KEY,
+          gson.toJson(obtainedClogItemIds));
+    } else {
+      clogUpdated = Instant.now();
+    }
+
+    CollectionLog clog = new CollectionLog();
+    clog.setLastOpened(clogUpdated);
+    clog.setItems(
+        obtainedClogItemIds.stream()
+            .map(itemId -> ClogItem.from(client, itemId))
             .collect(Collectors.toList()));
+    playerInfo.setCollectionLog(clog);
   }
 
-  private void updateDiaries() {
-    playerInfo.setDiaries(
-        DiaryProgress.trackedDiaries.stream()
-            .map(diary -> DiaryProgress.from(client, diary))
-            .collect(Collectors.toList()));
+  private CompletableFuture<Void> updatePlayerTasks() {
+    return taskStore
+        .getAllAsync()
+        .exceptionally(
+            err -> {
+              throw new RuntimeException(err);
+            })
+        .thenAccept(
+            tasks -> {
+              remainingTasks = new HashSet<>(tasks);
+              List<Task> completedTasks = new ArrayList<>();
+              Iterator<Task> iterator = remainingTasks.iterator();
+              while (iterator.hasNext()) {
+                Task task = iterator.next();
+                if (completedTaskIds.contains(task.getId())) {
+                  iterator.remove();
+                  completedTasks.add(task);
+                }
+              }
+              playerInfo.setTasks(completedTasks);
+              levelTasks =
+                  remainingTasks.stream()
+                      .filter(LevelTask.class::isInstance)
+                      .collect(Collectors.toSet());
+            });
+  }
+
+  private CompletableFuture<Void> updatePlayerLevels() {
+    return CompletableFuture.runAsync(
+        () -> {
+          HiscoreEndpoint hiscoreEndpoint = playerInfo.getAccountType().getHiscoreEndpoint();
+          Map<String, KillCount> kcs = new HashMap<>();
+          try {
+            HiscoreResult result =
+                hiscoreManager.lookup(client.getLocalPlayer().getName(), hiscoreEndpoint);
+            KillCount.hiscoreSkills.forEach(
+                hiscoreSkill -> {
+                  KillCount killCount = new KillCount();
+                  killCount.setCount(Math.max(0, result.getSkill(hiscoreSkill).getLevel()));
+                  killCount.setName(hiscoreSkill.getName());
+                  kcs.put(killCount.getName(), killCount);
+                });
+            playerInfo.setKillCounts(kcs);
+          } catch (IOException exc) {
+            log.warn(
+                "IOException while looking up hiscores for player '{}'",
+                client.getLocalPlayer().getName());
+          }
+        },
+        executor);
   }
 
   private Set<Integer> requestAllCaTaskStructIds() {

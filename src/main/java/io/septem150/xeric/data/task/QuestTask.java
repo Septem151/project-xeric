@@ -13,6 +13,7 @@ import net.runelite.client.util.ImageUtil;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class QuestTask extends Task {
+  public static final String QUEST_TASK_TYPE = "quest";
   private String quest;
 
   @Override
