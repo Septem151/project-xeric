@@ -220,7 +220,7 @@ public class IdCard extends JPanel {
   }
 
   private String getHighestTierCompleted() {
-    List<Task> tasks = manager.getAllTasks();
+    List<Task> tasks = taskStore.getAll();
     List<Integer> tiers =
         tasks.stream().map(Task::getTier).distinct().sorted().collect(Collectors.toList());
     int highestTier = 0;
