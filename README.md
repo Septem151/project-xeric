@@ -20,6 +20,12 @@ The plugin adds a sidebar panel that features two tabs:
 
 ## Changelog
 
+### 1.0.1
+
+#### Hotfixes
+
+- Plugin name is no longer hidden on the side panel when installing from the Plugin Hub.
+
 ### 1.0.0
 
 - Initial release of the plugin. Leaderboard is still being developed.
