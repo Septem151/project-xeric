@@ -4,10 +4,9 @@
 
 - Project Home
   - [Changelog](#changelog)
+  - [Screenshots](#screenshots)
   - [Contributing](#contributing)
-- [Contribution Guidelines](./docs/CONTRIBUTING.md)
-  - [Jagex Account Integration](./docs/CONTRIBUTING.md#jagex-account-integration)
-  - [Getting Started](./docs/CONTRIBUTING.md#getting-started)
+  - [Support the Project](#support-the-project)
 
 **Zeah Clan Rank & Task Tracking Plugin**
 
@@ -41,3 +40,7 @@ The plugin adds a sidebar panel that features two tabs:
 ## Contributing
 
 Please see the [Contribution Guidelines](./docs/CONTRIBUTING.md) for an overview on how to contribute to this project.
+
+## Support the Project
+
+If you enjoy using this plugin and would like to support us financially, please consider sending donations to [$Septem150](https://cash.app/$Septem150) on Cash App. Anything is appreciated, as running a server is not free! The project costs ~$12 annually and $5 monthly to keep the servers running.
