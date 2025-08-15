@@ -43,4 +43,4 @@ Please see the [Contribution Guidelines](./docs/CONTRIBUTING.md) for an overview
 
 ## Support the Project
 
-If you enjoy using this plugin and would like to support us financially, please consider sending donations to [$Septem150 on Cash App](https://cash.app/$Septem150), or [Septem on Ko-Fi](https://Ko-fi.com/Septem). Anything is appreciated, as running a server is not free! The project costs ~$12 annually and $5 monthly to keep the servers running.
+If you enjoy using this plugin and would like to support us financially, please consider sending donations to [Septem on Ko-Fi](https://Ko-fi.com/Septem) (all proceeds go to Septem directly). Anything is appreciated, as running a server is not free! The project costs ~$12 annually and $5 monthly to keep the servers running.
