@@ -4,7 +4,9 @@ import java.util.regex.Pattern;
 
 public class RegexUtil {
   public static final Pattern COMBAT_TASK_REGEX =
-      Pattern.compile("Congratulations, you've completed an? (?<tier>\\w+) combat task: (?<name>.+?) \\(\\d+ points?\\)\\.");
+      Pattern.compile(
+          "Congratulations, you've completed an? (?<tier>\\w+) combat task: (?<name>.+?) \\(\\d+"
+              + " points?\\)\\.");
   public static final Pattern CLOG_REGEX =
       Pattern.compile("New item added to your collection log: (?<item>.*)");
   public static final Pattern DIARY_REGEX =
