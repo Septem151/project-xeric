@@ -517,10 +517,7 @@ public class ProjectXericManager {
               if (config.chatMessages()) {
                 clientThread.invokeLater(
                     () -> {
-                      int points =
-                          task.getSlayerPoints() != null && config.slayer()
-                              ? task.getSlayerPoints()
-                              : task.getTier();
+                      int points = task.getTier();
                       client.addChatMessage(
                           ChatMessageType.GAMEMESSAGE,
                           ProjectXericConfig.NAME,
