@@ -298,7 +298,7 @@ public class ProjectXericManager {
     String message = Text.removeTags(event.getMessage());
     Matcher caTaskMatcher = COMBAT_TASK_REGEX.matcher(message);
     if (caTaskMatcher.matches()) {
-      if (updateCombatAchievements() && updateTasks <= 0) updateTasks = 1;
+      if (updateCombatAchievements() && updateTasks <= 0) updateTasks = 2;
       return;
     }
     Matcher diaryMatcher = DIARY_REGEX.matcher(message);
