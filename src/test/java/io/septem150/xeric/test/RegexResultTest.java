@@ -2,10 +2,8 @@ package io.septem150.xeric.test;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import io.septem150.xeric.ProjectXericPluginTest;
 import io.septem150.xeric.util.RegexUtil;
-
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,12 +11,11 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-
+import java.util.regex.Pattern;
 import org.junit.Assert;
-import org.junit.Test;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class RegexResultTest {
   private static String REGEX_TESTS_PATH = "regex_tests.json";
@@ -49,29 +46,25 @@ public class RegexResultTest {
   @Test
   public void DelveKcRegex_MatchesTestCases() {
     Assert.assertTrue(regexTests.containsKey(CASE_DELVE_KC_REGEX));
-    CheckPatternMatches(RegexUtil.DELVE_KC_REGEX,
-        regexTests.get(CASE_DELVE_KC_REGEX));
+    CheckPatternMatches(RegexUtil.DELVE_KC_REGEX, regexTests.get(CASE_DELVE_KC_REGEX));
   }
 
   @Test
   public void DelveRegex_MatchesTestCases() {
     Assert.assertTrue(regexTests.containsKey(CASE_DELVE_REGEX));
-    CheckPatternMatches(RegexUtil.DELVE_REGEX,
-        regexTests.get(CASE_DELVE_REGEX));
+    CheckPatternMatches(RegexUtil.DELVE_REGEX, regexTests.get(CASE_DELVE_REGEX));
   }
 
   @Test
   public void KcRegex_MatchesTestCases() {
     Assert.assertTrue(regexTests.containsKey(CASE_KC_REGEX));
-    CheckPatternMatches(RegexUtil.KC_REGEX,
-        regexTests.get(CASE_KC_REGEX));
+    CheckPatternMatches(RegexUtil.KC_REGEX, regexTests.get(CASE_KC_REGEX));
   }
 
   @Test
   public void ClueRegex_MatchesTestCases() {
     Assert.assertTrue(regexTests.containsKey(CASE_CLUE_REGEX));
-    CheckPatternMatches(RegexUtil.CLUE_REGEX,
-        regexTests.get(CASE_CLUE_REGEX));
+    CheckPatternMatches(RegexUtil.CLUE_REGEX, regexTests.get(CASE_CLUE_REGEX));
   }
 
   private void CheckPatternMatches(Pattern pattern, List<RegexResult> testCases) {
