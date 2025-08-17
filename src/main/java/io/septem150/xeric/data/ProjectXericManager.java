@@ -276,6 +276,7 @@ public class ProjectXericManager {
     String message = Text.removeTags(event.getMessage());
     Matcher caTaskMatcher = RegexUtil.COMBAT_TASK_REGEX.matcher(message);
     if (caTaskMatcher.matches()) {
+      log.debug("Matched CA: " + message);
       if (updateTasks <= 0) updateTasks = 2;
       return;
     }

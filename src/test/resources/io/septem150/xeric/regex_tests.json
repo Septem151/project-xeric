@@ -1577,38 +1577,45 @@
   ],
   "COMBAT_TASK_REGEX": [
     {
-      "text": "Congratulations, you've completed an easy combat task: The Walking Volcano (1 point).",
+      "text": "CA_ID:420|Congratulations, you've completed an easy combat task: The Walking Volcano (1 point).",
       "groups": {
         "tier": "easy",
         "name": "The Walking Volcano"
       }
     },
     {
-      "text": "Congratulations, you've completed a medium combat task: Sit Back and Relax (2 point).",
+      "text": "CA_ID:69|Congratulations, you've completed a medium combat task: Sit Back and Relax (2 point).",
       "groups": {
         "tier": "medium",
         "name": "Sit Back and Relax"
       }
     },
     {
-      "text": "Congratulations, you've completed a hard combat task: Hueycoatl Adept (3 point).",
+      "text": "CA_ID:12|Congratulations, you've completed a hard combat task: Hueycoatl Adept (3 point).",
       "groups": {
         "tier": "hard",
         "name": "Hueycoatl Adept"
       }
     },
     {
-      "text": "Congratulations, you've completed an elite combat task: Redemption Enthusiast (4 points).",
+      "text": "CA_ID:0|Congratulations, you've completed an elite combat task: Redemption Enthusiast (4 points).",
       "groups": {
         "tier": "elite",
         "name": "Redemption Enthusiast"
       }
     },
     {
-      "text": "Congratulations, you've completed a master combat task: Stop Drop and Roll (5 points).",
+      "text": "CA_ID:111|Congratulations, you've completed a master combat task: Stop Drop and Roll (5 points).",
       "groups": {
         "tier": "master",
         "name": "Stop Drop and Roll"
+      }
+    },
+    {
+      "text": "CA_ID:121|Congratulations, you've completed an easy combat task: Not So Great After All (1 point).",
+      "groups": {
+        "tier": "easy",
+        "name": "Not So Great After All"
       }
     }
   ]
