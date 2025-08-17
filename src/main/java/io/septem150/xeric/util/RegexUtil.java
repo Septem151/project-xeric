@@ -13,7 +13,8 @@ public class RegexUtil {
               + " Diary has been updated");
   public static final Pattern KC_REGEX =
       Pattern.compile(
-          "Your (?:subdued |completed )?(?<name>.+?) (?:kill |success )?count is: (?<count>\\d+)\\.");
+          "Your (?:subdued |completed )?(?<name>.+?) (?:kill |success )?count is:"
+              + " (?<count>\\d+)\\.");
   public static final Pattern DELVE_KC_REGEX =
       Pattern.compile("Deep delves completed: (?<count>\\d+)");
   public static final Pattern DELVE_REGEX =
