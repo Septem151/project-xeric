@@ -19,6 +19,19 @@ The plugin adds a sidebar panel that features two tabs:
 
 ## Changelog
 
+### 1.1.0
+
+Features:
+
+- Server created to track and manage player data and tasks.
+- Player data now uploaded to the server upon task completions and logging out.
+- Leaderboard in the side panel now shows statistics for each clan member.
+- Player ID Card now shows current rank on the leaderboard.
+
+Other Changes:
+
+- Refactoring of code.
+
 ### 1.0.1
 
 #### Hotfixes
