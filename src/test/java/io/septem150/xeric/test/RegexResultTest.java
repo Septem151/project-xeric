@@ -25,9 +25,11 @@ public class RegexResultTest {
   private static String CASE_DELVE_REGEX = "DELVE_REGEX";
   private static String CASE_KC_REGEX = "KC_REGEX";
   private static String CASE_CLUE_REGEX = "CLUE_REGEX";
+  private static String CASE_CLOG_REGEX = "CLOG_REGEX";
+  private static String CASE_COMBAT_TASK_REGEX = "COMBAT_TASK_REGEX";
 
   @BeforeClass
-  public static void ImportTests() {
+  public static void importTests() {
     Gson gson = new Gson();
 
     try (InputStream in = ProjectXericPluginTest.class.getResourceAsStream(REGEX_TESTS_PATH)) {
@@ -44,33 +46,45 @@ public class RegexResultTest {
   }
 
   @Test
-  public void DelveKcRegex_MatchesTestCases() {
+  public void delveKcRegex_matchesTestCases() {
     Assert.assertTrue(regexTests.containsKey(CASE_DELVE_KC_REGEX));
-    CheckPatternMatches(RegexUtil.DELVE_KC_REGEX, regexTests.get(CASE_DELVE_KC_REGEX));
+    checkPatternMatches(RegexUtil.DELVE_KC_REGEX, regexTests.get(CASE_DELVE_KC_REGEX));
   }
 
   @Test
-  public void DelveRegex_MatchesTestCases() {
+  public void delveRegex_matchesTestCases() {
     Assert.assertTrue(regexTests.containsKey(CASE_DELVE_REGEX));
-    CheckPatternMatches(RegexUtil.DELVE_REGEX, regexTests.get(CASE_DELVE_REGEX));
+    checkPatternMatches(RegexUtil.DELVE_REGEX, regexTests.get(CASE_DELVE_REGEX));
   }
 
   @Test
-  public void KcRegex_MatchesTestCases() {
+  public void kcRegex_matchesTestCases() {
     Assert.assertTrue(regexTests.containsKey(CASE_KC_REGEX));
-    CheckPatternMatches(RegexUtil.KC_REGEX, regexTests.get(CASE_KC_REGEX));
+    checkPatternMatches(RegexUtil.KC_REGEX, regexTests.get(CASE_KC_REGEX));
   }
 
   @Test
-  public void ClueRegex_MatchesTestCases() {
+  public void clueRegex_matchesTestCases() {
     Assert.assertTrue(regexTests.containsKey(CASE_CLUE_REGEX));
-    CheckPatternMatches(RegexUtil.CLUE_REGEX, regexTests.get(CASE_CLUE_REGEX));
+    checkPatternMatches(RegexUtil.CLUE_REGEX, regexTests.get(CASE_CLUE_REGEX));
   }
 
-  private void CheckPatternMatches(Pattern pattern, List<RegexResult> testCases) {
+  @Test
+  public void clogRegex_matchesTestCases() {
+    Assert.assertTrue(regexTests.containsKey(CASE_CLOG_REGEX));
+    checkPatternMatches(RegexUtil.CLOG_REGEX, regexTests.get(CASE_CLOG_REGEX));
+  }
+
+  @Test
+  public void caRegex_matchesTestCases() {
+    Assert.assertTrue(regexTests.containsKey(CASE_COMBAT_TASK_REGEX));
+    checkPatternMatches(RegexUtil.COMBAT_TASK_REGEX, regexTests.get(CASE_COMBAT_TASK_REGEX));
+  }
+
+  private void checkPatternMatches(Pattern pattern, List<RegexResult> testCases) {
     for (RegexResult testCase : testCases) {
       Matcher matcher = pattern.matcher(testCase.getText());
-      Assert.assertTrue(matcher.matches());
+      Assert.assertTrue(testCase.getText(), matcher.matches());
       Map<String, String> testGroups = testCase.getGroups();
       for (String group : testGroups.keySet()) {
         Assert.assertEquals(testGroups.get(group), matcher.group(group));
