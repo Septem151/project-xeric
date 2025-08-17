@@ -27,6 +27,9 @@ import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.data.clog.ClogItem;
 import io.septem150.xeric.data.clog.CollectionLog;
 import io.septem150.xeric.data.diary.DiaryProgress;
+import io.septem150.xeric.data.hiscore.Hiscore;
+import io.septem150.xeric.data.hiscore.HiscoreStore;
+import io.septem150.xeric.data.player.AccountException;
 import io.septem150.xeric.data.player.AccountType;
 import io.septem150.xeric.data.player.CombatAchievement;
 import io.septem150.xeric.data.player.KillCount;
@@ -41,6 +44,7 @@ import io.septem150.xeric.util.WorldUtil;
 import java.awt.Color;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,6 +72,8 @@ import net.runelite.api.GameState;
 import net.runelite.api.ItemComposition;
 import net.runelite.api.ItemContainer;
 import net.runelite.api.MenuAction;
+import net.runelite.api.Quest;
+import net.runelite.api.QuestState;
 import net.runelite.api.Skill;
 import net.runelite.api.StructComposition;
 import net.runelite.api.events.ChatMessage;
@@ -129,6 +135,7 @@ public class ProjectXericManager {
   private final ScheduledExecutorService executor;
   private final HiscoreManager hiscoreManager;
   private final TaskStore taskStore;
+  private final HiscoreStore hiscoreStore;
   private final Gson gson;
 
   private long lastAccountId;
@@ -143,6 +150,7 @@ public class ProjectXericManager {
   private int updateGeneral;
   private int updateTasks;
   private int updateLevels;
+  private Instant lastHiscoreUpdate;
   @Getter private PlayerInfo playerInfo;
 
   @Inject
@@ -156,6 +164,7 @@ public class ProjectXericManager {
       ScheduledExecutorService executor,
       HiscoreManager hiscoreManager,
       TaskStore taskStore,
+      HiscoreStore hiscoreStore,
       @Named("xericGson") Gson gson) {
     this.client = client;
     this.clientThread = clientThread;
@@ -166,6 +175,7 @@ public class ProjectXericManager {
     this.executor = executor;
     this.hiscoreManager = hiscoreManager;
     this.taskStore = taskStore;
+    this.hiscoreStore = hiscoreStore;
     this.gson = gson;
   }
 
@@ -179,6 +189,12 @@ public class ProjectXericManager {
           }
         });
     taskStore
+        .getAllAsync(false)
+        .exceptionally(
+            err -> {
+              throw new RuntimeException(err);
+            });
+    hiscoreStore
         .getAllAsync(false)
         .exceptionally(
             err -> {
@@ -245,7 +261,7 @@ public class ProjectXericManager {
     // Update player tasks and levels in the background, as these are both asynchronous processes
     // that require network calls, and we don't want the panel or task-checking logic running until
     // those calls are complete
-    CompletableFuture.allOf(updatePlayerTasks(), updatePlayerLevels())
+    CompletableFuture.allOf(updatePlayerKCs(), updatePlayerTasks(), uploadHiscores())
         .thenRun(
             () -> {
               updateLevels = 2;
@@ -481,8 +497,9 @@ public class ProjectXericManager {
   public void onConfigChanged(ConfigChanged event) {
     if (!event.getGroup().equals(ProjectXericConfig.GROUP)) return;
     if (event.getKey().equals(ProjectXericConfig.SLAYER_CONFIG_KEY)) {
-      playerInfo.setSlayerException(Boolean.parseBoolean(event.getNewValue()));
-      eventBus.post(new PanelUpdate());
+      playerInfo.setAccountException(
+          AccountException.SLAYER, Boolean.parseBoolean(event.getNewValue()));
+      uploadHiscores().thenRun(PanelUpdate::new);
     }
   }
 
@@ -533,7 +550,12 @@ public class ProjectXericManager {
           }
           if (refresh) {
             playerInfo.setTasks(new ArrayList<>(completedTasks));
-            eventBus.post(new PanelUpdate());
+            uploadHiscores()
+                .exceptionally(
+                    err -> {
+                      throw new RuntimeException(err);
+                    })
+                .thenRun(() -> eventBus.post(new PanelUpdate()));
           }
         });
   }
@@ -541,14 +563,23 @@ public class ProjectXericManager {
   private void updateAccountInfo() {
     playerInfo.setUsername(client.getLocalPlayer().getName());
     playerInfo.setAccountType(AccountType.fromVarbValue(client.getVarbitValue(VarbitID.IRONMAN)));
-    playerInfo.setSlayerException(config.slayer());
+    playerInfo.setAccountException(AccountException.SLAYER, config.slayer());
   }
 
   private void updateQuests() {
-    playerInfo.setQuests(
-        QuestProgress.trackedQuests.stream()
-            .map(quest -> QuestProgress.from(client, quest))
-            .collect(Collectors.toList()));
+    List<QuestProgress> quests = new ArrayList<>();
+    for (Quest quest : QuestProgress.trackedQuests) {
+      QuestProgress questProgress = QuestProgress.from(client, quest);
+      if (quest == Quest.EAGLES_PEAK) {
+        playerInfo.setAccountException(
+            AccountException.BOXTRAPS, questProgress.getState() != QuestState.NOT_STARTED);
+      } else if (quest == Quest.DRUIDIC_RITUAL) {
+        playerInfo.setAccountException(
+            AccountException.HERBLORE, questProgress.getState() == QuestState.FINISHED);
+      }
+      quests.add(questProgress);
+    }
+    playerInfo.setQuests(quests);
   }
 
   private void updateDiaries() {
@@ -652,7 +683,7 @@ public class ProjectXericManager {
             });
   }
 
-  private CompletableFuture<Void> updatePlayerLevels() {
+  private CompletableFuture<Void> updatePlayerKCs() {
     return CompletableFuture.runAsync(
         () -> {
           HiscoreEndpoint hiscoreEndpoint = playerInfo.getAccountType().getHiscoreEndpoint();
@@ -675,6 +706,27 @@ public class ProjectXericManager {
           }
         },
         executor);
+  }
+
+  private CompletableFuture<Void> uploadHiscores() {
+    if (config.uploadHiscores()
+        && (lastHiscoreUpdate == null
+            || lastHiscoreUpdate.plus(Duration.ofSeconds(10)).isBefore(Instant.now()))) {
+      Hiscore hiscore = new Hiscore(playerInfo.getUsername(), playerInfo.getAccountType());
+      hiscore.setId(playerInfo.getHiscoresId());
+      hiscore.setAccountExceptions(playerInfo.getAccountExceptions());
+      hiscore.setTasks(
+          playerInfo.getTasks().stream().map(Task::getId).collect(Collectors.toList()));
+      hiscore.setPoints(playerInfo.getPoints());
+      return hiscoreStore
+          .postAsync(hiscore)
+          .thenAccept(
+              hs -> {
+                playerInfo.setHiscoresId(hs.getId());
+                lastHiscoreUpdate = Instant.now();
+              });
+    }
+    return CompletableFuture.completedFuture(null);
   }
 
   private Set<Integer> requestAllCaTaskStructIds() {

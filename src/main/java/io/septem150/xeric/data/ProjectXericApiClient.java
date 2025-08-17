@@ -48,12 +48,7 @@ public class ProjectXericApiClient {
     String runeliteVersion = RuneLiteProperties.getVersion();
     userAgent = "RuneLite:" + runeliteVersion + "," + "Client:" + API_VERSION;
 
-    baseUrl =
-        new HttpUrl.Builder()
-            .scheme("https")
-            .host("api.projectxeric.com")
-            .addPathSegment(API_VERSION)
-            .build();
+    baseUrl = new HttpUrl.Builder().scheme("http").host("localhost").port(8082).build();
     //    if (developerMode) {
     //      baseUrl =
     //          new HttpUrl.Builder()

@@ -1,10 +1,11 @@
 package io.septem150.xeric.data.diary;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.runelite.api.Client;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public enum KourendDiary {
   EASY("Easy", 7933, 7925),

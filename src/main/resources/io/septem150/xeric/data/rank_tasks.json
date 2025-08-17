@@ -487,7 +487,6 @@
     "tier": 3,
     "type": "collect",
     "icon": "demon_tear.png",
-    "slayerPoints": 0,
     "itemIds": [
       31111
     ],
@@ -663,7 +662,6 @@
     "name": "Kourend Easy Diary",
     "tier": 3,
     "type": "diary",
-    "slayerPoints": 0,
     "diary": "Easy"
   },
   {
@@ -671,7 +669,6 @@
     "name": "Total Level 1250",
     "tier": 4,
     "type": "level",
-    "slayerPoints": 0,
     "level": "total",
     "goal": 1250
   },
@@ -756,7 +753,6 @@
     "tier": 4,
     "type": "collect",
     "icon": "frozen_tear.png",
-    "slayerPoints": 0,
     "itemIds": [
       29895
     ],
@@ -926,7 +922,6 @@
     "name": "Total Level 1500",
     "tier": 5,
     "type": "level",
-    "slayerPoints": 0,
     "level": "total",
     "goal": 1500
   },
@@ -1082,7 +1077,6 @@
     "name": "Defeat 25 Amoxliatl",
     "tier": 5,
     "type": "kc",
-    "slayerPoints": 0,
     "total": 25,
     "boss": "Amoxliatl"
   },
@@ -1092,7 +1086,6 @@
     "tier": 5,
     "type": "collect",
     "icon": "pendant_of_ates.png",
-    "slayerPoints": 0,
     "itemIds": [
       29892
     ],
@@ -1104,7 +1097,6 @@
     "tier": 5,
     "type": "collect",
     "icon": "sulphur_blades.png",
-    "slayerPoints": 0,
     "itemIds": [
       29084
     ],
@@ -1138,7 +1130,6 @@
     "tier": 5,
     "type": "collect",
     "icon": "earthbound_tecpatl.png",
-    "slayerPoints": 0,
     "itemIds": [
       30957
     ],
@@ -1149,7 +1140,6 @@
     "name": "Loot 100 Lunar chests",
     "tier": 5,
     "type": "kc",
-    "slayerPoints": 0,
     "total": 100,
     "boss": "Lunar Chests"
   },
@@ -1222,7 +1212,6 @@
     "name": "Total Level 1750",
     "tier": 6,
     "type": "level",
-    "slayerPoints": 0,
     "level": "total",
     "goal": 1750
   },
@@ -1232,7 +1221,6 @@
     "tier": 6,
     "type": "collect",
     "icon": "oathplate_shards.png",
-    "slayerPoints": 0,
     "itemIds": [
       30765
     ],
@@ -1244,7 +1232,6 @@
     "tier": 6,
     "type": "collect",
     "icon": "forgotten_lockbox.png",
-    "slayerPoints": 0,
     "itemIds": [
       30763
     ],
@@ -1256,7 +1243,6 @@
     "tier": 6,
     "type": "collect",
     "icon": "barrel_of_demonic_tallow.png",
-    "slayerPoints": 0,
     "itemIds": [
       30795
     ],
@@ -1267,7 +1253,6 @@
     "name": "120 Yama KC",
     "tier": 6,
     "type": "kc",
-    "slayerPoints": 0,
     "total": 120,
     "boss": "Yama"
   },
@@ -1276,7 +1261,6 @@
     "name": "The Final Dawn",
     "tier": 6,
     "type": "quest",
-    "slayerPoints": 0,
     "quest": "The Final Dawn"
   },
   {
@@ -1358,7 +1342,6 @@
     "name": "Loot 250 Lunar Chests",
     "tier": 6,
     "type": "kc",
-    "slayerPoints": 0,
     "total": 250,
     "boss": "Lunar Chests"
   },
@@ -1425,7 +1408,6 @@
     "name": "Defeat 100 Amoxliatl",
     "tier": 6,
     "type": "kc",
-    "slayerPoints": 0,
     "total": 100,
     "boss": "Amoxliatl"
   },
@@ -1435,7 +1417,6 @@
     "tier": 6,
     "type": "collect",
     "icon": "glacial_temotli.png",
-    "slayerPoints": 0,
     "itemIds": [
       29889
     ],
@@ -1562,7 +1543,6 @@
     "name": "Total Level 1900",
     "tier": 7,
     "type": "level",
-    "slayerPoints": 0,
     "level": "total",
     "goal": 1900
   },
@@ -1589,7 +1569,6 @@
     "name": "70 Total CAs",
     "tier": 7,
     "type": "ca",
-    "slayerPoints": 0,
     "total": 70
   },
   {
@@ -1597,7 +1576,6 @@
     "name": "80 Total CAs",
     "tier": 7,
     "type": "ca",
-    "slayerPoints": 0,
     "total": 80
   },
   {
@@ -1697,7 +1675,6 @@
     "name": "Defeat 500 Amoxliatl",
     "tier": 7,
     "type": "kc",
-    "slayerPoints": 0,
     "total": 500,
     "boss": "Amoxliatl"
   },
@@ -1746,7 +1723,6 @@
     "name": "Greenlog Moons of Peril",
     "tier": 7,
     "type": "collect",
-    "slayerPoints": 0,
     "itemIds": [
       29013,
       29019,
@@ -1776,7 +1752,6 @@
     "name": "Loot 500 Lunar chests",
     "tier": 7,
     "type": "kc",
-    "slayerPoints": 0,
     "total": 500,
     "boss": "Lunar Chests"
   },
@@ -1793,7 +1768,6 @@
     "name": "5 Mokhaiotl Deep Delve",
     "tier": 7,
     "type": "kc",
-    "slayerPoints": 0,
     "total": 5,
     "boss": "Doom of Mokhaiotl"
   },
@@ -1865,7 +1839,6 @@
     "name": "Total Level 2000",
     "tier": 8,
     "type": "level",
-    "slayerPoints": 0,
     "level": "total",
     "goal": 2000
   },
@@ -1939,7 +1912,6 @@
     "name": "90 Total CAs",
     "tier": 8,
     "type": "ca",
-    "slayerPoints": 0,
     "total": 90
   },
   {
@@ -1998,7 +1970,6 @@
     "name": "Loot 1000 Lunar chests",
     "tier": 8,
     "type": "kc",
-    "slayerPoints": 0,
     "total": 1000,
     "boss": "Lunar Chests"
   },
@@ -2047,7 +2018,6 @@
     "name": "50 Mokhaiotl Deep Delve",
     "tier": 8,
     "type": "kc",
-    "slayerPoints": 0,
     "total": 50,
     "boss": "Doom of Mokhaiotl"
   },
@@ -2057,7 +2027,6 @@
     "tier": 8,
     "type": "collect",
     "icon": "antler_guard.png",
-    "slayerPoints": 0,
     "itemIds": [
       31081
     ],
@@ -2104,7 +2073,6 @@
     "name": "Defeat 1000 Amoxliatl",
     "tier": 8,
     "type": "kc",
-    "slayerPoints": 0,
     "total": 1000,
     "boss": "Amoxliatl"
   },
@@ -2200,7 +2168,6 @@
     "name": "Defeat 3000 Amoxliatl",
     "tier": 9,
     "type": "kc",
-    "slayerPoints": 0,
     "total": 3000,
     "boss": "Amoxliatl"
   },
@@ -2316,7 +2283,6 @@
     "tier": 9,
     "type": "collect",
     "icon": "eye_of_ayak.png",
-    "slayerPoints": 0,
     "itemIds": [
       31115
     ],
@@ -2328,7 +2294,6 @@
     "tier": 9,
     "type": "collect",
     "icon": "avernic_treads.png",
-    "slayerPoints": 0,
     "itemIds": [
       31088
     ],
@@ -2339,7 +2304,6 @@
     "name": "100 Mokhaiotl Deep Delve",
     "tier": 9,
     "type": "kc",
-    "slayerPoints": 0,
     "total": 100,
     "boss": "Doom of Mokhaiotl"
   },
@@ -2348,7 +2312,6 @@
     "name": "Greenlog Mokhaiotl",
     "tier": 9,
     "type": "collect",
-    "slayerPoints": 0,
     "itemIds": [
       31109,
       31099,
@@ -2496,7 +2459,6 @@
     "name": "200 Collection Log Slots",
     "tier": 9,
     "type": "collect",
-    "slayerPoints": 0,
     "itemIds": [],
     "amount": 200
   },
@@ -2505,7 +2467,6 @@
     "name": "100 Total CAs",
     "tier": 9,
     "type": "ca",
-    "slayerPoints": 0,
     "total": 100
   },
   {
@@ -2583,7 +2544,6 @@
     "name": "Total Level 2200+",
     "tier": 10,
     "type": "level",
-    "slayerPoints": 0,
     "level": "total",
     "goal": 2200
   },
@@ -2767,7 +2727,6 @@
     "name": "500 Mokhaiotl Deep Delve",
     "tier": 10,
     "type": "kc",
-    "slayerPoints": 0,
     "total": 500,
     "boss": "Doom of Mokhaiotl"
   },
@@ -2790,7 +2749,6 @@
     "name": "110 Total CA's",
     "tier": 10,
     "type": "ca",
-    "slayerPoints": 0,
     "total": 110
   },
   {
@@ -2819,7 +2777,6 @@
     "name": "Max CA's (129)",
     "tier": 10,
     "type": "ca",
-    "slayerPoints": 0,
     "total": 129
   },
   {
@@ -2948,7 +2905,6 @@
     "tier": 10,
     "type": "collect",
     "icon": "dragon_chainbody.png",
-    "slayerPoints": 0,
     "itemIds": [
       3140
     ],

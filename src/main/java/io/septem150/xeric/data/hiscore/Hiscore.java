@@ -1,47 +1,28 @@
 package io.septem150.xeric.data.hiscore;
 
+import io.septem150.xeric.data.player.AccountException;
 import io.septem150.xeric.data.player.AccountType;
 import io.septem150.xeric.data.player.ClanRank;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import javax.annotation.Nullable;
 import lombok.Data;
+import lombok.NonNull;
 
 @Data
 public class Hiscore {
-  private Integer id;
-  private String username;
-
-  private String accountType;
-
-  private List<String> accountExceptions;
-  private List<Integer> tasks;
-  private Integer points;
-  private boolean slayerException;
+  @Nullable private Integer id;
+  @NonNull private String username;
+  @NonNull private AccountType accountType;
+  @NonNull private List<AccountException> accountExceptions = new ArrayList<>();
+  @NonNull private List<Integer> tasks = new ArrayList<>();
+  @NonNull private Integer points = 0;
 
   public ClanRank getRank() {
     return ClanRank.fromPoints(points);
   }
 
-  public AccountType getAccountType() {
-    return AccountType.fromName(accountType);
-  }
-
   public boolean isSlayerException() {
-    return slayerException || (accountExceptions != null && accountExceptions.contains("Slayer"));
-  }
-
-  public void setAccountExceptions(List<String> accountExceptions) {
-    if (accountExceptions != null && accountExceptions.contains("Slayer")) {
-      slayerException = true;
-    }
-    this.accountExceptions = Objects.requireNonNullElseGet(accountExceptions, List::of);
-  }
-
-  public List<String> getAccountExceptions() {
-    if (accountExceptions == null) {
-      if (slayerException) return List.of("Slayer");
-      return List.of();
-    }
-    return accountExceptions;
+    return accountExceptions.contains(AccountException.SLAYER);
   }
 }

@@ -12,9 +12,11 @@ import lombok.NonNull;
 
 @Data
 public class PlayerInfo {
+  private Integer hiscoresId;
   private String username;
   private AccountType accountType;
-  private boolean slayerException;
+  private @NonNull List<AccountException> accountExceptions = new ArrayList<>();
+  //  private boolean slayerException;
   private @NonNull List<QuestProgress> quests = new ArrayList<>();
   private @NonNull List<DiaryProgress> diaries = new ArrayList<>();
   private @NonNull Map<String, Level> levels = new HashMap<>();
@@ -28,9 +30,11 @@ public class PlayerInfo {
   }
 
   public void clear() {
+    hiscoresId = null;
     username = null;
     accountType = null;
-    slayerException = false;
+    accountExceptions.clear();
+    //    slayerException = false;
     quests = new ArrayList<>();
     diaries = new ArrayList<>();
     levels = new HashMap<>();
@@ -38,6 +42,28 @@ public class PlayerInfo {
     combatAchievements = new ArrayList<>();
     collectionLog = new CollectionLog();
     tasks = new ArrayList<>();
+  }
+
+  public void addAccountException(AccountException accountException) {
+    if (!accountExceptions.contains(accountException)) {
+      accountExceptions.add(accountException);
+    }
+  }
+
+  public void removeAccountException(AccountException accountException) {
+    accountExceptions.remove(accountException);
+  }
+
+  public boolean hasAccountException(AccountException accountException) {
+    return accountExceptions.contains(accountException);
+  }
+
+  public void setAccountException(AccountException accountException, boolean hasException) {
+    if (hasException) {
+      addAccountException(accountException);
+    } else {
+      removeAccountException(accountException);
+    }
   }
 
   public int getPoints() {

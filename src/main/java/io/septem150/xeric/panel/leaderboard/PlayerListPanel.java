@@ -105,21 +105,31 @@ public class PlayerListPanel extends JPanel {
   public void loadHiscores() {
     slayerHiscores = new ArrayList<>();
     nonSlayerHiscores = new ArrayList<>();
-    for (Hiscore hiscore : hiscoreStore.getAll()) {
-      if (hiscore.isSlayerException()) {
-        slayerHiscores.add(hiscore);
-      } else {
-        nonSlayerHiscores.add(hiscore);
-      }
-    }
-    slayerHiscores =
-        slayerHiscores.stream()
-            .sorted(Comparator.comparingInt(Hiscore::getPoints).reversed())
-            .collect(Collectors.toList());
-    nonSlayerHiscores =
-        nonSlayerHiscores.stream()
-            .sorted(Comparator.comparingInt(Hiscore::getPoints).reversed())
-            .collect(Collectors.toList());
+    hiscoreStore
+        .getAllAsync()
+        .exceptionally(
+            err -> {
+              throw new RuntimeException(err);
+            })
+        .thenAccept(
+            hiscores -> {
+              for (Hiscore hiscore : hiscores) {
+                if (hiscore.isSlayerException()) {
+                  slayerHiscores.add(hiscore);
+                } else {
+                  nonSlayerHiscores.add(hiscore);
+                }
+              }
+              slayerHiscores =
+                  slayerHiscores.stream()
+                      .sorted(Comparator.comparingInt(Hiscore::getPoints).reversed())
+                      .collect(Collectors.toList());
+              nonSlayerHiscores =
+                  nonSlayerHiscores.stream()
+                      .sorted(Comparator.comparingInt(Hiscore::getPoints).reversed())
+                      .collect(Collectors.toList());
+              reload();
+            });
   }
 
   private JPanel createHiscorePanel(int rank, Hiscore hiscore) {

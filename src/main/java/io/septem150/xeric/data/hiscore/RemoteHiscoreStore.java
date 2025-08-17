@@ -1,51 +1,87 @@
 package io.septem150.xeric.data.hiscore;
 
 import io.septem150.xeric.data.ProjectXericApiClient;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Singleton
 public final class RemoteHiscoreStore implements HiscoreStore {
   private final ProjectXericApiClient apiClient;
-
-  private final List<Hiscore> hiscoresList;
-  private final Map<Integer, Hiscore> hiscoresMap;
-
-  private Instant lastRefresh;
+  private @Nullable List<Hiscore> hiscoresList;
+  private @Nullable CompletableFuture<List<Hiscore>> future;
 
   @Inject
   public RemoteHiscoreStore(ProjectXericApiClient apiClient) {
     this.apiClient = apiClient;
-    hiscoresList = new ArrayList<>();
-    hiscoresMap = new HashMap<>();
   }
 
   @Override
   public @NonNull List<Hiscore> getAll() {
-    if (lastRefresh == null || lastRefresh.isBefore(Instant.now().minusSeconds(30))) {
-      hiscoresList.clear();
-      hiscoresMap.clear();
-      try {
-        apiClient
-            .getAllHiscoresAsync()
-            .get()
-            .forEach(
-                hiscore -> {
-                  hiscoresList.add(hiscore);
-                  hiscoresMap.put(hiscore.getId(), hiscore);
-                });
-        lastRefresh = Instant.now();
-      } catch (InterruptedException | ExecutionException e) {
-        throw new RuntimeException(e);
-      }
+    if (hiscoresList != null) {
+      return hiscoresList;
     }
-    return hiscoresList;
+    try {
+      return getAllAsync().get();
+    } catch (InterruptedException | ExecutionException err) {
+      throw new RuntimeException(err);
+    }
+  }
+
+  @Override
+  public @NonNull CompletableFuture<Optional<Hiscore>> getByUsername(String username) {
+    return getAllAsync()
+        .thenApply(
+            hiscores ->
+                hiscores.stream()
+                    .filter(hiscore -> hiscore.getUsername().equalsIgnoreCase(username))
+                    .findFirst());
+  }
+
+  @Override
+  public @NonNull CompletableFuture<List<Hiscore>> getAllAsync() {
+    return getAllAsync(true);
+  }
+
+  @Override
+  public @NonNull CompletableFuture<List<Hiscore>> getAllAsync(boolean cached) {
+    if (!cached || hiscoresList == null) {
+      if (future == null || future.isDone()) {
+        future =
+            apiClient
+                .getAllHiscoresAsync()
+                .thenApply(
+                    hiscores -> {
+                      hiscoresList = hiscores;
+                      return hiscores;
+                    });
+      }
+    } else {
+      future = CompletableFuture.completedFuture(hiscoresList);
+    }
+    return future;
+  }
+
+  @Override
+  public @NonNull CompletableFuture<Hiscore> postAsync(@NonNull Hiscore hiscore) {
+    return apiClient
+        .postHiscoreAsync(hiscore)
+        .thenApply(
+            id -> {
+              hiscore.setId(id);
+              return hiscore;
+            });
+  }
+
+  @Override
+  public void reset() {
+    hiscoresList = null;
   }
 }

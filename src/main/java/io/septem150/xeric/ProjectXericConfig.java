@@ -17,6 +17,7 @@ public interface ProjectXericConfig extends Config {
   String TASKS_DATA_KEY = "tasks";
   String SLAYER_CONFIG_KEY = "slayer";
   String CHAT_MESSAGES_CONFIG_KEY = "chat_messages";
+  String UPLOAD_HISCORES_CONFIG_KEY = "upload_hiscores";
 
   @ConfigItem(
       keyName = SLAYER_CONFIG_KEY,
@@ -31,6 +32,14 @@ public interface ProjectXericConfig extends Config {
       name = "Task Completion Chat Messages",
       description = "Toggle on to receive chat messages upon completing tasks.")
   default boolean chatMessages() {
+    return true;
+  }
+
+  @ConfigItem(
+      keyName = UPLOAD_HISCORES_CONFIG_KEY,
+      name = "Upload Hiscores",
+      description = "Toggle on to upload hiscores to the Project Xeric website.")
+  default boolean uploadHiscores() {
     return true;
   }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import net.runelite.client.game.SpriteManager;
 import net.runelite.client.util.ImageUtil;
 import org.apache.commons.text.WordUtils;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public enum ClanRank {
   CARRY(0, 3235, 0),

@@ -1,8 +1,10 @@
 package io.septem150.xeric.data.player;
 
+import com.google.gson.annotations.SerializedName;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 import java.util.function.Consumer;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -10,16 +12,24 @@ import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreEndpoint;
 import net.runelite.client.util.ImageUtil;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public enum AccountType {
+  @SerializedName("Invalid")
   INVALID("Invalid", -1, -1, HiscoreEndpoint.NORMAL),
+  @SerializedName("Default")
   DEFAULT("Default", 0, 32, HiscoreEndpoint.NORMAL),
+  @SerializedName("Ironman")
   IRONMAN("Ironman", 1, 2, HiscoreEndpoint.IRONMAN),
+  @SerializedName("Ultimate Ironman")
   ULTIMATE("Ultimate Ironman", 2, 3, HiscoreEndpoint.ULTIMATE_IRONMAN),
+  @SerializedName("Hardcore Ironman")
   HARDCORE("Hardcore Ironman", 3, 10, HiscoreEndpoint.HARDCORE_IRONMAN),
+  @SerializedName("Ranked Group Ironman")
   RANKED_GIM("Ranked Group Ironman", 4, 41, HiscoreEndpoint.NORMAL),
+  @SerializedName("Hardcore Group Ironman")
   HARDCORE_GIM("Hardcore Group Ironman", 5, 42, HiscoreEndpoint.NORMAL),
+  @SerializedName("Unranked Group Ironman")
   UNRANKED_GIM("Unranked Group Ironman", 6, 43, HiscoreEndpoint.NORMAL);
 
   private static final int MODICONS_ARCHIVE_ID = 423;
@@ -60,5 +70,10 @@ public enum AccountType {
         MODICONS_ARCHIVE_ID,
         this.getSpriteId(),
         image -> user.accept(ImageUtil.resizeImage(image, 14, 14, true)));
+  }
+
+  @Override
+  public String toString() {
+    return refName;
   }
 }

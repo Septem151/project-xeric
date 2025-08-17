@@ -2,6 +2,7 @@ package io.septem150.xeric.panel.summary;
 
 import com.google.common.collect.Iterables;
 import io.septem150.xeric.data.ProjectXericManager;
+import io.septem150.xeric.data.player.AccountException;
 import io.septem150.xeric.data.player.ClanRank;
 import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
@@ -35,8 +36,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
-import net.runelite.api.Quest;
-import net.runelite.api.QuestState;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
@@ -186,20 +185,12 @@ public class IdCard extends JPanel {
           image ->
               herbException.setIcon(new ImageIcon(ImageUtil.resizeImage(image, 20, 20, true))));
     }
-    herbException.setEnabled(
-        playerInfo.getQuests().stream()
-            .anyMatch(
-                qp ->
-                    qp.getQuest() == Quest.DRUIDIC_RITUAL && qp.getState() == QuestState.FINISHED));
+    herbException.setEnabled(playerInfo.hasAccountException(AccountException.HERBLORE));
     if (chinException.getIcon() == null) {
       chinException.setIcon(
           new ImageIcon(ResourceUtil.getImage("box_trap_icon.png", 20, 20, true)));
     }
-    chinException.setEnabled(
-        playerInfo.getQuests().stream()
-            .anyMatch(
-                qp ->
-                    qp.getQuest() == Quest.EAGLES_PEAK && qp.getState() != QuestState.NOT_STARTED));
+    chinException.setEnabled(playerInfo.hasAccountException(AccountException.BOXTRAPS));
     if (slayException.getIcon() == null) {
       spriteManager.getSpriteAsync(
           216,
@@ -207,7 +198,7 @@ public class IdCard extends JPanel {
           image ->
               slayException.setIcon(new ImageIcon(ImageUtil.resizeImage(image, 20, 20, true))));
     }
-    slayException.setEnabled(playerInfo.isSlayerException());
+    slayException.setEnabled(playerInfo.hasAccountException(AccountException.SLAYER));
     tasksCompleted.setValue(playerInfo.getTasks().size());
     pointsToNextRank.setValue(playerRank.getNextRank().getPointsNeeded() - playerPoints);
     highestTierCompleted.setValue(getHighestTierCompleted());
