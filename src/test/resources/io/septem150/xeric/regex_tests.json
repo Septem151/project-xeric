@@ -75,45 +75,199 @@
   ],
   "DELVE_KC_REGEX": [
     {
-      "text": "Deep delves completed: 2",
+      "text": "Deep delves completed: 5",
       "groups": {
-        "count": "2"
+        "count": "5"
       }
     },
     {
-      "text": "Deep delves completed: 103",
+      "text": "Deep delves completed: 50",
       "groups": {
-        "count": "103"
+        "count": "50"
       }
     }
   ],
   "KC_REGEX": [
     {
-      "text": "Your subdued Wintertodt count is: 393.",
+      "text": "Your completed Chambers of Xeric Challenge Mode count is: 5.",
       "groups": {
-        "name": "Wintertodt",
-        "count": "393"
+        "name": "Chambers of Xeric Challenge Mode",
+        "count": "5"
       }
     },
     {
-      "text": "Your Hespori kill count is: 78.",
+      "text": "Your completed Chambers of Xeric Challenge Mode count is: 50.",
       "groups": {
-        "name": "Hespori",
-        "count": "78"
+        "name": "Chambers of Xeric Challenge Mode",
+        "count": "50"
       }
     },
     {
-      "text": "Your Lunar Chest count is: 731.",
-      "groups": {
-        "name": "Lunar Chest",
-        "count": "731"
-      }
-    },
-    {
-      "text": "Your completed Chambers of Xeric count is: 150.",
+      "text": "Your completed Chambers of Xeric count is: 5.",
       "groups": {
         "name": "Chambers of Xeric",
-        "count": "150"
+        "count": "5"
+      }
+    },
+    {
+      "text": "Your completed Chambers of Xeric count is: 50.",
+      "groups": {
+        "name": "Chambers of Xeric",
+        "count": "50"
+      }
+    },
+    {
+      "text": "Your Alchemical Hydra kill count is: 5.",
+      "groups": {
+        "name": "Alchemical Hydra",
+        "count": "5"
+      }
+    },
+    {
+      "text": "Your Alchemical Hydra kill count is: 50.",
+      "groups": {
+        "name": "Alchemical Hydra",
+        "count": "50"
+      }
+    },
+    {
+      "text": "Your Amoxliatl kill count is: 5.",
+      "groups": {
+        "name": "Amoxliatl",
+        "count": "5"
+      }
+    },
+    {
+      "text": "Your Amoxliatl kill count is: 50.",
+      "groups": {
+        "name": "Amoxliatl",
+        "count": "50"
+      }
+    },
+    {
+      "text": "Your Hueycoatl kill count is: 5.",
+      "groups": {
+        "name": "Hueycoatl",
+        "count": "5"
+      }
+    },
+    {
+      "text": "Your Hueycoatl kill count is: 50.",
+      "groups": {
+        "name": "Hueycoatl",
+        "count": "50"
+      }
+    },
+    {
+      "text": "Your Sarachnis kill count is: 5.",
+      "groups": {
+        "name": "Sarachnis",
+        "count": "5"
+      }
+    },
+    {
+      "text": "Your Sarachnis kill count is: 50.",
+      "groups": {
+        "name": "Sarachnis",
+        "count": "50"
+      }
+    },
+    {
+      "text": "Your Hespori kill count is: 5.",
+      "groups": {
+        "name": "Hespori",
+        "count": "5"
+      }
+    },
+    {
+      "text": "Your Hespori kill count is: 50.",
+      "groups": {
+        "name": "Hespori",
+        "count": "50"
+      }
+    },
+    {
+      "text": "Your Skotizo kill count is: 5.",
+      "groups": {
+        "name": "Skotizo",
+        "count": "5"
+      }
+    },
+    {
+      "text": "Your Skotizo kill count is: 50.",
+      "groups": {
+        "name": "Skotizo",
+        "count": "50"
+      }
+    },
+    {
+      "text": "Your Lunar Chest count is: 5.",
+      "groups": {
+        "name": "Lunar Chest",
+        "count": "5"
+      }
+    },
+    {
+      "text": "Your Lunar Chest count is: 50.",
+      "groups": {
+        "name": "Lunar Chest",
+        "count": "50"
+      }
+    },
+    {
+      "text": "Your Sol Heredit kill count is: 5.",
+      "groups": {
+        "name": "Sol Heredit",
+        "count": "5"
+      }
+    },
+    {
+      "text": "Your Sol Heredit kill count is: 50.",
+      "groups": {
+        "name": "Sol Heredit",
+        "count": "50"
+      }
+    },
+    {
+      "text": "Your subdued Wintertodt count is: 5.",
+      "groups": {
+        "name": "Wintertodt",
+        "count": "5"
+      }
+    },
+    {
+      "text": "Your subdued Wintertodt count is: 50.",
+      "groups": {
+        "name": "Wintertodt",
+        "count": "50"
+      }
+    },
+    {
+      "text": "Your Mimic kill count is: 5.",
+      "groups": {
+        "name": "Mimic",
+        "count": "5"
+      }
+    },
+    {
+      "text": "Your Mimic kill count is: 50.",
+      "groups": {
+        "name": "Mimic",
+        "count": "50"
+      }
+    },
+    {
+      "text": "Your Yama success count is: 5.",
+      "groups": {
+        "name": "Yama",
+        "count": "5"
+      }
+    },
+    {
+      "text": "Your Yama success count is: 50.",
+      "groups": {
+        "name": "Yama",
+        "count": "50"
       }
     }
   ],
@@ -126,16 +280,37 @@
       }
     },
     {
-      "text": "You have completed 2 medium Treasure Trails.",
+      "text": "You have completed 50 easy Treasure Trails.",
       "groups": {
-        "count": "2",
+        "count": "50",
+        "tier": "easy"
+      }
+    },
+    {
+      "text": "You have completed 1 medium Treasure Trail.",
+      "groups": {
+        "count": "1",
         "tier": "medium"
       }
     },
     {
-      "text": "You have completed 23 hard Treasure Trails.",
+      "text": "You have completed 50 medium Treasure Trails.",
       "groups": {
-        "count": "23",
+        "count": "50",
+        "tier": "medium"
+      }
+    },
+    {
+      "text": "You have completed 1 hard Treasure Trail.",
+      "groups": {
+        "count": "1",
+        "tier": "hard"
+      }
+    },
+    {
+      "text": "You have completed 50 hard Treasure Trails.",
+      "groups": {
+        "count": "50",
         "tier": "hard"
       }
     },
@@ -144,6 +319,27 @@
       "groups": {
         "count": "1",
         "tier": "elite"
+      }
+    },
+    {
+      "text": "You have completed 50 elite Treasure Trails.",
+      "groups": {
+        "count": "50",
+        "tier": "elite"
+      }
+    },
+    {
+      "text": "You have completed 1 master Treasure Trail.",
+      "groups": {
+        "count": "1",
+        "tier": "master"
+      }
+    },
+    {
+      "text": "You have completed 50 master Treasure Trails.",
+      "groups": {
+        "count": "50",
+        "tier": "master"
       }
     }
   ]
