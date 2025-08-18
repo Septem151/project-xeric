@@ -3,11 +3,11 @@
     <option name="MAIN_CLASS_NAME" value="io.septem150.xeric.ProjectXericPluginTest" />
     <module name="project-xeric.test" />
     <option name="PROGRAM_PARAMETERS" value="--debug --developer-mode" />
-    <option name="VM_PARAMETERS" value="-ea" />
+    <option name="VM_PARAMETERS" value="-ea -Dxeric.local-backend=false" />
     <option name="WORKING_DIRECTORY" value="$ProjectFileDir$" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="io.septem150.xeric.panel.*" />
+        <option name="PATTERN" value="io.septem150.xeric.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

@@ -9,8 +9,8 @@ import io.septem150.xeric.data.task.CollectTask;
 import io.septem150.xeric.data.task.DiaryTask;
 import io.septem150.xeric.data.task.KCTask;
 import io.septem150.xeric.data.task.LevelTask;
-import io.septem150.xeric.data.task.LocalTaskStore;
 import io.septem150.xeric.data.task.QuestTask;
+import io.septem150.xeric.data.task.RemoteTaskStore;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.panel.PanelUpdate;
@@ -96,7 +96,7 @@ public final class ProjectXericPlugin extends Plugin {
   @Override
   public void configure(Binder binder) {
     super.configure(binder);
-    binder.bind(TaskStore.class).to(LocalTaskStore.class);
+    binder.bind(TaskStore.class).to(RemoteTaskStore.class);
   }
 
   @Provides
