@@ -191,6 +191,19 @@ public class ProjectXericManager {
     if (lastAccountId == accountId) return;
     lastAccountId = accountId;
     playerInfo = new PlayerInfo();
+    if (client.getVarbitValue(VarbitID.OPTION_COLLECTION_NEW_ITEM) != 1) {
+      client.addChatMessage(
+          ChatMessageType.GAMEMESSAGE,
+          ProjectXericConfig.NAME,
+          String.format(
+              "[%s] Warning: %s",
+              ColorUtil.wrapWithColorTag(ProjectXericConfig.NAME, Color.decode("#0E5816")),
+              ColorUtil.wrapWithColorTag(
+                  "Tasks will not update properly unless you enable the game setting:"
+                      + " Collection log - New addition notification",
+                  Color.RED)),
+          "");
+    }
     updateAccountInfo();
     updateQuests();
     updateDiaries();
