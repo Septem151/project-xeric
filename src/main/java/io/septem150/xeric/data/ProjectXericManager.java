@@ -37,6 +37,7 @@ import io.septem150.xeric.data.task.LevelTask;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.panel.PanelUpdate;
+import io.septem150.xeric.util.RegexUtil;
 import io.septem150.xeric.util.WorldUtil;
 import java.awt.Color;
 import java.io.IOException;
@@ -54,7 +55,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -97,29 +97,6 @@ import net.runelite.client.util.Text;
 @Slf4j
 @Singleton
 public class ProjectXericManager {
-  private static final Pattern COMBAT_TASK_REGEX =
-      Pattern.compile("Congratulations, you've completed an? \\w+ combat task:.*");
-  private static final Pattern CLOG_REGEX =
-      Pattern.compile("New item added to your collection log: (?<item>.*)");
-  private static final Pattern DIARY_REGEX =
-      Pattern.compile(
-          "Well done! You have completed an? \\w+ task in the .* area\\. Your Achievement"
-              + " Diary has been updated");
-  private static final Pattern KC_REGEX =
-      Pattern.compile(
-          "Your (?:subdued |completed )?(?<name>.*) (?:kill )?count is: (?<count>\\d+)\\.");
-  private static final Pattern DELVE_KC_REGEX =
-      Pattern.compile("Deep delves completed: (?<count>\\d+)");
-  private static final Pattern DELVE_REGEX =
-      Pattern.compile(
-          "Delve level: (?<wave>\\d+|8\\+ \\((?<deepWave>\\d+)\\)) duration:"
-              + " (?<duration>(?:\\d+:)?\\d+:\\d+)(?:\\.\\d+)?(?: \\(new personal best\\)|\\."
-              + " Personal best: (?<pb>(?:\\d+:)?\\d+:\\d+)(?:\\.\\d+)?)");
-  private static final Pattern CLUE_REGEX =
-      Pattern.compile("You have completed (?<count>\\d+) (?<tier>.*) Treasure Trails?\\.");
-  private static final Pattern QUEST_REGEX =
-      Pattern.compile("Congratulations, you've completed a quest:.*");
-
   private final Client client;
   private final ClientThread clientThread;
   private final EventBus eventBus;
@@ -214,6 +191,19 @@ public class ProjectXericManager {
     if (lastAccountId == accountId) return;
     lastAccountId = accountId;
     playerInfo = new PlayerInfo();
+    if (client.getVarbitValue(VarbitID.OPTION_COLLECTION_NEW_ITEM) != 1) {
+      client.addChatMessage(
+          ChatMessageType.GAMEMESSAGE,
+          ProjectXericConfig.NAME,
+          String.format(
+              "[%s] Warning: %s",
+              ColorUtil.wrapWithColorTag(ProjectXericConfig.NAME, Color.decode("#0E5816")),
+              ColorUtil.wrapWithColorTag(
+                  "Tasks will not update properly unless you enable the game setting:"
+                      + " Collection log - New addition notification",
+                  Color.RED)),
+          "");
+    }
     updateAccountInfo();
     updateQuests();
     updateDiaries();
@@ -297,24 +287,25 @@ public class ProjectXericManager {
   public void onChatMessage(ChatMessage event) {
     if (event.getType() != ChatMessageType.GAMEMESSAGE) return;
     String message = Text.removeTags(event.getMessage());
-    Matcher caTaskMatcher = COMBAT_TASK_REGEX.matcher(message);
+    Matcher caTaskMatcher = RegexUtil.COMBAT_TASK_REGEX.matcher(message);
     if (caTaskMatcher.matches()) {
+      log.debug("Matched CA: " + message);
       if (updateTasks <= 0) updateTasks = 2;
       return;
     }
-    Matcher diaryMatcher = DIARY_REGEX.matcher(message);
+    Matcher diaryMatcher = RegexUtil.DIARY_REGEX.matcher(message);
     if (diaryMatcher.matches()) {
       updateDiaries();
       if (updateTasks <= 0) updateTasks = 1;
       return;
     }
-    Matcher questMatcher = QUEST_REGEX.matcher(message);
+    Matcher questMatcher = RegexUtil.QUEST_REGEX.matcher(message);
     if (questMatcher.matches()) {
       updateQuests();
       if (updateTasks <= 0) updateTasks = 1;
       return;
     }
-    Matcher kcMatcher = KC_REGEX.matcher(message);
+    Matcher kcMatcher = RegexUtil.KC_REGEX.matcher(message);
     if (kcMatcher.matches()) {
       String name = kcMatcher.group("name");
       if ("Lunar Chest".equals(name)) {
@@ -330,7 +321,7 @@ public class ProjectXericManager {
       }
       return;
     }
-    Matcher clueMatcher = CLUE_REGEX.matcher(message);
+    Matcher clueMatcher = RegexUtil.CLUE_REGEX.matcher(message);
     if (clueMatcher.matches()) {
       int count = Integer.parseInt(clueMatcher.group("count"));
       String tier = clueMatcher.group("tier");
@@ -342,7 +333,7 @@ public class ProjectXericManager {
       }
       return;
     }
-    Matcher clogMatcher = CLOG_REGEX.matcher(message);
+    Matcher clogMatcher = RegexUtil.CLOG_REGEX.matcher(message);
     if (clogMatcher.matches()) {
       obtainedItemName = Text.removeTags(clogMatcher.group("item"));
 
