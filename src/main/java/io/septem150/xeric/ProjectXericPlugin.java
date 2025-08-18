@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.google.inject.Binder;
 import com.google.inject.Provides;
 import io.septem150.xeric.data.ProjectXericManager;
-import io.septem150.xeric.data.hiscore.HiscoreStore;
-import io.septem150.xeric.data.hiscore.LocalHiscoreStore;
 import io.septem150.xeric.data.task.CATask;
 import io.septem150.xeric.data.task.CollectTask;
 import io.septem150.xeric.data.task.DiaryTask;
@@ -99,7 +97,6 @@ public final class ProjectXericPlugin extends Plugin {
   public void configure(Binder binder) {
     super.configure(binder);
     binder.bind(TaskStore.class).to(LocalTaskStore.class);
-    binder.bind(HiscoreStore.class).to(LocalHiscoreStore.class);
   }
 
   @Provides
