@@ -25,8 +25,6 @@ The plugin adds a sidebar panel that features two tabs:
 
 - Tasks are stored and retrieved from https://api.projectxeric.com.
 
-### 1.0.2
-
 #### Hotfixes
 
 - CA and KC tasks update in real-time when completing a CA and getting a KC.
