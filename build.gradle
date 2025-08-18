@@ -42,7 +42,7 @@ dependencies {
 }
 
 group = 'io.septem150.xeric'
-version = '1.0.2'
+version = '1.1.0'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
