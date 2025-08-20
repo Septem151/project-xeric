@@ -77,12 +77,14 @@
     {
       "text": "Deep delves completed: 5",
       "groups": {
+        "name": "Deep delves",
         "count": "5"
       }
     },
     {
       "text": "Deep delves completed: 50",
       "groups": {
+        "name": "Deep delves",
         "count": "50"
       }
     }

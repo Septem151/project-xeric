@@ -18,7 +18,7 @@ public class RegexUtil {
           "Your (?:subdued |completed )?(?<name>.+?) (?:kill |success )?count is:"
               + " (?<count>\\d+)\\.");
   public static final Pattern DELVE_KC_REGEX =
-      Pattern.compile("Deep delves completed: (?<count>\\d+)");
+      Pattern.compile("(?<name>Deep delves) completed: (?<count>\\d+)");
   public static final Pattern DELVE_REGEX =
       Pattern.compile(
           "Delve level: (?<wave>\\d+|8\\+ \\((?<deepWave>\\d+)\\)) duration:"

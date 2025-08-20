@@ -90,6 +90,7 @@ import net.runelite.client.game.ItemStack;
 import net.runelite.client.hiscore.HiscoreEndpoint;
 import net.runelite.client.hiscore.HiscoreManager;
 import net.runelite.client.hiscore.HiscoreResult;
+import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.plugins.loottracker.LootReceived;
 import net.runelite.client.util.ColorUtil;
 import net.runelite.client.util.Text;
@@ -287,24 +288,6 @@ public class ProjectXericManager {
   public void onChatMessage(ChatMessage event) {
     if (event.getType() != ChatMessageType.GAMEMESSAGE) return;
     String message = Text.removeTags(event.getMessage());
-    Matcher caTaskMatcher = RegexUtil.COMBAT_TASK_REGEX.matcher(message);
-    if (caTaskMatcher.matches()) {
-      log.debug("Matched CA: " + message);
-      if (updateTasks <= 0) updateTasks = 2;
-      return;
-    }
-    Matcher diaryMatcher = RegexUtil.DIARY_REGEX.matcher(message);
-    if (diaryMatcher.matches()) {
-      updateDiaries();
-      if (updateTasks <= 0) updateTasks = 1;
-      return;
-    }
-    Matcher questMatcher = RegexUtil.QUEST_REGEX.matcher(message);
-    if (questMatcher.matches()) {
-      updateQuests();
-      if (updateTasks <= 0) updateTasks = 1;
-      return;
-    }
     Matcher kcMatcher = RegexUtil.KC_REGEX.matcher(message);
     if (kcMatcher.matches()) {
       String name = kcMatcher.group("name");
@@ -315,18 +298,6 @@ public class ProjectXericManager {
       }
       int count = Integer.parseInt(kcMatcher.group("count"));
       KillCount kc = playerInfo.getKillCounts().getOrDefault(name, null);
-      if (kc != null) {
-        kc.setCount(count);
-        if (updateTasks <= 0) updateTasks = 1;
-      }
-      return;
-    }
-    Matcher clueMatcher = RegexUtil.CLUE_REGEX.matcher(message);
-    if (clueMatcher.matches()) {
-      int count = Integer.parseInt(clueMatcher.group("count"));
-      String tier = clueMatcher.group("tier");
-      KillCount kc =
-          playerInfo.getKillCounts().getOrDefault(String.format("Clue Scrolls (%s)", tier), null);
       if (kc != null) {
         kc.setCount(count);
         if (updateTasks <= 0) updateTasks = 1;
@@ -349,6 +320,47 @@ public class ProjectXericManager {
           .forEach(item -> inventoryItems.add(item.getId(), item.getQuantity()));
 
       // Defer to onItemContainerChanged or onLootReceived
+      return;
+    }
+    Matcher caTaskMatcher = RegexUtil.COMBAT_TASK_REGEX.matcher(message);
+    if (caTaskMatcher.matches()) {
+      if (updateTasks <= 0) updateTasks = 2;
+      return;
+    }
+    Matcher clueMatcher = RegexUtil.CLUE_REGEX.matcher(message);
+    if (clueMatcher.matches()) {
+      int count = Integer.parseInt(clueMatcher.group("count"));
+      String tier = clueMatcher.group("tier");
+      KillCount kc =
+          playerInfo.getKillCounts().getOrDefault(String.format("Clue Scrolls (%s)", tier), null);
+      if (kc != null) {
+        kc.setCount(count);
+        if (updateTasks <= 0) updateTasks = 1;
+      }
+      return;
+    }
+    Matcher questMatcher = RegexUtil.QUEST_REGEX.matcher(message);
+    if (questMatcher.matches()) {
+      updateQuests();
+      if (updateTasks <= 0) updateTasks = 1;
+      return;
+    }
+    Matcher diaryMatcher = RegexUtil.DIARY_REGEX.matcher(message);
+    if (diaryMatcher.matches()) {
+      updateDiaries();
+      if (updateTasks <= 0) updateTasks = 1;
+      return;
+    }
+    Matcher delveMatcher = RegexUtil.DELVE_KC_REGEX.matcher(message);
+    if (delveMatcher.matches()) {
+      int count = Integer.parseInt(delveMatcher.group("count"));
+      KillCount kc =
+          playerInfo.getKillCounts().getOrDefault(HiscoreSkill.DOOM_OF_MOKHAIOTL.getName(), null);
+      if (kc != null) {
+        kc.setCount(count);
+        if (updateTasks <= 0) updateTasks = 1;
+      }
+      return;
     }
   }
 
