@@ -87,6 +87,7 @@ public class ProjectXericApiClient {
   private CompletableFuture<Response> executeHttpRequestAsync(
       OkHttpClient client, Request request) {
     CompletableFuture<Response> future = new CompletableFuture<>();
+    log.debug("Async API request started: {}", request.url());
     client
         .newCall(request)
         .enqueue(
@@ -136,7 +137,7 @@ public class ProjectXericApiClient {
       if (type == null) {
         return null;
       }
-
+      log.debug("Async API request complete: {}", response.request().url());
       return gson.fromJson(bodyString, type);
     } catch (IOException e) {
       throw new RuntimeException("Error reading response body");
