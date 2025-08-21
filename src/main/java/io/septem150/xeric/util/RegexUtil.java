@@ -5,8 +5,8 @@ import java.util.regex.Pattern;
 public class RegexUtil {
   public static final Pattern COMBAT_TASK_REGEX =
       Pattern.compile(
-          "CA_ID:\\d+\\|Congratulations, you've completed an? (?<tier>\\w+) combat task:"
-              + " (?<name>.+?) \\(\\d+ points?\\)\\.");
+          "CA_ID:[0-9,]+\\|Congratulations, you've completed an? (?<tier>\\w+) combat task:"
+              + " (?<name>.+?) \\([0-9,]+ points?\\)\\.");
   public static final Pattern CLOG_REGEX =
       Pattern.compile("New item added to your collection log: (?<item>.*)");
   public static final Pattern DIARY_REGEX =
@@ -16,16 +16,16 @@ public class RegexUtil {
   public static final Pattern KC_REGEX =
       Pattern.compile(
           "Your (?:subdued |completed )?(?<name>.+?) (?:kill |success )?count is:"
-              + " (?<count>\\d+)\\.");
+              + " (?<count>[0-9,]+)\\.");
   public static final Pattern DELVE_KC_REGEX =
-      Pattern.compile("(?<name>Deep delves) completed: (?<count>\\d+)");
+      Pattern.compile("(?<name>Deep delves) completed: (?<count>[0-9,]+)");
   public static final Pattern DELVE_REGEX =
       Pattern.compile(
-          "Delve level: (?<wave>\\d+|8\\+ \\((?<deepWave>\\d+)\\)) duration:"
-              + " (?<duration>(?:\\d+:)?\\d+:\\d+)(?:\\.\\d+)?(?: \\(new personal best\\)|\\."
-              + " Personal best: (?<pb>(?:\\d+:)?\\d+:\\d+)(?:\\.\\d+)?)");
+          "Delve level: (?<wave>[0-9,]+|8\\+ \\((?<deepWave>[0-9,]+)\\)) duration:"
+              + " (?<duration>(?:[0-9,]+:)?[0-9,]+:[0-9,]+)(?:\\.[0-9,]+)?(?: \\(new personal"
+              + " best\\)|\\. Personal best: (?<pb>(?:[0-9,]+:)?[0-9,]+:[0-9,]+)(?:\\.[0-9,]+)?)");
   public static final Pattern CLUE_REGEX =
-      Pattern.compile("You have completed (?<count>\\d+) (?<tier>.*) Treasure Trails?\\.");
+      Pattern.compile("You have completed (?<count>[0-9,]+) (?<tier>.*) Treasure Trails?\\.");
   public static final Pattern QUEST_REGEX =
       Pattern.compile("Congratulations, you've completed a quest:.*");
 }

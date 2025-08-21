@@ -87,6 +87,13 @@
         "name": "Deep delves",
         "count": "50"
       }
+    },
+    {
+      "text": "Deep delves completed: 5,000",
+      "groups": {
+        "name": "Deep delves",
+        "count": "5,000"
+      }
     }
   ],
   "KC_REGEX": [
@@ -105,6 +112,13 @@
       }
     },
     {
+      "text": "Your completed Chambers of Xeric Challenge Mode count is: 5,000.",
+      "groups": {
+        "name": "Chambers of Xeric Challenge Mode",
+        "count": "5,000"
+      }
+    },
+    {
       "text": "Your completed Chambers of Xeric count is: 5.",
       "groups": {
         "name": "Chambers of Xeric",
@@ -116,6 +130,13 @@
       "groups": {
         "name": "Chambers of Xeric",
         "count": "50"
+      }
+    },
+    {
+      "text": "Your completed Chambers of Xeric count is: 5,000.",
+      "groups": {
+        "name": "Chambers of Xeric",
+        "count": "5,000"
       }
     },
     {
@@ -133,6 +154,13 @@
       }
     },
     {
+      "text": "Your Alchemical Hydra kill count is: 5,000.",
+      "groups": {
+        "name": "Alchemical Hydra",
+        "count": "5,000"
+      }
+    },
+    {
       "text": "Your Amoxliatl kill count is: 5.",
       "groups": {
         "name": "Amoxliatl",
@@ -144,6 +172,13 @@
       "groups": {
         "name": "Amoxliatl",
         "count": "50"
+      }
+    },
+    {
+      "text": "Your Amoxliatl kill count is: 5,000.",
+      "groups": {
+        "name": "Amoxliatl",
+        "count": "5,000"
       }
     },
     {
@@ -161,6 +196,13 @@
       }
     },
     {
+      "text": "Your Hueycoatl kill count is: 5,000.",
+      "groups": {
+        "name": "Hueycoatl",
+        "count": "5,000"
+      }
+    },
+    {
       "text": "Your Sarachnis kill count is: 5.",
       "groups": {
         "name": "Sarachnis",
@@ -172,6 +214,13 @@
       "groups": {
         "name": "Sarachnis",
         "count": "50"
+      }
+    },
+    {
+      "text": "Your Sarachnis kill count is: 5,000.",
+      "groups": {
+        "name": "Sarachnis",
+        "count": "5,000"
       }
     },
     {
@@ -189,6 +238,13 @@
       }
     },
     {
+      "text": "Your Hespori kill count is: 5,000.",
+      "groups": {
+        "name": "Hespori",
+        "count": "5,000"
+      }
+    },
+    {
       "text": "Your Skotizo kill count is: 5.",
       "groups": {
         "name": "Skotizo",
@@ -200,6 +256,13 @@
       "groups": {
         "name": "Skotizo",
         "count": "50"
+      }
+    },
+    {
+      "text": "Your Skotizo kill count is: 5,000.",
+      "groups": {
+        "name": "Skotizo",
+        "count": "5,000"
       }
     },
     {
@@ -217,6 +280,13 @@
       }
     },
     {
+      "text": "Your Lunar Chest count is: 5,000.",
+      "groups": {
+        "name": "Lunar Chest",
+        "count": "5,000"
+      }
+    },
+    {
       "text": "Your Sol Heredit kill count is: 5.",
       "groups": {
         "name": "Sol Heredit",
@@ -228,6 +298,13 @@
       "groups": {
         "name": "Sol Heredit",
         "count": "50"
+      }
+    },
+    {
+      "text": "Your Sol Heredit kill count is: 5,000.",
+      "groups": {
+        "name": "Sol Heredit",
+        "count": "5,000"
       }
     },
     {
@@ -245,6 +322,13 @@
       }
     },
     {
+      "text": "Your subdued Wintertodt count is: 5,000.",
+      "groups": {
+        "name": "Wintertodt",
+        "count": "5,000"
+      }
+    },
+    {
       "text": "Your Mimic kill count is: 5.",
       "groups": {
         "name": "Mimic",
@@ -259,6 +343,13 @@
       }
     },
     {
+      "text": "Your Mimic kill count is: 5,000.",
+      "groups": {
+        "name": "Mimic",
+        "count": "5,000"
+      }
+    },
+    {
       "text": "Your Yama success count is: 5.",
       "groups": {
         "name": "Yama",
@@ -270,6 +361,13 @@
       "groups": {
         "name": "Yama",
         "count": "50"
+      }
+    },
+    {
+      "text": "Your Yama success count is: 5,000.",
+      "groups": {
+        "name": "Yama",
+        "count": "5,000"
       }
     }
   ],
@@ -289,6 +387,13 @@
       }
     },
     {
+      "text": "You have completed 5,000 easy Treasure Trails.",
+      "groups": {
+        "count": "5,000",
+        "tier": "easy"
+      }
+    },
+    {
       "text": "You have completed 1 medium Treasure Trail.",
       "groups": {
         "count": "1",
@@ -299,6 +404,13 @@
       "text": "You have completed 50 medium Treasure Trails.",
       "groups": {
         "count": "50",
+        "tier": "medium"
+      }
+    },
+    {
+      "text": "You have completed 5,000 medium Treasure Trails.",
+      "groups": {
+        "count": "5,000",
         "tier": "medium"
       }
     },
@@ -317,6 +429,13 @@
       }
     },
     {
+      "text": "You have completed 5,000 hard Treasure Trails.",
+      "groups": {
+        "count": "5,000",
+        "tier": "hard"
+      }
+    },
+    {
       "text": "You have completed 1 elite Treasure Trail.",
       "groups": {
         "count": "1",
@@ -331,6 +450,13 @@
       }
     },
     {
+      "text": "You have completed 5,000 elite Treasure Trails.",
+      "groups": {
+        "count": "5,000",
+        "tier": "elite"
+      }
+    },
+    {
       "text": "You have completed 1 master Treasure Trail.",
       "groups": {
         "count": "1",
@@ -341,6 +467,13 @@
       "text": "You have completed 50 master Treasure Trails.",
       "groups": {
         "count": "50",
+        "tier": "master"
+      }
+    },
+    {
+      "text": "You have completed 5,000 master Treasure Trails.",
+      "groups": {
+        "count": "5,000",
         "tier": "master"
       }
     }
@@ -1600,7 +1733,7 @@
       }
     },
     {
-      "text": "CA_ID:0|Congratulations, you've completed an elite combat task: Redemption Enthusiast (4 points).",
+      "text": "CA_ID:1,000|Congratulations, you've completed an elite combat task: Redemption Enthusiast (4 points).",
       "groups": {
         "tier": "elite",
         "name": "Redemption Enthusiast"
