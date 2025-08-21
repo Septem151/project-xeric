@@ -16,13 +16,10 @@ import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.panel.PanelUpdate;
 import io.septem150.xeric.panel.ProjectXericPanel;
 import io.septem150.xeric.util.RuntimeTypeAdapterFactory;
-import java.awt.Color;
-import java.util.Arrays;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.events.CommandExecuted;
 import net.runelite.api.events.GameTick;
@@ -31,7 +28,6 @@ import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.util.ColorUtil;
 
 /**
  * Project Xeric plugin.
@@ -85,25 +81,6 @@ public final class ProjectXericPlugin extends Plugin {
       manager.shutDown();
       manager.startUp();
       SwingUtilities.invokeLater(panel::refresh);
-    } else if (event.getCommand().equals("givekc")) {
-      String[] args = event.getArguments();
-      if (args.length == 0) args = new String[] {"Hueycoatl", "1000"};
-      else if (args.length == 1) args = new String[] {args[0], "1000"};
-      else {
-        args =
-            new String[] {
-              String.join(" ", Arrays.copyOf(args, args.length - 1)), args[args.length - 1]
-            };
-      }
-      String bossName = args[0];
-      int kills = Integer.parseInt(args[1]);
-      client.addChatMessage(
-          ChatMessageType.GAMEMESSAGE,
-          "",
-          String.format(
-              "Your %s kill count is: %,d.",
-              ColorUtil.wrapWithColorTag(bossName, Color.RED), kills),
-          null);
     }
   }
 
