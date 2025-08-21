@@ -296,7 +296,7 @@ public class ProjectXericManager {
       } else if ("Hueycoatl".equals(name)) {
         name = "The " + name;
       }
-      int count = Integer.parseInt(kcMatcher.group("count"));
+      int count = Integer.parseInt(kcMatcher.group("count").replace(",", ""));
       KillCount kc = playerInfo.getKillCounts().getOrDefault(name, null);
       if (kc != null) {
         kc.setCount(count);
@@ -329,7 +329,7 @@ public class ProjectXericManager {
     }
     Matcher clueMatcher = RegexUtil.CLUE_REGEX.matcher(message);
     if (clueMatcher.matches()) {
-      int count = Integer.parseInt(clueMatcher.group("count"));
+      int count = Integer.parseInt(clueMatcher.group("count").replace(",", ""));
       String tier = clueMatcher.group("tier");
       KillCount kc =
           playerInfo.getKillCounts().getOrDefault(String.format("Clue Scrolls (%s)", tier), null);
@@ -353,7 +353,7 @@ public class ProjectXericManager {
     }
     Matcher delveMatcher = RegexUtil.DELVE_KC_REGEX.matcher(message);
     if (delveMatcher.matches()) {
-      int count = Integer.parseInt(delveMatcher.group("count"));
+      int count = Integer.parseInt(delveMatcher.group("count").replace(",", ""));
       KillCount kc =
           playerInfo.getKillCounts().getOrDefault(HiscoreSkill.DOOM_OF_MOKHAIOTL.getName(), null);
       if (kc != null) {
