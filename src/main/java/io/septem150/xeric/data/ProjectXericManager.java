@@ -292,9 +292,11 @@ public class ProjectXericManager {
     if (kcMatcher.matches()) {
       String name = kcMatcher.group("name");
       if ("Lunar Chest".equals(name)) {
-        name += "s";
+        name = HiscoreSkill.LUNAR_CHESTS.getName();
       } else if ("Hueycoatl".equals(name)) {
-        name = "The " + name;
+        name = HiscoreSkill.THE_HUEYCOATL.getName();
+      } else if ("Chambers of Xeric Challenge Mode".equals(name)) {
+        name = HiscoreSkill.CHAMBERS_OF_XERIC_CHALLENGE_MODE.getName();
       }
       int count = Integer.parseInt(kcMatcher.group("count").replace(",", ""));
       KillCount kc = playerInfo.getKillCounts().getOrDefault(name, null);
