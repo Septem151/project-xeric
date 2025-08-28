@@ -1,20 +1,12 @@
 package io.septem150.xeric.data.clog;
 
-import lombok.Data;
-import net.runelite.api.Client;
+import lombok.*;
 
-@Data
+@RequiredArgsConstructor
+@Getter
+@EqualsAndHashCode
+@ToString
 public class ClogItem {
-  private int id;
-  private String name;
-
-  public static ClogItem from(Client client, int id) {
-    if (client == null || !client.isClientThread()) {
-      throw new RuntimeException("must be on client thread");
-    }
-    ClogItem item = new ClogItem();
-    item.id = id;
-    item.name = client.getItemDefinition(id).getMembersName();
-    return item;
-  }
+  private final int id;
+  @NonNull private final String name;
 }

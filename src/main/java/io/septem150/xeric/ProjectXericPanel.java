@@ -1,21 +1,17 @@
-package io.septem150.xeric.panel;
+package io.septem150.xeric;
 
-import io.septem150.xeric.ProjectXericConfig;
+import io.septem150.xeric.data.player.PlayerData;
 import io.septem150.xeric.panel.leaderboard.LeaderboardPanel;
 import io.septem150.xeric.panel.summary.SummaryPanel;
+import io.septem150.xeric.task.Task;
 import io.septem150.xeric.util.ResourceUtil;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +24,9 @@ import net.runelite.client.ui.components.materialtabs.MaterialTabGroup;
 import net.runelite.client.util.LinkBrowser;
 import net.runelite.client.util.SwingUtil;
 
-/** Side Panel UI for the Project Xeric plugin. */
 @Slf4j
 @Singleton
-public final class ProjectXericPanel extends PluginPanel {
+public class ProjectXericPanel extends PluginPanel {
   private static final String SIDEPANEL_ICON = "sidepanel_icon.png";
   private static final int SIDEPANEL_PRIORITY = 3;
 
@@ -47,7 +42,7 @@ public final class ProjectXericPanel extends PluginPanel {
     this.clientToolbar = clientToolbar;
     navigationButton =
         NavigationButton.builder()
-            .tooltip(ProjectXericConfig.NAME)
+            .tooltip(ProjectXericConfig.PLUGIN_NAME)
             .icon(ResourceUtil.getImage(SIDEPANEL_ICON))
             .priority(SIDEPANEL_PRIORITY)
             .panel(this)
@@ -86,8 +81,6 @@ public final class ProjectXericPanel extends PluginPanel {
   /** Adds this Side Panel to the RuneLite client toolbar */
   public void startUp() {
     clientToolbar.addNavigation(navigationButton);
-    summaryPanel.startUp();
-    leaderboardPanel.startUp();
   }
 
   /** Removes this Side Panel from the RuneLite client toolbar */
@@ -95,8 +88,8 @@ public final class ProjectXericPanel extends PluginPanel {
     clientToolbar.removeNavigation(navigationButton);
   }
 
-  public void refresh() {
-    summaryPanel.refresh();
+  public void refresh(PlayerData playerData, Map<Integer, Task> allTasks) {
+    summaryPanel.refresh(playerData, allTasks);
     leaderboardPanel.refresh();
     revalidate();
   }
@@ -129,7 +122,7 @@ public final class ProjectXericPanel extends PluginPanel {
     JPanel titlePanel = new JPanel(new BorderLayout());
     titlePanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
-    JLabel title = new JLabel(ProjectXericConfig.NAME);
+    JLabel title = new JLabel(ProjectXericConfig.PLUGIN_NAME);
     title.setForeground(Color.WHITE);
     titlePanel.add(title, BorderLayout.WEST);
 

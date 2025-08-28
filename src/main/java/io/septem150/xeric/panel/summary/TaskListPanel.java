@@ -1,30 +1,14 @@
 package io.septem150.xeric.panel.summary;
 
-import io.septem150.xeric.data.ProjectXericManager;
-import io.septem150.xeric.data.task.Task;
-import io.septem150.xeric.data.task.TaskStore;
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.HashMap;
+import io.septem150.xeric.data.player.PlayerData;
+import io.septem150.xeric.task.Task;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import net.runelite.client.callback.ClientThread;
@@ -38,21 +22,13 @@ public class TaskListPanel extends JPanel {
   private final Map<Integer, JPanel> tierPanels = new HashMap<>();
   private final Map<Integer, List<Task>> tasksPerTier = new HashMap<>();
 
-  private final TaskStore taskStore;
-  private final ProjectXericManager manager;
   private final SpriteManager spriteManager;
   private final ClientThread clientThread;
 
   private boolean loaded;
 
   @Inject
-  private TaskListPanel(
-      TaskStore taskStore,
-      ProjectXericManager manager,
-      SpriteManager spriteManager,
-      ClientThread clientThread) {
-    this.taskStore = taskStore;
-    this.manager = manager;
+  private TaskListPanel(SpriteManager spriteManager, ClientThread clientThread) {
     this.spriteManager = spriteManager;
     this.clientThread = clientThread;
     loaded = false;
@@ -76,10 +52,10 @@ public class TaskListPanel extends JPanel {
     add(scrollPane, BorderLayout.CENTER);
   }
 
-  public void init() {
+  public void init(Map<Integer, Task> allTasks) {
     if (loaded) return;
     loaded = true;
-    for (Task task : taskStore.getAll()) {
+    for (Task task : allTasks.values()) {
       List<Task> tasksInTier = tasksPerTier.getOrDefault(task.getTier(), new ArrayList<>());
       tasksInTier.add(task);
       tasksPerTier.put(task.getTier(), tasksInTier);
@@ -104,18 +80,17 @@ public class TaskListPanel extends JPanel {
       tierPanels.put(tier, taskList);
       display.add(taskList, tierToDropdownName(tier));
     }
-    reload();
   }
 
   private static String tierToDropdownName(int tier) {
     return "Tier " + tier + " Tasks (" + tier + " point" + (tier > 1 ? "s" : "") + " each)";
   }
 
-  public void reload() {
+  public void refresh(PlayerData playerData, Map<Integer, Task> allTasks) {
     makeLayout();
-    if (manager.getPlayerInfo().getUsername() == null) return;
+    if (!playerData.isLoggedIn()) return;
     if (!loaded) {
-      init();
+      init(allTasks);
     }
     for (Entry<Integer, JPanel> entry : tierPanels.entrySet()) {
       int tier = entry.getKey();
@@ -136,7 +111,7 @@ public class TaskListPanel extends JPanel {
         taskPanel.add(Box.createHorizontalGlue());
         JCheckBox completedCheckbox = new JCheckBox();
         completedCheckbox.setEnabled(false);
-        completedCheckbox.setSelected(manager.getPlayerInfo().getTasks().contains(task));
+        completedCheckbox.setSelected(playerData.getTasks().contains(task));
         completedCheckbox.setBorder(new EmptyBorder(0, 5, 0, 0));
         taskPanel.add(completedCheckbox);
         panel.add(taskPanel);

@@ -1,15 +1,19 @@
-package io.septem150.xeric.data.player;
+package io.septem150.xeric.data;
 
 import java.util.List;
-import lombok.Data;
+import lombok.*;
 import net.runelite.client.hiscore.HiscoreSkill;
 
-@Data
-public class KillCount {
-  private String name;
-  private int count;
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+public class Hiscore {
+  @NonNull private final String name;
+  @EqualsAndHashCode.Exclude private int count;
 
-  public static final List<HiscoreSkill> hiscoreSkills =
+  public static final List<HiscoreSkill> HISCORE_SKILLS =
       List.of(
           HiscoreSkill.CHAMBERS_OF_XERIC_CHALLENGE_MODE,
           HiscoreSkill.CHAMBERS_OF_XERIC,

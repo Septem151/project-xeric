@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -62,11 +61,6 @@ public enum ClanRank {
   @Override
   public String toString() {
     return WordUtils.capitalizeFully(String.format("%s Rank", this.name()));
-  }
-
-  public BufferedImage getImage(@NonNull SpriteManager spriteManager) {
-    return ImageUtil.resizeImage(
-        Objects.requireNonNull(spriteManager.getSprite(archive, file)), 32, 32, true);
   }
 
   public void getImageAsync(@NonNull SpriteManager spriteManager, Consumer<BufferedImage> user) {

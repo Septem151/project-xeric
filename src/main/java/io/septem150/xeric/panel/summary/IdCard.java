@@ -1,37 +1,25 @@
 package io.septem150.xeric.panel.summary;
 
 import com.google.common.collect.Iterables;
-import io.septem150.xeric.data.ProjectXericManager;
 import io.septem150.xeric.data.player.ClanRank;
-import io.septem150.xeric.data.player.PlayerInfo;
-import io.septem150.xeric.data.task.Task;
-import io.septem150.xeric.data.task.TaskStore;
+import io.septem150.xeric.data.player.PlayerData;
 import io.septem150.xeric.panel.JLabeledValue;
+import io.septem150.xeric.task.Task;
 import io.septem150.xeric.util.ResourceUtil;
 import io.septem150.xeric.util.TransferableBufferedImage;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
@@ -46,14 +34,10 @@ import org.apache.commons.text.WordUtils;
 
 @Singleton
 public class IdCard extends JPanel {
-  private final ProjectXericManager manager;
-  private final TaskStore taskStore;
   private final SpriteManager spriteManager;
 
   @Inject
-  private IdCard(ProjectXericManager manager, TaskStore taskStore, SpriteManager spriteManager) {
-    this.manager = manager;
-    this.taskStore = taskStore;
+  private IdCard(SpriteManager spriteManager) {
     this.spriteManager = spriteManager;
 
     add(wrappedPanel, BorderLayout.NORTH);
@@ -168,16 +152,14 @@ public class IdCard extends JPanel {
             ResourceUtil.getImage("/net/runelite/client/plugins/screenshot/screenshot.png")));
   }
 
-  private void makeDynamicData() {
-    PlayerInfo playerInfo = manager.getPlayerInfo();
-    int playerPoints = playerInfo.getPoints();
-    ClanRank playerRank = playerInfo.getRank();
+  private void makeDynamicData(PlayerData playerData, Map<Integer, Task> allTasks) {
+    int playerPoints = playerData.getTasks().stream().mapToInt(Task::getTier).sum();
+    ClanRank playerRank = playerData.getRank();
     playerRank.getImageAsync(spriteManager, image -> rank.setIcon(new ImageIcon(image)));
     rank.setToolTipText(WordUtils.capitalizeFully(playerRank.name()));
-    playerInfo
-        .getAccountType()
+    Objects.requireNonNull(playerData.getAccountType())
         .getImageAsync(spriteManager, image -> username.setIcon(new ImageIcon(image)));
-    username.setText(playerInfo.getUsername());
+    username.setText(playerData.getUsername());
     points.setValue(playerPoints);
     if (herbException.getIcon() == null) {
       spriteManager.getSpriteAsync(
@@ -187,19 +169,13 @@ public class IdCard extends JPanel {
               herbException.setIcon(new ImageIcon(ImageUtil.resizeImage(image, 20, 20, true))));
     }
     herbException.setEnabled(
-        playerInfo.getQuests().stream()
-            .anyMatch(
-                qp ->
-                    qp.getQuest() == Quest.DRUIDIC_RITUAL && qp.getState() == QuestState.FINISHED));
+        playerData.getQuests().get(Quest.DRUIDIC_RITUAL).getState() == QuestState.FINISHED);
     if (chinException.getIcon() == null) {
       chinException.setIcon(
           new ImageIcon(ResourceUtil.getImage("box_trap_icon.png", 20, 20, true)));
     }
     chinException.setEnabled(
-        playerInfo.getQuests().stream()
-            .anyMatch(
-                qp ->
-                    qp.getQuest() == Quest.EAGLES_PEAK && qp.getState() != QuestState.NOT_STARTED));
+        playerData.getQuests().get(Quest.EAGLES_PEAK).getState() != QuestState.NOT_STARTED);
     if (slayException.getIcon() == null) {
       spriteManager.getSpriteAsync(
           216,
@@ -207,30 +183,33 @@ public class IdCard extends JPanel {
           image ->
               slayException.setIcon(new ImageIcon(ImageUtil.resizeImage(image, 20, 20, true))));
     }
-    slayException.setEnabled(playerInfo.isSlayerException());
-    tasksCompleted.setValue(playerInfo.getTasks().size());
+    slayException.setEnabled(playerData.isSlayerException());
+    tasksCompleted.setValue(playerData.getTasks().size());
     pointsToNextRank.setValue(playerRank.getNextRank().getPointsNeeded() - playerPoints);
-    highestTierCompleted.setValue(getHighestTierCompleted());
+    highestTierCompleted.setValue(getHighestTierCompleted(playerData, allTasks));
   }
 
-  public void reload() {
+  public void refresh(PlayerData playerData, Map<Integer, Task> allTasks) {
     makeLayout();
     makeStaticData();
-    makeDynamicData();
+    makeDynamicData(playerData, allTasks);
   }
 
-  private String getHighestTierCompleted() {
-    List<Task> tasks = taskStore.getAll();
+  private String getHighestTierCompleted(PlayerData playerData, Map<Integer, Task> allTasks) {
     List<Integer> tiers =
-        tasks.stream().map(Task::getTier).distinct().sorted().collect(Collectors.toList());
+        allTasks.values().stream()
+            .map(Task::getTier)
+            .distinct()
+            .sorted()
+            .collect(Collectors.toList());
     int highestTier = 0;
     int maxTiers = Optional.ofNullable(Iterables.getLast(tiers, 0)).orElse(0);
     for (int tier = 1; tier <= maxTiers; tier++) {
-      if (manager.getPlayerInfo().getTasks().isEmpty()) break;
+      if (playerData.getTasks().isEmpty()) break;
       boolean completed = true;
-      for (Task task : tasks) {
+      for (Task task : allTasks.values()) {
         if (task.getTier() != tier) continue;
-        if (!manager.getPlayerInfo().getTasks().contains(task)) {
+        if (!playerData.getTasks().contains(task)) {
           completed = false;
           break;
         }

@@ -1,13 +1,13 @@
 package io.septem150.xeric.panel.summary;
 
-import io.septem150.xeric.data.ProjectXericManager;
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
+import io.septem150.xeric.data.player.PlayerData;
+import io.septem150.xeric.task.Task;
+import java.awt.*;
+import java.time.Instant;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.ui.ColorScheme;
@@ -19,13 +19,11 @@ public class SummaryPanel extends JPanel {
   public static final String TOOLTIP = "Player Summary";
   public static final String TAB_ICON = "summary_tab_icon.png";
 
-  private final ProjectXericManager manager;
   private final TaskListPanel taskListPanel;
   private final IdCard idCard;
 
   @Inject
-  private SummaryPanel(ProjectXericManager manager, TaskListPanel taskListPanel, IdCard idCard) {
-    this.manager = manager;
+  private SummaryPanel(TaskListPanel taskListPanel, IdCard idCard) {
     this.taskListPanel = taskListPanel;
     this.idCard = idCard;
     makeLayout();
@@ -72,18 +70,16 @@ public class SummaryPanel extends JPanel {
     clogLabel.setForeground(ColorScheme.BRAND_ORANGE);
   }
 
-  public void startUp() {}
-
-  public void refresh() {
+  public void refresh(PlayerData playerData, Map<Integer, Task> allTasks) {
     makeLayout();
     makeStaticData();
-    if (manager.getPlayerInfo().getUsername() == null) {
+    if (!playerData.isLoggedIn()) {
       layout.show(this, LOGGED_OUT_CONSTRAINT);
     } else {
       layout.show(this, LOGGED_IN_CONSTRAINT);
-      clogLabel.setVisible(manager.getPlayerInfo().getCollectionLog().getLastOpened() == null);
-      idCard.reload();
-      taskListPanel.reload();
+      clogLabel.setVisible(playerData.getCollectionLog().getLastUpdated().equals(Instant.EPOCH));
+      idCard.refresh(playerData, allTasks);
+      taskListPanel.refresh(playerData, allTasks);
     }
     revalidate();
   }

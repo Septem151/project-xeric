@@ -1,14 +1,10 @@
 package io.septem150.xeric.panel.leaderboard;
 
 import io.septem150.xeric.util.ResourceUtil;
-import java.awt.Component;
+import java.awt.*;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.ui.ColorScheme;
@@ -53,8 +49,6 @@ public class LeaderboardPanel extends JPanel {
         event -> LinkBrowser.browse("https://wiseoldman.net/groups/1200/hiscores"));
     womButton.setToolTipText("View the Leaderboard on Wise Old Man");
   }
-
-  public void startUp() {}
 
   public void refresh() {
     revalidate();

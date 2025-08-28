@@ -1,23 +1,21 @@
-package io.septem150.xeric.data.task;
+package io.septem150.xeric.task;
 
-import io.septem150.xeric.data.player.PlayerInfo;
+import io.septem150.xeric.data.player.PlayerData;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
+import lombok.Setter;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.util.ImageUtil;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Setter
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class CATask extends Task {
-  public static final String CA_TASK_TYPE = "ca";
   private int total;
 
   @Override
-  public boolean checkCompletion(@NonNull PlayerInfo playerInfo) {
-    return playerInfo.getCombatAchievements().size() >= total;
+  public boolean isCompleted(PlayerData playerData) {
+    return playerData.getCombatAchievements().size() >= total;
   }
 
   @Override

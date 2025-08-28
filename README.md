@@ -41,15 +41,15 @@ The plugin adds a sidebar panel that features two tabs:
 
 ## Screenshots
 
-![Shows the side panel created by the Project Xeric plugin.](/examples/example_01.jpg "Player Profile Side Panel")
+![Shows the side panel created by the Project Xeric plugin.](/docs/example_01.jpg "Player Profile Side Panel")
 
-![Shows chat messages received upon completing Xeric tasks.](/examples/example_02.jpg "Task Completion Chat Messages")
+![Shows chat messages received upon completing Xeric tasks.](/docs/example_02.jpg "Task Completion Chat Messages")
 
-![Shows the Slayer Exception configuration option and other plugin settings.](/examples/example_03.jpg "Plugin Configuration Options")
+![Shows the Slayer Exception configuration option and other plugin settings.](/docs/example_03.jpg "Plugin Configuration Options")
 
 ## Contributing
 
-Please see the [Contribution Guidelines](./docs/CONTRIBUTING.md) for an overview on how to contribute to this project.
+Please see the [Contribution Guidelines](/docs/CONTRIBUTING.md) for an overview on how to contribute to this project.
 
 ## Support the Project
 

@@ -1,8 +1,14 @@
-package io.septem150.xeric.data.player;
+package io.septem150.xeric.data;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-@Data
+@RequiredArgsConstructor
+@Getter
+@EqualsAndHashCode
+@ToString
 public class CombatAchievement {
   public static final int EASY_TIER_ENUM_ID = 3981;
   public static final int MEDIUM_TIER_ENUM_ID = 3982;
@@ -14,7 +20,7 @@ public class CombatAchievement {
   public static final int CA_STRUCT_NAME_PARAM_ID = 1308;
   public static final int CA_STRUCT_TIER_PARAM_ID = 1310;
 
-  private int id;
-  private String name;
-  private int points;
+  private final int id;
+  private final String name;
+  private final int points;
 }

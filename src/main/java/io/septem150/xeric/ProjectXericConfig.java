@@ -4,22 +4,17 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-/**
- * Project Xeric plugin configuration.
- *
- * @author <a href="mailto:carson.mullins@proton.me">Septem 150</a>
- */
-@ConfigGroup(ProjectXericConfig.GROUP)
+@ConfigGroup(ProjectXericConfig.CONFIG_GROUP)
 public interface ProjectXericConfig extends Config {
-  String NAME = "Project Xeric";
-  String GROUP = "projectxeric";
-  String CLOG_DATA_KEY = "clog";
-  String TASKS_DATA_KEY = "tasks";
-  String SLAYER_CONFIG_KEY = "slayer";
-  String CHAT_MESSAGES_CONFIG_KEY = "chat_messages";
+  String PLUGIN_NAME = "Project Xeric";
+  String CONFIG_GROUP = "projectxeric";
+  String CONFIG_KEY_CLOG = "clog";
+  String CONFIG_KEY_TASKS = "tasks";
+  String CONFIG_KEY_SLAYER = "slayer";
+  String CONFIG_KEY_CHAT_MESSAGES = "chat_messages";
 
   @ConfigItem(
-      keyName = SLAYER_CONFIG_KEY,
+      keyName = CONFIG_KEY_SLAYER,
       name = "Slayer Exception",
       description = "Toggle on if you train Slayer off-island.")
   default boolean slayer() {
@@ -27,7 +22,7 @@ public interface ProjectXericConfig extends Config {
   }
 
   @ConfigItem(
-      keyName = CHAT_MESSAGES_CONFIG_KEY,
+      keyName = CONFIG_KEY_CHAT_MESSAGES,
       name = "Task Completion Chat Messages",
       description = "Toggle on to receive chat messages upon completing tasks.")
   default boolean chatMessages() {

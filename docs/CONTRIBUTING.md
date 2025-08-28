@@ -26,19 +26,15 @@ guide to obtain login credentials when launching RuneLite from your IDE.
 
 - Install the following IntelliJ IDEA plugins:
   - [Lombok](https://plugins.jetbrains.com/plugin/6317-lombok) by JetBrains
-  - [Spotless Applier](https://plugins.jetbrains.com/plugin/22455-spotless-applier) by Dimitrii Lipiridi
 - Download/Clone the repository to your local machine and open the project in IntelliJ.
 - Verify the following:
   - Navigate to "File > Project Structure"
     - "SDK" is set to "11"
     - "Language level" is set to "SDK default"
-  - Navigate to "File > Settings > Tools > Actions on Save"
-    - "Run spotless" is enabled
-  - Navigate to "File > Settings > Editor > Code Style > Java"
-    - "Scheme" is set to "Project"
   - Navigate to "Run > Edit Configurations"
-    - "Test Client" is available under "Application"
-    - "Test Client" run configuration has "java 11" set
+    - "run-plugin" is available under "Application"
+    - "run-plugin" run configuration has "java 11" set
+    - "spotless" is available under "Gradle"
 - Attempt to run the Test Client run configuration in debug mode
   - If you use a Jagex Account, follow the steps outlined in [Jagex Account Integration](#jagex-account-integration)
     or you may encounter problems

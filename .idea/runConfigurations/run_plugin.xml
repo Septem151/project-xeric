@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Test Client" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="io.septem150.xeric.ProjectXericPluginTest" />
+  <configuration default="false" name="run-plugin" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="io.septem150.xeric.ProjectXericTestClient" />
     <module name="project-xeric.test" />
     <option name="PROGRAM_PARAMETERS" value="--debug --developer-mode" />
-    <option name="VM_PARAMETERS" value="-ea -Dxeric.local-backend=false" />
+    <option name="VM_PARAMETERS" value="-ea" />
     <option name="WORKING_DIRECTORY" value="$ProjectFileDir$" />
     <extension name="coverage">
       <pattern>
