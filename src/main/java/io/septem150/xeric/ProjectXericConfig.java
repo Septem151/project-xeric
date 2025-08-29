@@ -10,6 +10,7 @@ public interface ProjectXericConfig extends Config {
   String CONFIG_GROUP = "projectxeric";
   String CONFIG_KEY_CLOG = "clog";
   String CONFIG_KEY_TASKS = "tasks";
+  String CONFIG_KEY_TASKS_HASH = "tasks-hash";
   String CONFIG_KEY_SLAYER = "slayer";
   String CONFIG_KEY_CHAT_MESSAGES = "chat_messages";
 

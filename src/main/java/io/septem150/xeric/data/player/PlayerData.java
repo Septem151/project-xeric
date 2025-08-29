@@ -87,11 +87,13 @@ public class PlayerData {
     loggedIn = false;
   }
 
-  public void saveTasksToRSProfile() {
+  public void saveTasksToRSProfile(@NonNull String tasksHash) {
     configManager.setRSProfileConfiguration(
         ProjectXericConfig.CONFIG_GROUP,
         ProjectXericConfig.CONFIG_KEY_TASKS,
         gson.toJson(tasks.stream().map(Task::getId).collect(Collectors.toSet())));
+    configManager.setRSProfileConfiguration(
+        ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_TASKS_HASH, tasksHash);
   }
 
   public void loadTasksFromRSProfile(@NonNull Map<Integer, Task> allTasks) {

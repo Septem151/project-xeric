@@ -55,14 +55,9 @@ public class TaskListPanel extends JPanel {
     add(scrollPane, BorderLayout.CENTER);
   }
 
-  public void init(Map<Integer, Task> allTasks) {
+  private void init() {
     if (loaded) return;
     loaded = true;
-    for (Task task : allTasks.values()) {
-      List<Task> tasksInTier = tasksPerTier.getOrDefault(task.getTier(), new ArrayList<>());
-      tasksInTier.add(task);
-      tasksPerTier.put(task.getTier(), tasksInTier);
-    }
     tierComboBox.setModel(
         new DefaultComboBoxModel<>(
             tasksPerTier.keySet().stream()
@@ -92,8 +87,14 @@ public class TaskListPanel extends JPanel {
   public void refresh(Map<Integer, Task> allTasks) {
     makeLayout();
     if (!playerData.isLoggedIn()) return;
+    tasksPerTier.clear();
+    for (Task task : allTasks.values()) {
+      List<Task> tasksInTier = tasksPerTier.getOrDefault(task.getTier(), new ArrayList<>());
+      tasksInTier.add(task);
+      tasksPerTier.put(task.getTier(), tasksInTier);
+    }
     if (!loaded) {
-      init(allTasks);
+      init();
     }
     for (Entry<Integer, JPanel> entry : tierPanels.entrySet()) {
       int tier = entry.getKey();

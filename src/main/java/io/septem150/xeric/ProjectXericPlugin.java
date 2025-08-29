@@ -23,6 +23,10 @@ import io.septem150.xeric.util.WorldUtil;
 import java.awt.*;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -58,6 +62,8 @@ import okhttp3.*;
 @Slf4j
 @PluginDescriptor(name = ProjectXericConfig.PLUGIN_NAME)
 public class ProjectXericPlugin extends Plugin {
+  private static final Color DARK_GREEN = Color.decode("#006600");
+
   @Inject private Client client;
   @Inject private ClientThread clientThread;
   @Inject private ScheduledExecutorService executor;
@@ -130,11 +136,21 @@ public class ProjectXericPlugin extends Plugin {
     loadHiscoresAsync()
         .thenCompose(unused -> updateTaskCacheAsync())
         .thenRun(
-            () -> {
-              playerData.loadTasksFromRSProfile(allTasks);
-              scheduleUpdate(0, Set.of(TaskType.values()));
-              SwingUtilities.invokeLater(() -> panel.refresh(allTasks));
-            });
+            () ->
+                clientThread.invokeLater(
+                    () -> {
+                      // compare new task list to the last task list used and notify user
+                      // if there's been updates to the tasks or if new ones have been added
+                      if (!checkForUpdatedTasks()) {
+                        playerData.loadTasksFromRSProfile(allTasks);
+                        scheduleUpdate(0, Set.of(TaskType.values()));
+                      } else {
+                        playerData.getTasks().clear();
+                        pendingUpdates.addAll(Set.of(TaskType.values()));
+                        updateTaskCompletions(false);
+                      }
+                      SwingUtilities.invokeLater(() -> panel.refresh(allTasks));
+                    }));
   }
 
   private void handleLogout() {
@@ -145,7 +161,7 @@ public class ProjectXericPlugin extends Plugin {
     // client before logging in again to this one
     playerData.getCollectionLog().setInterfaceOpened(false);
     playerData.getCollectionLog().saveToRSProfile();
-    playerData.saveTasksToRSProfile();
+    playerData.saveTasksToRSProfile(md5Hash(gson.toJson(allTasks.values())));
   }
 
   @Subscribe
@@ -279,7 +295,7 @@ public class ProjectXericPlugin extends Plugin {
     int itemId = (int) event.getScriptEvent().getArguments()[1];
     ClogItem clogItem = allItemsById.get(itemId);
     playerData.getCollectionLog().add(clogItem);
-    // schedule an update in 4 ticks to let all items load
+    // schedule an update in 2 ticks to let all items load
     // this method is called for each new item, but delay starts after first call
     scheduleUpdate(2, Set.of(TaskType.CLOG));
   }
@@ -314,6 +330,8 @@ public class ProjectXericPlugin extends Plugin {
             ProjectXericConfig.CONFIG_GROUP, profileKey, ProjectXericConfig.CONFIG_KEY_TASKS);
         configManager.unsetConfiguration(
             ProjectXericConfig.CONFIG_GROUP, profileKey, ProjectXericConfig.CONFIG_KEY_CLOG);
+        configManager.unsetConfiguration(
+            ProjectXericConfig.CONFIG_GROUP, profileKey, ProjectXericConfig.CONFIG_KEY_TASKS_HASH);
       }
       try {
         shutDown();
@@ -325,6 +343,10 @@ public class ProjectXericPlugin extends Plugin {
   }
 
   private boolean updateTaskCompletions() {
+    return updateTaskCompletions(config.chatMessages());
+  }
+
+  private boolean updateTaskCompletions(boolean showMessage) {
     log.debug(
         "Called updateTaskCompletions with: {}",
         pendingUpdates.stream().map(TaskType::getName).collect(Collectors.toSet()));
@@ -338,7 +360,7 @@ public class ProjectXericPlugin extends Plugin {
       if (task.isCompleted(playerData)) {
         updated = true;
         playerData.getTasks().add(task);
-        if (config.chatMessages()) {
+        if (showMessage) {
           client.addChatMessage(
               ChatMessageType.GAMEMESSAGE,
               "",
@@ -346,7 +368,7 @@ public class ProjectXericPlugin extends Plugin {
                   "Xeric task completed for %d point%s: %s.",
                   task.getTier(),
                   task.getTier() > 1 ? "s" : "",
-                  ColorUtil.wrapWithColorTag(task.getName(), Color.decode("#006600"))),
+                  ColorUtil.wrapWithColorTag(task.getName(), DARK_GREEN)),
               null);
         }
       }
@@ -502,7 +524,6 @@ public class ProjectXericPlugin extends Plugin {
                   Set<Task> tasks = gson.fromJson(bodyString, type);
                   allTasks =
                       tasks.stream().collect(Collectors.toMap(Task::getId, Function.identity()));
-
                   future.complete(null);
                 } catch (IOException | JsonParseException err) {
                   onFailure(call, new IOException(err));
@@ -520,13 +541,43 @@ public class ProjectXericPlugin extends Plugin {
           "",
           String.format(
               "[%s] Warning: %s",
-              ColorUtil.wrapWithColorTag(ProjectXericConfig.PLUGIN_NAME, Color.decode("#0E5816")),
+              ColorUtil.wrapWithColorTag(ProjectXericConfig.PLUGIN_NAME, DARK_GREEN),
               ColorUtil.wrapWithColorTag(
                   "Tasks will not update properly unless you enable the game setting:"
                       + " Collection log - New addition notification",
                   Color.RED)),
           null);
     }
+  }
+
+  private boolean checkForUpdatedTasks() {
+    String tasksHash = md5Hash(gson.toJson(allTasks.values()));
+    String prevTasksHash =
+        configManager.getRSProfileConfiguration(
+            ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_TASKS_HASH);
+    if (prevTasksHash == null) {
+      prevTasksHash = tasksHash;
+      configManager.setRSProfileConfiguration(
+          ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_TASKS_HASH, tasksHash);
+    }
+    if (!prevTasksHash.equals(tasksHash)) {
+      for (RuneScapeProfile rsProfile : configManager.getRSProfiles()) {
+        String profileKey = rsProfile.getKey();
+        configManager.unsetConfiguration(
+            ProjectXericConfig.CONFIG_GROUP, profileKey, ProjectXericConfig.CONFIG_KEY_TASKS);
+      }
+      client.addChatMessage(
+          ChatMessageType.GAMEMESSAGE,
+          "",
+          String.format(
+              "[%s] Info: %s",
+              ColorUtil.wrapWithColorTag(ProjectXericConfig.PLUGIN_NAME, DARK_GREEN),
+              ColorUtil.wrapWithColorTag(
+                  "Tasks have been updated! Check your tasks in the side panel.", Color.RED)),
+          null);
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -593,6 +644,17 @@ public class ProjectXericPlugin extends Plugin {
       }
     }
     return allCaTaskStructIds;
+  }
+
+  private String md5Hash(@NonNull String input) {
+    try {
+      return String.format(
+          "%032x",
+          new BigInteger(
+              1, MessageDigest.getInstance("MD5").digest(input.getBytes(StandardCharsets.UTF_8))));
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private void scheduleUpdate(int tickDelay, Set<TaskType> taskTypes) {
