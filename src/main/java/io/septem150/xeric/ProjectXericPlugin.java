@@ -177,6 +177,9 @@ public class ProjectXericPlugin extends Plugin {
           });
     } else if (playerData.isLoggedIn() && event.getGameState() == GameState.LOGIN_SCREEN) {
       handleLogout();
+    } else if (event.getGameState() == GameState.HOPPING) {
+      // wait 2 ticks after hopping before checking varbits and statchanges
+      ticksTilClientReady = 2;
     }
   }
 
