@@ -1,4 +1,4 @@
-package io.septem150.xeric.panel;
+package io.septem150.xeric.util;
 
 import java.awt.*;
 import java.util.Optional;
@@ -6,11 +6,11 @@ import javax.swing.*;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 
-public class JLabeledValue extends JPanel {
+public class JLabeledValuePanel extends JPanel {
   private final JLabel value;
   private final JLabel label;
 
-  public JLabeledValue(String value, String label) {
+  public JLabeledValuePanel(String value, String label) {
     setLayout(new BorderLayout());
 
     final JPanel labeledValue = new JPanel();
@@ -33,7 +33,7 @@ public class JLabeledValue extends JPanel {
     add(labeledValue, BorderLayout.CENTER);
   }
 
-  public JLabeledValue() {
+  public JLabeledValuePanel() {
     this(null, null);
   }
 

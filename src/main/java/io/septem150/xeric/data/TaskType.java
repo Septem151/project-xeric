@@ -1,4 +1,4 @@
-package io.septem150.xeric.task;
+package io.septem150.xeric.data;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;

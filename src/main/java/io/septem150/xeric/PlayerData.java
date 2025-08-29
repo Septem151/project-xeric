@@ -1,17 +1,17 @@
-package io.septem150.xeric.data.player;
+package io.septem150.xeric;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import io.septem150.xeric.ProjectXericConfig;
+import io.septem150.xeric.data.AccountType;
+import io.septem150.xeric.data.AchievementDiary;
+import io.septem150.xeric.data.ClanRank;
 import io.septem150.xeric.data.CombatAchievement;
+import io.septem150.xeric.data.DiaryProgress;
 import io.septem150.xeric.data.Hiscore;
 import io.septem150.xeric.data.QuestProgress;
 import io.septem150.xeric.data.SkillLevel;
-import io.septem150.xeric.data.clog.CollectionLog;
-import io.septem150.xeric.data.diary.AchievementDiary;
-import io.septem150.xeric.data.diary.DiaryProgress;
-import io.septem150.xeric.task.Task;
+import io.septem150.xeric.task.TaskBase;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -48,7 +48,7 @@ public class PlayerData {
       new EnumMap<>(AchievementDiary.class);
 
   private final Map<String, Hiscore> hiscores = new HashMap<>();
-  private final Set<Task> tasks = new HashSet<>();
+  private final Set<TaskBase> tasks = new HashSet<>();
 
   private boolean loggedIn;
   @Nullable private String username;
@@ -91,12 +91,12 @@ public class PlayerData {
     configManager.setRSProfileConfiguration(
         ProjectXericConfig.CONFIG_GROUP,
         ProjectXericConfig.CONFIG_KEY_TASKS,
-        gson.toJson(tasks.stream().map(Task::getId).collect(Collectors.toSet())));
+        gson.toJson(tasks.stream().map(TaskBase::getId).collect(Collectors.toSet())));
     configManager.setRSProfileConfiguration(
         ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_TASKS_HASH, tasksHash);
   }
 
-  public void loadTasksFromRSProfile(@NonNull Map<Integer, Task> allTasks) {
+  public void loadTasksFromRSProfile(@NonNull Map<Integer, TaskBase> allTasks) {
     try {
       Type type = new TypeToken<Set<Integer>>() {}.getType();
       Set<Integer> taskIds =
@@ -115,7 +115,7 @@ public class PlayerData {
   }
 
   public int getPoints() {
-    return tasks.stream().mapToInt(Task::getTier).sum();
+    return tasks.stream().mapToInt(TaskBase::getTier).sum();
   }
 
   public ClanRank getRank() {

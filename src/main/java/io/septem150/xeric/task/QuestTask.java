@@ -1,7 +1,7 @@
 package io.septem150.xeric.task;
 
+import io.septem150.xeric.PlayerData;
 import io.septem150.xeric.data.QuestProgress;
-import io.septem150.xeric.data.player.PlayerData;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 import lombok.EqualsAndHashCode;
@@ -15,7 +15,7 @@ import net.runelite.client.util.ImageUtil;
 @Slf4j
 @Setter
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class QuestTask extends Task {
+public class QuestTask extends TaskBase {
   private String quest;
 
   @Override

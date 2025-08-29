@@ -1,7 +1,7 @@
 package io.septem150.xeric.task;
 
+import io.septem150.xeric.PlayerData;
 import io.septem150.xeric.data.SkillLevel;
-import io.septem150.xeric.data.player.PlayerData;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
@@ -15,7 +15,7 @@ import net.runelite.client.util.ImageUtil;
 @Slf4j
 @Setter
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class LevelTask extends Task {
+public class LevelTask extends TaskBase {
   private String level;
   private int goal;
 

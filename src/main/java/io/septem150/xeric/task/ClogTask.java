@@ -1,7 +1,7 @@
 package io.septem150.xeric.task;
 
-import io.septem150.xeric.data.clog.ClogItem;
-import io.septem150.xeric.data.player.PlayerData;
+import io.septem150.xeric.PlayerData;
+import io.septem150.xeric.data.ClogItem;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
@@ -16,7 +16,7 @@ import net.runelite.client.util.ImageUtil;
 @Slf4j
 @Setter
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class ClogTask extends Task {
+public class ClogTask extends TaskBase {
   private Set<Integer> itemIds;
   private int amount;
 

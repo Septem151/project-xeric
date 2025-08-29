@@ -1,7 +1,9 @@
-package io.septem150.xeric.panel.summary;
+package io.septem150.xeric.panel;
 
-import io.septem150.xeric.data.player.PlayerData;
-import io.septem150.xeric.task.Task;
+import io.septem150.xeric.PlayerData;
+import io.septem150.xeric.panel.summary.IdCardPanel;
+import io.septem150.xeric.panel.summary.TaskListPanel;
+import io.septem150.xeric.task.TaskBase;
 import java.awt.*;
 import java.time.Instant;
 import java.util.Map;
@@ -20,13 +22,14 @@ public class SummaryPanel extends JPanel {
   public static final String TAB_ICON = "summary_tab_icon.png";
 
   private final TaskListPanel taskListPanel;
-  private final IdCard idCard;
+  private final IdCardPanel idCardPanel;
   private final PlayerData playerData;
 
   @Inject
-  private SummaryPanel(TaskListPanel taskListPanel, IdCard idCard, PlayerData playerData) {
+  private SummaryPanel(
+      TaskListPanel taskListPanel, IdCardPanel idCardPanel, PlayerData playerData) {
     this.taskListPanel = taskListPanel;
-    this.idCard = idCard;
+    this.idCardPanel = idCardPanel;
     this.playerData = playerData;
     makeLayout();
     makeStaticData();
@@ -47,8 +50,8 @@ public class SummaryPanel extends JPanel {
     loggedOutPanel.add(loginLabel, BorderLayout.NORTH);
     add(loggedOutPanel, LOGGED_OUT_CONSTRAINT);
     JPanel loggedInPanel = new JPanel(new BorderLayout());
-    idCard.setBorder(new EmptyBorder(0, 0, 10, 0));
-    loggedInPanel.add(idCard, BorderLayout.NORTH);
+    idCardPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
+    loggedInPanel.add(idCardPanel, BorderLayout.NORTH);
     JPanel inner1 = new JPanel(new BorderLayout());
     clogLabel.setBorder(new EmptyBorder(0, 0, 10, 0));
     clogLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -72,7 +75,7 @@ public class SummaryPanel extends JPanel {
     clogLabel.setForeground(ColorScheme.BRAND_ORANGE);
   }
 
-  public void refresh(Map<Integer, Task> allTasks) {
+  public void refresh(Map<Integer, TaskBase> allTasks) {
     makeLayout();
     makeStaticData();
     if (!playerData.isLoggedIn()) {
@@ -80,7 +83,7 @@ public class SummaryPanel extends JPanel {
     } else {
       layout.show(this, LOGGED_IN_CONSTRAINT);
       clogLabel.setVisible(playerData.getCollectionLog().getLastUpdated().equals(Instant.EPOCH));
-      idCard.refresh(allTasks);
+      idCardPanel.refresh(allTasks);
       taskListPanel.refresh(allTasks);
     }
     revalidate();

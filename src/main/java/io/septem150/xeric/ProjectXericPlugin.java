@@ -1,7 +1,7 @@
 package io.septem150.xeric;
 
+import static io.septem150.xeric.CollectionLog.*;
 import static io.septem150.xeric.data.CombatAchievement.*;
-import static io.septem150.xeric.data.clog.CollectionLog.*;
 import static io.septem150.xeric.util.RegexUtil.*;
 
 import com.google.common.collect.Sets;
@@ -12,13 +12,12 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Provides;
 import io.septem150.xeric.data.*;
-import io.septem150.xeric.data.clog.ClogItem;
-import io.septem150.xeric.data.diary.AchievementDiary;
-import io.septem150.xeric.data.diary.DiaryProgress;
-import io.septem150.xeric.data.player.AccountType;
-import io.septem150.xeric.data.player.PlayerData;
+import io.septem150.xeric.data.AccountType;
+import io.septem150.xeric.data.AchievementDiary;
+import io.septem150.xeric.data.ClogItem;
+import io.septem150.xeric.data.DiaryProgress;
+import io.septem150.xeric.lib.RuntimeTypeAdapterFactory;
 import io.septem150.xeric.task.*;
-import io.septem150.xeric.util.RuntimeTypeAdapterFactory;
 import io.septem150.xeric.util.WorldUtil;
 import java.awt.*;
 import java.io.IOException;
@@ -82,7 +81,7 @@ public class ProjectXericPlugin extends Plugin {
   private Map<Integer, ClogItem> allItemsById;
   private Map<String, ClogItem> allItemsByName;
   private Map<Integer, CombatAchievement> allCombatAchievements;
-  private Map<Integer, Task> allTasks;
+  private Map<Integer, TaskBase> allTasks;
   private int ticksTilClientReady;
   private int ticksTilUpdate;
   private Set<TaskType> pendingUpdates;
@@ -350,13 +349,13 @@ public class ProjectXericPlugin extends Plugin {
     log.debug(
         "Called updateTaskCompletions with: {}",
         pendingUpdates.stream().map(TaskType::getName).collect(Collectors.toSet()));
-    Set<Task> allTasksByType =
+    Set<TaskBase> allTasksByType =
         allTasks.values().stream()
             .filter(task -> pendingUpdates.contains(task.getType()))
             .collect(Collectors.toSet());
-    Set<Task> remainingTasks = Sets.difference(allTasksByType, playerData.getTasks());
+    Set<TaskBase> remainingTasks = Sets.difference(allTasksByType, playerData.getTasks());
     boolean updated = false;
-    for (Task task : remainingTasks) {
+    for (TaskBase task : remainingTasks) {
       if (task.isCompleted(playerData)) {
         updated = true;
         playerData.getTasks().add(task);
@@ -520,10 +519,11 @@ public class ProjectXericPlugin extends Plugin {
                     JsonObject json = gson.fromJson(bodyString, JsonObject.class);
                     throw new IOException(json.get("error").getAsString());
                   }
-                  Type type = new TypeToken<Set<Task>>() {}.getType();
-                  Set<Task> tasks = gson.fromJson(bodyString, type);
+                  Type type = new TypeToken<Set<TaskBase>>() {}.getType();
+                  Set<TaskBase> tasks = gson.fromJson(bodyString, type);
                   allTasks =
-                      tasks.stream().collect(Collectors.toMap(Task::getId, Function.identity()));
+                      tasks.stream()
+                          .collect(Collectors.toMap(TaskBase::getId, Function.identity()));
                   future.complete(null);
                 } catch (IOException | JsonParseException err) {
                   onFailure(call, new IOException(err));
@@ -670,8 +670,8 @@ public class ProjectXericPlugin extends Plugin {
   @Provides
   @Named("xericGson")
   Gson provideGson(Gson gson) {
-    RuntimeTypeAdapterFactory<Task> taskTypeAdapterFactory =
-        RuntimeTypeAdapterFactory.of(Task.class, "type", true)
+    RuntimeTypeAdapterFactory<TaskBase> taskTypeAdapterFactory =
+        RuntimeTypeAdapterFactory.of(TaskBase.class, "type", true)
             .registerSubtype(CATask.class, TaskType.CA.getName())
             .registerSubtype(ClogTask.class, TaskType.CLOG.getName())
             .registerSubtype(DiaryTask.class, TaskType.DIARY.getName())

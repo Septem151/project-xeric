@@ -1,10 +1,10 @@
-package io.septem150.xeric.data.clog;
+package io.septem150.xeric;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import io.septem150.xeric.ProjectXericConfig;
+import io.septem150.xeric.data.ClogItem;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;

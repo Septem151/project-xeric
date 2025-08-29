@@ -1,8 +1,8 @@
 package io.septem150.xeric.task;
 
-import io.septem150.xeric.data.diary.AchievementDiary;
-import io.septem150.xeric.data.diary.DiaryProgress;
-import io.septem150.xeric.data.player.PlayerData;
+import io.septem150.xeric.PlayerData;
+import io.septem150.xeric.data.AchievementDiary;
+import io.septem150.xeric.data.DiaryProgress;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 import lombok.EqualsAndHashCode;
@@ -14,7 +14,7 @@ import net.runelite.client.util.ImageUtil;
 @Slf4j
 @Setter
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class DiaryTask extends Task {
+public class DiaryTask extends TaskBase {
   private AchievementDiary diary;
 
   @Override

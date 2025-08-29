@@ -1,7 +1,7 @@
 package io.septem150.xeric.task;
 
+import io.septem150.xeric.PlayerData;
 import io.septem150.xeric.data.Hiscore;
-import io.septem150.xeric.data.player.PlayerData;
 import io.septem150.xeric.util.ImageCoord;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -17,7 +17,7 @@ import net.runelite.client.util.ImageUtil;
 @Slf4j
 @Setter
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class HiscoreTask extends Task {
+public class HiscoreTask extends TaskBase {
   private String boss;
   private int total;
   private transient String fixedBoss;

@@ -1,4 +1,4 @@
-package io.septem150.xeric.panel.leaderboard;
+package io.septem150.xeric.panel;
 
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.*;

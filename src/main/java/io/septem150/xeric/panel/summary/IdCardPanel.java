@@ -1,12 +1,12 @@
 package io.septem150.xeric.panel.summary;
 
 import com.google.common.collect.Iterables;
-import io.septem150.xeric.data.player.ClanRank;
-import io.septem150.xeric.data.player.PlayerData;
-import io.septem150.xeric.panel.JLabeledValue;
-import io.septem150.xeric.task.Task;
+import io.septem150.xeric.PlayerData;
+import io.septem150.xeric.data.ClanRank;
+import io.septem150.xeric.lib.TransferableBufferedImage;
+import io.septem150.xeric.task.TaskBase;
+import io.septem150.xeric.util.JLabeledValuePanel;
 import io.septem150.xeric.util.ResourceUtil;
-import io.septem150.xeric.util.TransferableBufferedImage;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.MouseAdapter;
@@ -33,12 +33,12 @@ import net.runelite.client.util.SwingUtil;
 import org.apache.commons.text.WordUtils;
 
 @Singleton
-public class IdCard extends JPanel {
+public class IdCardPanel extends JPanel {
   private final SpriteManager spriteManager;
   private final PlayerData playerData;
 
   @Inject
-  private IdCard(SpriteManager spriteManager, PlayerData playerData) {
+  private IdCardPanel(SpriteManager spriteManager, PlayerData playerData) {
     this.spriteManager = spriteManager;
     this.playerData = playerData;
 
@@ -79,13 +79,13 @@ public class IdCard extends JPanel {
   private final JPanel wrappedPanel = new JPanel(new GridBagLayout());
   private final JLabel rank = new JLabel();
   private final JLabel username = new JLabel();
-  private final JLabeledValue points = new JLabeledValue();
+  private final JLabeledValuePanel points = new JLabeledValuePanel();
   private final JLabel herbException = new JLabel();
   private final JLabel chinException = new JLabel();
   private final JLabel slayException = new JLabel();
-  private final JLabeledValue tasksCompleted = new JLabeledValue();
-  private final JLabeledValue pointsToNextRank = new JLabeledValue();
-  private final JLabeledValue highestTierCompleted = new JLabeledValue();
+  private final JLabeledValuePanel tasksCompleted = new JLabeledValuePanel();
+  private final JLabeledValuePanel pointsToNextRank = new JLabeledValuePanel();
+  private final JLabeledValuePanel highestTierCompleted = new JLabeledValuePanel();
   private final JButton screenshotButton = new JButton();
 
   private void makeLayout() {
@@ -154,8 +154,8 @@ public class IdCard extends JPanel {
             ResourceUtil.getImage("/net/runelite/client/plugins/screenshot/screenshot.png")));
   }
 
-  private void makeDynamicData(Map<Integer, Task> allTasks) {
-    int playerPoints = playerData.getTasks().stream().mapToInt(Task::getTier).sum();
+  private void makeDynamicData(Map<Integer, TaskBase> allTasks) {
+    int playerPoints = playerData.getTasks().stream().mapToInt(TaskBase::getTier).sum();
     ClanRank playerRank = playerData.getRank();
     playerRank.getImageAsync(spriteManager, image -> rank.setIcon(new ImageIcon(image)));
     rank.setToolTipText(WordUtils.capitalizeFully(playerRank.name()));
@@ -191,16 +191,16 @@ public class IdCard extends JPanel {
     highestTierCompleted.setValue(getHighestTierCompleted(allTasks));
   }
 
-  public void refresh(Map<Integer, Task> allTasks) {
+  public void refresh(Map<Integer, TaskBase> allTasks) {
     makeLayout();
     makeStaticData();
     makeDynamicData(allTasks);
   }
 
-  private String getHighestTierCompleted(Map<Integer, Task> allTasks) {
+  private String getHighestTierCompleted(Map<Integer, TaskBase> allTasks) {
     List<Integer> tiers =
         allTasks.values().stream()
-            .map(Task::getTier)
+            .map(TaskBase::getTier)
             .distinct()
             .sorted()
             .collect(Collectors.toList());
@@ -209,7 +209,7 @@ public class IdCard extends JPanel {
     for (int tier = 1; tier <= maxTiers; tier++) {
       if (playerData.getTasks().isEmpty()) break;
       boolean completed = true;
-      for (Task task : allTasks.values()) {
+      for (TaskBase task : allTasks.values()) {
         if (task.getTier() != tier) continue;
         if (!playerData.getTasks().contains(task)) {
           completed = false;

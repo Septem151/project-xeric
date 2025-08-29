@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.septem150.xeric.util;
+package io.septem150.xeric.lib;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.gson.*;

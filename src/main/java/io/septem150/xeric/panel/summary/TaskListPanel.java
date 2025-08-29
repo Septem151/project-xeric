@@ -1,7 +1,7 @@
 package io.septem150.xeric.panel.summary;
 
-import io.septem150.xeric.data.player.PlayerData;
-import io.septem150.xeric.task.Task;
+import io.septem150.xeric.PlayerData;
+import io.septem150.xeric.task.TaskBase;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -20,7 +20,7 @@ public class TaskListPanel extends JPanel {
   private final CardLayout displayLayout = new CardLayout();
 
   private final Map<Integer, JPanel> tierPanels = new HashMap<>();
-  private final Map<Integer, List<Task>> tasksPerTier = new HashMap<>();
+  private final Map<Integer, List<TaskBase>> tasksPerTier = new HashMap<>();
 
   private final SpriteManager spriteManager;
   private final ClientThread clientThread;
@@ -84,12 +84,12 @@ public class TaskListPanel extends JPanel {
     return "Tier " + tier + " Tasks (" + tier + " point" + (tier > 1 ? "s" : "") + " each)";
   }
 
-  public void refresh(Map<Integer, Task> allTasks) {
+  public void refresh(Map<Integer, TaskBase> allTasks) {
     makeLayout();
     if (!playerData.isLoggedIn()) return;
     tasksPerTier.clear();
-    for (Task task : allTasks.values()) {
-      List<Task> tasksInTier = tasksPerTier.getOrDefault(task.getTier(), new ArrayList<>());
+    for (TaskBase task : allTasks.values()) {
+      List<TaskBase> tasksInTier = tasksPerTier.getOrDefault(task.getTier(), new ArrayList<>());
       tasksInTier.add(task);
       tasksPerTier.put(task.getTier(), tasksInTier);
     }
@@ -100,9 +100,9 @@ public class TaskListPanel extends JPanel {
       int tier = entry.getKey();
       JPanel panel = entry.getValue();
       panel.removeAll();
-      List<Task> tasks = tasksPerTier.get(tier);
+      List<TaskBase> tasks = tasksPerTier.get(tier);
       for (int i = 0; i < tasks.size(); i++) {
-        Task task = tasks.get(i);
+        TaskBase task = tasks.get(i);
         JPanel taskPanel = new JPanel();
         taskPanel.setLayout(new BoxLayout(taskPanel, BoxLayout.X_AXIS));
         taskPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

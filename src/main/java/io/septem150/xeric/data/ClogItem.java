@@ -1,4 +1,4 @@
-package io.septem150.xeric.data.clog;
+package io.septem150.xeric.data;
 
 import lombok.*;
 

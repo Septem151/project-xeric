@@ -25,7 +25,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.septem150.xeric.util;
+package io.septem150.xeric.lib;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
