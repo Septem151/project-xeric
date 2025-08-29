@@ -38,16 +38,17 @@ public class PlayerData {
   @Getter(AccessLevel.NONE)
   @NonNull private final Gson gson;
 
-  @NonNull private final CollectionLog collectionLog = new CollectionLog();
-  @NonNull private final Map<Integer, CombatAchievement> combatAchievements = new HashMap<>();
-  @NonNull private final Map<Skill, SkillLevel> levels = new EnumMap<>(Skill.class);
-  @NonNull private final Map<Quest, QuestProgress> quests = new EnumMap<>(Quest.class);
+  @NonNull private final CollectionLog collectionLog;
 
-  @NonNull private final Map<AchievementDiary, DiaryProgress> diaries =
+  private final Map<Integer, CombatAchievement> combatAchievements = new HashMap<>();
+  private final Map<Skill, SkillLevel> levels = new EnumMap<>(Skill.class);
+  private final Map<Quest, QuestProgress> quests = new EnumMap<>(Quest.class);
+
+  private final Map<AchievementDiary, DiaryProgress> diaries =
       new EnumMap<>(AchievementDiary.class);
 
-  @NonNull private final Map<String, Hiscore> hiscores = new HashMap<>();
-  @NonNull private final Set<Task> tasks = new HashSet<>();
+  private final Map<String, Hiscore> hiscores = new HashMap<>();
+  private final Set<Task> tasks = new HashSet<>();
 
   private boolean loggedIn;
   @Nullable private String username;
@@ -55,9 +56,11 @@ public class PlayerData {
   @Setter private boolean slayerException;
 
   @Inject
-  public PlayerData(ConfigManager configManager, @Named("xericGson") Gson gson) {
+  public PlayerData(
+      ConfigManager configManager, @Named("xericGson") Gson gson, CollectionLog collectionLog) {
     this.configManager = configManager;
     this.gson = gson;
+    this.collectionLog = collectionLog;
   }
 
   public void reset() {

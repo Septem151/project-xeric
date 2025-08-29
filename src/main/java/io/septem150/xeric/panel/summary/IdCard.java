@@ -35,10 +35,12 @@ import org.apache.commons.text.WordUtils;
 @Singleton
 public class IdCard extends JPanel {
   private final SpriteManager spriteManager;
+  private final PlayerData playerData;
 
   @Inject
-  private IdCard(SpriteManager spriteManager) {
+  private IdCard(SpriteManager spriteManager, PlayerData playerData) {
     this.spriteManager = spriteManager;
+    this.playerData = playerData;
 
     add(wrappedPanel, BorderLayout.NORTH);
 
@@ -152,7 +154,7 @@ public class IdCard extends JPanel {
             ResourceUtil.getImage("/net/runelite/client/plugins/screenshot/screenshot.png")));
   }
 
-  private void makeDynamicData(PlayerData playerData, Map<Integer, Task> allTasks) {
+  private void makeDynamicData(Map<Integer, Task> allTasks) {
     int playerPoints = playerData.getTasks().stream().mapToInt(Task::getTier).sum();
     ClanRank playerRank = playerData.getRank();
     playerRank.getImageAsync(spriteManager, image -> rank.setIcon(new ImageIcon(image)));
@@ -186,16 +188,16 @@ public class IdCard extends JPanel {
     slayException.setEnabled(playerData.isSlayerException());
     tasksCompleted.setValue(playerData.getTasks().size());
     pointsToNextRank.setValue(playerRank.getNextRank().getPointsNeeded() - playerPoints);
-    highestTierCompleted.setValue(getHighestTierCompleted(playerData, allTasks));
+    highestTierCompleted.setValue(getHighestTierCompleted(allTasks));
   }
 
-  public void refresh(PlayerData playerData, Map<Integer, Task> allTasks) {
+  public void refresh(Map<Integer, Task> allTasks) {
     makeLayout();
     makeStaticData();
-    makeDynamicData(playerData, allTasks);
+    makeDynamicData(allTasks);
   }
 
-  private String getHighestTierCompleted(PlayerData playerData, Map<Integer, Task> allTasks) {
+  private String getHighestTierCompleted(Map<Integer, Task> allTasks) {
     List<Integer> tiers =
         allTasks.values().stream()
             .map(Task::getTier)

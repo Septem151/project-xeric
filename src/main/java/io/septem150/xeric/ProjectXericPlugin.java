@@ -88,7 +88,7 @@ public class ProjectXericPlugin extends Plugin {
     ticksTilUpdate = 0;
     pendingUpdates = new HashSet<>();
     panel.startUp();
-    SwingUtilities.invokeLater(() -> panel.refresh(playerData, allTasks));
+    SwingUtilities.invokeLater(() -> panel.refresh(allTasks));
     // handle login as soon as possible from client in case
     // the player is logged in when installing or starting the plugin
     clientThread.invokeLater(
@@ -121,7 +121,7 @@ public class ProjectXericPlugin extends Plugin {
     // synchronous operations that can be handled directly on client thread
     updateClientCache();
     checkClogChatMessageEnabled();
-    playerData.getCollectionLog().loadFromRSProfile(client, configManager, gson);
+    playerData.getCollectionLog().loadFromRSProfile();
     loadCombatAchievements();
     loadSkillLevels();
     loadQuests();
@@ -133,7 +133,7 @@ public class ProjectXericPlugin extends Plugin {
             () -> {
               playerData.loadTasksFromRSProfile(allTasks);
               scheduleUpdate(0, Set.of(TaskType.values()));
-              SwingUtilities.invokeLater(() -> panel.refresh(playerData, allTasks));
+              SwingUtilities.invokeLater(() -> panel.refresh(allTasks));
             });
   }
 
@@ -144,7 +144,7 @@ public class ProjectXericPlugin extends Plugin {
     // the player leaves this client open and then obtains an item on another
     // client before logging in again to this one
     playerData.getCollectionLog().setInterfaceOpened(false);
-    playerData.getCollectionLog().saveToRSProfile(configManager, gson);
+    playerData.getCollectionLog().saveToRSProfile();
     playerData.saveTasksToRSProfile();
   }
 
@@ -161,7 +161,7 @@ public class ProjectXericPlugin extends Plugin {
     if (pendingUpdates.isEmpty()) return;
     boolean updated = updateTaskCompletions();
     if (updated) {
-      SwingUtilities.invokeLater(() -> panel.refresh(playerData, allTasks));
+      SwingUtilities.invokeLater(() -> panel.refresh(allTasks));
     }
   }
 
@@ -301,7 +301,7 @@ public class ProjectXericPlugin extends Plugin {
     if (!event.getGroup().equals(ProjectXericConfig.CONFIG_GROUP)) return;
     if (event.getKey().equals(ProjectXericConfig.CONFIG_KEY_SLAYER)) {
       playerData.setSlayerException(Boolean.parseBoolean(event.getNewValue()));
-      SwingUtilities.invokeLater(() -> panel.refresh(playerData, allTasks));
+      SwingUtilities.invokeLater(() -> panel.refresh(allTasks));
     }
   }
 
@@ -502,6 +502,7 @@ public class ProjectXericPlugin extends Plugin {
                   Set<Task> tasks = gson.fromJson(bodyString, type);
                   allTasks =
                       tasks.stream().collect(Collectors.toMap(Task::getId, Function.identity()));
+
                   future.complete(null);
                 } catch (IOException | JsonParseException err) {
                   onFailure(call, new IOException(err));

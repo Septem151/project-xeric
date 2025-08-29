@@ -5,19 +5,23 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import io.septem150.xeric.ProjectXericConfig;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.client.config.ConfigManager;
 
 @Slf4j
-@NoArgsConstructor
+@Singleton
 public class CollectionLog {
   // Clog Constants
   public static final int COLLECTION_LOG_SETUP_SCRIPT_ID = 7797;
@@ -30,9 +34,20 @@ public class CollectionLog {
   public static final List<Integer> UNUSED_PROSPECTOR_ITEM_IDS =
       List.of(29472, 29474, 29476, 29478);
 
+  @NonNull private final Client client;
+  @NonNull private final ConfigManager configManager;
+  @NonNull private final Gson gson;
+
   @Getter @Setter private boolean interfaceOpened = false;
   @Getter @NonNull private Instant lastUpdated = Instant.EPOCH;
-  @NonNull private final Set<ClogItem> items = new HashSet<>();
+  private final Set<ClogItem> items = new HashSet<>();
+
+  @Inject
+  public CollectionLog(Client client, ConfigManager configManager, @Named("xericGson") Gson gson) {
+    this.client = client;
+    this.configManager = configManager;
+    this.gson = gson;
+  }
 
   @CanIgnoreReturnValue
   public boolean add(@Nullable ClogItem item) {
@@ -55,15 +70,34 @@ public class CollectionLog {
     return ImmutableSet.copyOf(items);
   }
 
-  public @NonNull String toRSProfileJson(@NonNull Gson gson) {
-    return gson.toJson(
-        new RSProfileClog(
-            lastUpdated, items.stream().map(ClogItem::getId).collect(Collectors.toSet())));
+  public void saveToRSProfile() {
+    configManager.setRSProfileConfiguration(
+        ProjectXericConfig.CONFIG_GROUP,
+        ProjectXericConfig.CONFIG_KEY_CLOG,
+        gson.toJson(
+            new RSProfileClog(
+                lastUpdated, items.stream().map(ClogItem::getId).collect(Collectors.toSet()))));
+  }
+
+  public void loadFromRSProfile() {
+    try {
+      boolean updatedFromProfile =
+          fromRSProfileJson(
+              configManager.getRSProfileConfiguration(
+                  ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_CLOG));
+
+      if (!updatedFromProfile) {
+        saveToRSProfile();
+      }
+    } catch (JsonParseException err) {
+      log.error("malformed clog data in profile");
+      configManager.unsetRSProfileConfiguration(
+          ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_CLOG);
+    }
   }
 
   @CanIgnoreReturnValue
-  public boolean fromRSProfileJson(
-      @NonNull Client client, @NonNull Gson gson, @Nullable String json) throws JsonParseException {
+  private boolean fromRSProfileJson(@Nullable String json) throws JsonParseException {
     if (json == null) return false;
     RSProfileClog profileClog = gson.fromJson(json, RSProfileClog.class);
     if (lastUpdated.isBefore(profileClog.lastUpdated)) {
@@ -78,36 +112,9 @@ public class CollectionLog {
     return false;
   }
 
-  public void saveToRSProfile(@NonNull ConfigManager configManager, @NonNull Gson gson) {
-    configManager.setRSProfileConfiguration(
-        ProjectXericConfig.CONFIG_GROUP,
-        ProjectXericConfig.CONFIG_KEY_CLOG,
-        this.toRSProfileJson(gson));
-  }
-
-  public void loadFromRSProfile(
-      @NonNull Client client, @NonNull ConfigManager configManager, @NonNull Gson gson) {
-    try {
-      boolean updatedFromProfile =
-          this.fromRSProfileJson(
-              client,
-              gson,
-              configManager.getRSProfileConfiguration(
-                  ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_CLOG));
-
-      if (!updatedFromProfile) {
-        this.saveToRSProfile(configManager, gson);
-      }
-    } catch (JsonParseException err) {
-      log.error("malformed clog data in profile");
-      configManager.unsetRSProfileConfiguration(
-          ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_CLOG);
-    }
-  }
-
   @RequiredArgsConstructor
-  private static class RSProfileClog {
-    final Instant lastUpdated;
-    final Set<Integer> itemIds;
+  private static class RSProfileClog implements Serializable {
+    private final Instant lastUpdated;
+    private final Set<Integer> itemIds;
   }
 }

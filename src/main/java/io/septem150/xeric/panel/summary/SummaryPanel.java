@@ -21,11 +21,13 @@ public class SummaryPanel extends JPanel {
 
   private final TaskListPanel taskListPanel;
   private final IdCard idCard;
+  private final PlayerData playerData;
 
   @Inject
-  private SummaryPanel(TaskListPanel taskListPanel, IdCard idCard) {
+  private SummaryPanel(TaskListPanel taskListPanel, IdCard idCard, PlayerData playerData) {
     this.taskListPanel = taskListPanel;
     this.idCard = idCard;
+    this.playerData = playerData;
     makeLayout();
     makeStaticData();
   }
@@ -70,7 +72,7 @@ public class SummaryPanel extends JPanel {
     clogLabel.setForeground(ColorScheme.BRAND_ORANGE);
   }
 
-  public void refresh(PlayerData playerData, Map<Integer, Task> allTasks) {
+  public void refresh(Map<Integer, Task> allTasks) {
     makeLayout();
     makeStaticData();
     if (!playerData.isLoggedIn()) {
@@ -78,8 +80,8 @@ public class SummaryPanel extends JPanel {
     } else {
       layout.show(this, LOGGED_IN_CONSTRAINT);
       clogLabel.setVisible(playerData.getCollectionLog().getLastUpdated().equals(Instant.EPOCH));
-      idCard.refresh(playerData, allTasks);
-      taskListPanel.refresh(playerData, allTasks);
+      idCard.refresh(allTasks);
+      taskListPanel.refresh(allTasks);
     }
     revalidate();
   }

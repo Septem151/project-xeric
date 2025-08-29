@@ -1,6 +1,5 @@
 package io.septem150.xeric;
 
-import io.septem150.xeric.data.player.PlayerData;
 import io.septem150.xeric.panel.leaderboard.LeaderboardPanel;
 import io.septem150.xeric.panel.summary.SummaryPanel;
 import io.septem150.xeric.task.Task;
@@ -88,8 +87,8 @@ public class ProjectXericPanel extends PluginPanel {
     clientToolbar.removeNavigation(navigationButton);
   }
 
-  public void refresh(PlayerData playerData, Map<Integer, Task> allTasks) {
-    summaryPanel.refresh(playerData, allTasks);
+  public void refresh(Map<Integer, Task> allTasks) {
+    summaryPanel.refresh(allTasks);
     leaderboardPanel.refresh();
     revalidate();
   }

@@ -24,13 +24,16 @@ public class TaskListPanel extends JPanel {
 
   private final SpriteManager spriteManager;
   private final ClientThread clientThread;
+  private final PlayerData playerData;
 
   private boolean loaded;
 
   @Inject
-  private TaskListPanel(SpriteManager spriteManager, ClientThread clientThread) {
+  private TaskListPanel(
+      SpriteManager spriteManager, ClientThread clientThread, PlayerData playerData) {
     this.spriteManager = spriteManager;
     this.clientThread = clientThread;
+    this.playerData = playerData;
     loaded = false;
   }
 
@@ -86,7 +89,7 @@ public class TaskListPanel extends JPanel {
     return "Tier " + tier + " Tasks (" + tier + " point" + (tier > 1 ? "s" : "") + " each)";
   }
 
-  public void refresh(PlayerData playerData, Map<Integer, Task> allTasks) {
+  public void refresh(Map<Integer, Task> allTasks) {
     makeLayout();
     if (!playerData.isLoggedIn()) return;
     if (!loaded) {
