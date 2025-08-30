@@ -76,6 +76,7 @@ public class SummaryPanel extends JPanel {
   }
 
   public void refresh(Map<Integer, TaskBase> allTasks) {
+    if (allTasks == null) return;
     makeLayout();
     makeStaticData();
     if (!playerData.isLoggedIn()) {

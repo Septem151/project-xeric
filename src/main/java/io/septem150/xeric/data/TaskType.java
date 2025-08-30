@@ -7,18 +7,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum TaskType {
-  @SerializedName("ca")
-  CA("ca"),
   @SerializedName("collect")
   CLOG("collect"),
-  @SerializedName("diary")
-  DIARY("diary"),
-  @SerializedName("kc")
-  HISCORE("kc"),
   @SerializedName("level")
   LEVEL("level"),
+  @SerializedName("kc")
+  HISCORE("kc"),
+  @SerializedName("ca")
+  CA("ca"),
   @SerializedName("quest")
-  QUEST("quest");
+  QUEST("quest"),
+  @SerializedName("diary")
+  DIARY("diary");
 
   private final String name;
 }

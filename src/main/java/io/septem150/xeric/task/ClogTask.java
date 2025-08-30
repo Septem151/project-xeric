@@ -4,6 +4,7 @@ import io.septem150.xeric.PlayerData;
 import io.septem150.xeric.data.ClogItem;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.image.BufferedImage;
+import java.time.Instant;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,7 +27,10 @@ public class ClogTask extends TaskBase {
       log.warn("clog task with id {} has null itemIds!", getId());
       return false;
     }
-    if (itemIds.isEmpty()) return playerData.getCollectionLog().size() >= amount;
+    if (itemIds.isEmpty()) {
+      return !playerData.getCollectionLog().getLastUpdated().equals(Instant.EPOCH)
+          && playerData.getCollectionLog().size() >= amount;
+    }
     Set<Integer> playerItemIds =
         playerData.getCollectionLog().getItems().stream()
             .map(ClogItem::getId)

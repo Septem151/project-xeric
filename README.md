@@ -19,15 +19,25 @@ The plugin adds a sidebar panel that features two tabs:
 
 ## Changelog
 
-### 1.1.0
+### 2.0.0
+
+#### Breaking Changes
+
+This version uses an updated data storage format that is **incompatible** with the previous version of the plugin.
+There is no backward compatibility between this version and "1.0.1".
+Existing "1.0.1" data storage formats will be automatically updated upon first login with this version.
 
 #### Features
 
 - Tasks are stored and retrieved from https://api.projectxeric.com.
+- Tasks are sorted by type then by name.
+- Sends a notice upon login when tasks are updated.
+- Sends a warning when Collection Log chat message notifications are off.
 
 #### Hotfixes
 
-- CA and KC tasks update in real-time when completing a CA and getting a KC.
+- Known CA and KC task completion issues fixed.
+- Known collection log task completion issues fixed.
 
 ### 1.0.1
 

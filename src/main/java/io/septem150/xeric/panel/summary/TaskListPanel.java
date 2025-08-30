@@ -101,6 +101,7 @@ public class TaskListPanel extends JPanel {
       JPanel panel = entry.getValue();
       panel.removeAll();
       List<TaskBase> tasks = tasksPerTier.get(tier);
+      tasks.sort(Comparator.comparing(TaskBase::getType).thenComparing(TaskBase::getName));
       for (int i = 0; i < tasks.size(); i++) {
         TaskBase task = tasks.get(i);
         JPanel taskPanel = new JPanel();

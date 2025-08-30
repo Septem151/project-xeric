@@ -140,13 +140,13 @@ public class ProjectXericPlugin extends Plugin {
                     () -> {
                       // compare new task list to the last task list used and notify user
                       // if there's been updates to the tasks or if new ones have been added
-                      if (!checkForUpdatedTasks()) {
-                        playerData.loadTasksFromRSProfile(allTasks);
-                        scheduleUpdate(0, Set.of(TaskType.values()));
-                      } else {
+                      if (checkForUpdatedTasks()) {
                         playerData.getTasks().clear();
                         pendingUpdates.addAll(Set.of(TaskType.values()));
                         updateTaskCompletions(false);
+                      } else {
+                        playerData.loadTasksFromRSProfile(allTasks);
+                        scheduleUpdate(0, Set.of(TaskType.values()));
                       }
                       SwingUtilities.invokeLater(() -> panel.refresh(allTasks));
                     }));
@@ -555,17 +555,14 @@ public class ProjectXericPlugin extends Plugin {
     String prevTasksHash =
         configManager.getRSProfileConfiguration(
             ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_TASKS_HASH);
-    if (prevTasksHash == null) {
-      prevTasksHash = tasksHash;
-      configManager.setRSProfileConfiguration(
-          ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_TASKS_HASH, tasksHash);
-    }
-    if (!prevTasksHash.equals(tasksHash)) {
+    if (prevTasksHash == null || !prevTasksHash.equals(tasksHash)) {
       for (RuneScapeProfile rsProfile : configManager.getRSProfiles()) {
         String profileKey = rsProfile.getKey();
         configManager.unsetConfiguration(
             ProjectXericConfig.CONFIG_GROUP, profileKey, ProjectXericConfig.CONFIG_KEY_TASKS);
       }
+      configManager.setRSProfileConfiguration(
+          ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_TASKS_HASH, tasksHash);
       client.addChatMessage(
           ChatMessageType.GAMEMESSAGE,
           "",
