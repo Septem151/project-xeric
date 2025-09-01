@@ -50,10 +50,10 @@ public class SummaryPanel extends JPanel {
     loggedOutPanel.add(loginLabel, BorderLayout.NORTH);
     add(loggedOutPanel, LOGGED_OUT_CONSTRAINT);
     JPanel loggedInPanel = new JPanel(new BorderLayout());
-    idCardPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
+    idCardPanel.setBorder(new EmptyBorder(0, 0, 5, 0));
     loggedInPanel.add(idCardPanel, BorderLayout.NORTH);
     JPanel inner1 = new JPanel(new BorderLayout());
-    clogLabel.setBorder(new EmptyBorder(0, 0, 10, 0));
+    clogLabel.setBorder(new EmptyBorder(0, 0, 5, 0));
     clogLabel.setHorizontalAlignment(SwingConstants.CENTER);
     inner1.add(clogLabel, BorderLayout.NORTH);
     inner1.add(taskListPanel, BorderLayout.CENTER);
