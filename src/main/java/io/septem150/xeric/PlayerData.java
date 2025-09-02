@@ -1,18 +1,16 @@
 package io.septem150.xeric;
 
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import io.septem150.xeric.data.AccountType;
-import io.septem150.xeric.data.AchievementDiary;
-import io.septem150.xeric.data.ClanRank;
-import io.septem150.xeric.data.CombatAchievement;
-import io.septem150.xeric.data.DiaryProgress;
-import io.septem150.xeric.data.Hiscore;
-import io.septem150.xeric.data.QuestProgress;
-import io.septem150.xeric.data.SkillLevel;
+import io.septem150.xeric.data.*;
 import io.septem150.xeric.task.TaskBase;
 import java.lang.reflect.Type;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -24,9 +22,11 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.Client;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.config.RuneScapeProfile;
 
 @Slf4j
 @Singleton
@@ -38,8 +38,7 @@ public class PlayerData {
   @Getter(AccessLevel.NONE)
   @NonNull private final Gson gson;
 
-  @NonNull private final CollectionLog collectionLog;
-
+  private final CollectionLog collectionLog;
   private final Map<Integer, CombatAchievement> combatAchievements = new HashMap<>();
   private final Map<Skill, SkillLevel> levels = new EnumMap<>(Skill.class);
   private final Map<Quest, QuestProgress> quests = new EnumMap<>(Quest.class);
@@ -48,7 +47,10 @@ public class PlayerData {
       new EnumMap<>(AchievementDiary.class);
 
   private final Map<String, Hiscore> hiscores = new HashMap<>();
-  private final Set<TaskBase> tasks = new HashSet<>();
+  private final Set<TaskBase> allTasks = new HashSet<>();
+  private final Set<TaskBase> completedTasks = new HashSet<>();
+  private final Set<TaskBase> remainingTasks = new HashSet<>();
+  private String tasksHash;
 
   private boolean loggedIn;
   @Nullable private String username;
@@ -56,11 +58,10 @@ public class PlayerData {
   @Setter private boolean slayerException;
 
   @Inject
-  public PlayerData(
-      ConfigManager configManager, @Named("xericGson") Gson gson, CollectionLog collectionLog) {
+  public PlayerData(Client client, ConfigManager configManager, @Named("xericGson") Gson gson) {
     this.configManager = configManager;
     this.gson = gson;
-    this.collectionLog = collectionLog;
+    collectionLog = new CollectionLog(client, configManager, gson);
   }
 
   public void reset() {
@@ -74,7 +75,10 @@ public class PlayerData {
     quests.clear();
     diaries.clear();
     hiscores.clear();
-    tasks.clear();
+    allTasks.clear();
+    completedTasks.clear();
+    remainingTasks.clear();
+    tasksHash = null;
   }
 
   public void login(String username, AccountType accountType) {
@@ -85,18 +89,22 @@ public class PlayerData {
 
   public void logout() {
     loggedIn = false;
-  }
-
-  public void saveTasksToRSProfile(@NonNull String tasksHash) {
+    // reset whether the clog interface has been opened on logout in case
+    // the player leaves this client open and then obtains an item on another
+    // client before logging in again to this one
+    collectionLog.setInterfaceOpened(false);
+    collectionLog.saveToRSProfile();
     configManager.setRSProfileConfiguration(
         ProjectXericConfig.CONFIG_GROUP,
         ProjectXericConfig.CONFIG_KEY_TASKS,
-        gson.toJson(tasks.stream().map(TaskBase::getId).collect(Collectors.toSet())));
+        gson.toJson(completedTasks.stream().map(TaskBase::getId).collect(Collectors.toSet())));
     configManager.setRSProfileConfiguration(
         ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_TASKS_HASH, tasksHash);
   }
 
-  public void loadTasksFromRSProfile(@NonNull Map<Integer, TaskBase> allTasks) {
+  public void loadTasksFromRSProfile() {
+    completedTasks.clear();
+    remainingTasks.clear();
     try {
       Type type = new TypeToken<Set<Integer>>() {}.getType();
       Set<Integer> taskIds =
@@ -105,7 +113,11 @@ public class PlayerData {
                   ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_TASKS),
               type);
       if (taskIds != null) {
-        tasks.addAll(taskIds.stream().map(allTasks::get).collect(Collectors.toSet()));
+        completedTasks.addAll(
+            allTasks.stream()
+                .filter(task -> taskIds.contains(task.getId()))
+                .collect(Collectors.toSet()));
+        remainingTasks.addAll(Sets.difference(allTasks, completedTasks));
       }
     } catch (JsonParseException err) {
       log.error("malformed task data in profile");
@@ -114,11 +126,56 @@ public class PlayerData {
     }
   }
 
+  public boolean isTaskListUpdated() {
+    String prevTasksHash =
+        configManager.getRSProfileConfiguration(
+            ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_TASKS_HASH);
+    if (prevTasksHash == null || !prevTasksHash.equals(tasksHash)) {
+      for (RuneScapeProfile rsProfile : configManager.getRSProfiles()) {
+        String profileKey = rsProfile.getKey();
+        configManager.unsetConfiguration(
+            ProjectXericConfig.CONFIG_GROUP, profileKey, ProjectXericConfig.CONFIG_KEY_TASKS);
+      }
+      configManager.setRSProfileConfiguration(
+          ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_TASKS_HASH, tasksHash);
+
+      return true;
+    }
+    return false;
+  }
+
+  public void clearCompletedTasks() {
+    completedTasks.clear();
+    remainingTasks.clear();
+    remainingTasks.addAll(Sets.difference(allTasks, completedTasks));
+  }
+
   public int getPoints() {
-    return tasks.stream().mapToInt(TaskBase::getTier).sum();
+    return completedTasks.stream().mapToInt(TaskBase::getTier).sum();
   }
 
   public ClanRank getRank() {
     return ClanRank.fromPoints(getPoints());
+  }
+
+  public void setAllTasks(Set<TaskBase> tasks) {
+    allTasks.clear();
+    allTasks.addAll(tasks);
+    try {
+      tasksHash =
+          String.format(
+              "%032x",
+              new BigInteger(
+                  1,
+                  MessageDigest.getInstance("MD5")
+                      .digest(gson.toJson(allTasks).getBytes(StandardCharsets.UTF_8))));
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void addCompletedTask(TaskBase task) {
+    completedTasks.add(task);
+    remainingTasks.remove(task);
   }
 }

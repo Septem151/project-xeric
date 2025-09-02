@@ -2,12 +2,10 @@ package io.septem150.xeric;
 
 import io.septem150.xeric.panel.LeaderboardPanel;
 import io.septem150.xeric.panel.SummaryPanel;
-import io.septem150.xeric.task.TaskBase;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.*;
@@ -87,8 +85,8 @@ public class ProjectXericPanel extends PluginPanel {
     clientToolbar.removeNavigation(navigationButton);
   }
 
-  public void refresh(Map<Integer, TaskBase> allTasks) {
-    summaryPanel.refresh(allTasks);
+  public void refresh() {
+    summaryPanel.refresh();
     leaderboardPanel.refresh();
     revalidate();
   }

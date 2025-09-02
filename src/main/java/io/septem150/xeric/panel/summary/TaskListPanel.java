@@ -27,8 +27,6 @@ public class TaskListPanel extends JPanel {
   private final ClientThread clientThread;
   private final SpriteManager spriteManager;
   private final PlayerData playerData;
-  private List<TaskBase> allTasks;
-  private List<TaskBase> shownTasks;
 
   private boolean loaded;
 
@@ -40,9 +38,8 @@ public class TaskListPanel extends JPanel {
     this.playerData = playerData;
   }
 
-  public void refresh(Map<Integer, TaskBase> allTasks) {
+  public void refresh() {
     if (!playerData.isLoggedIn()) return;
-    this.allTasks = new ArrayList<>(allTasks.values());
 
     if (!loaded) {
       loaded = true;
@@ -79,10 +76,12 @@ public class TaskListPanel extends JPanel {
     tasksPanel.invalidate();
     tasksPanel.removeAll();
     Arrays.stream(tasksPanel.getComponents()).forEach(tasksPanel::remove);
-    shownTasks =
-        allTasks.stream()
+    List<TaskBase> shownTasks =
+        playerData.getAllTasks().stream()
             .filter(
-                task -> showCompletedToggle.isSelected() || !playerData.getTasks().contains(task))
+                task ->
+                    showCompletedToggle.isSelected()
+                        || !playerData.getCompletedTasks().contains(task))
             .collect(Collectors.toList());
     if (shownTasks.isEmpty()) {
       tasksPanel.revalidate();
@@ -96,8 +95,8 @@ public class TaskListPanel extends JPanel {
       List<TaskBase> taskList = tasksPerTier.get(tier);
       int numCompleted =
           (int)
-              allTasks.stream()
-                  .filter(task -> task.getTier() == tier && playerData.getTasks().contains(task))
+              playerData.getCompletedTasks().stream()
+                  .filter(task -> task.getTier() == tier)
                   .count();
       taskList.sort(Comparator.comparing(TaskBase::getType).thenComparing(TaskBase::getName));
       JPanel tierPanel = new JPanel();
@@ -111,7 +110,10 @@ public class TaskListPanel extends JPanel {
                   "Tier %d Tasks (%d/%d)",
                   tier,
                   numCompleted,
-                  (int) allTasks.stream().filter(task -> task.getTier() == tier).count())
+                  (int)
+                      playerData.getAllTasks().stream()
+                          .filter(task -> task.getTier() == tier)
+                          .count())
               + "</p>");
       tierPanel.add(tierLabel);
       tierPanel.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -130,7 +132,7 @@ public class TaskListPanel extends JPanel {
         taskPanel.add(Box.createHorizontalGlue());
         JCheckBox completedCheckbox = new JCheckBox();
         completedCheckbox.setEnabled(false);
-        completedCheckbox.setSelected(playerData.getTasks().contains(task));
+        completedCheckbox.setSelected(playerData.getCompletedTasks().contains(task));
         completedCheckbox.setBorder(new EmptyBorder(0, 5, 0, 0));
         taskPanel.add(completedCheckbox);
         tierPanel.add(taskPanel);

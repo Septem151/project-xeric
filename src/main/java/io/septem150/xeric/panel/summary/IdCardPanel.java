@@ -13,7 +13,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -154,8 +153,8 @@ public class IdCardPanel extends JPanel {
             ResourceUtil.getImage("/net/runelite/client/plugins/screenshot/screenshot.png")));
   }
 
-  private void makeDynamicData(Map<Integer, TaskBase> allTasks) {
-    int playerPoints = playerData.getTasks().stream().mapToInt(TaskBase::getTier).sum();
+  private void makeDynamicData() {
+    int playerPoints = playerData.getCompletedTasks().stream().mapToInt(TaskBase::getTier).sum();
     ClanRank playerRank = playerData.getRank();
     playerRank.getImageAsync(spriteManager, image -> rank.setIcon(new ImageIcon(image)));
     rank.setToolTipText(WordUtils.capitalizeFully(playerRank.name()));
@@ -186,20 +185,20 @@ public class IdCardPanel extends JPanel {
               slayException.setIcon(new ImageIcon(ImageUtil.resizeImage(image, 20, 20, true))));
     }
     slayException.setEnabled(playerData.isSlayerException());
-    tasksCompleted.setValue(playerData.getTasks().size());
+    tasksCompleted.setValue(playerData.getCompletedTasks().size());
     pointsToNextRank.setValue(playerRank.getNextRank().getPointsNeeded() - playerPoints);
-    highestTierCompleted.setValue(getHighestTierCompleted(allTasks));
+    highestTierCompleted.setValue(getHighestTierCompleted());
   }
 
-  public void refresh(Map<Integer, TaskBase> allTasks) {
+  public void refresh() {
     makeLayout();
     makeStaticData();
-    makeDynamicData(allTasks);
+    makeDynamicData();
   }
 
-  private String getHighestTierCompleted(Map<Integer, TaskBase> allTasks) {
+  private String getHighestTierCompleted() {
     List<Integer> tiers =
-        allTasks.values().stream()
+        playerData.getAllTasks().stream()
             .map(TaskBase::getTier)
             .distinct()
             .sorted()
@@ -207,11 +206,11 @@ public class IdCardPanel extends JPanel {
     int highestTier = 0;
     int maxTiers = Optional.ofNullable(Iterables.getLast(tiers, 0)).orElse(0);
     for (int tier = 1; tier <= maxTiers; tier++) {
-      if (playerData.getTasks().isEmpty()) break;
+      if (playerData.getCompletedTasks().isEmpty()) break;
       boolean completed = true;
-      for (TaskBase task : allTasks.values()) {
+      for (TaskBase task : playerData.getAllTasks()) {
         if (task.getTier() != tier) continue;
-        if (!playerData.getTasks().contains(task)) {
+        if (!playerData.getCompletedTasks().contains(task)) {
           completed = false;
           break;
         }

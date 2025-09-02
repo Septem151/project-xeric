@@ -3,10 +3,8 @@ package io.septem150.xeric.panel;
 import io.septem150.xeric.PlayerData;
 import io.septem150.xeric.panel.summary.IdCardPanel;
 import io.septem150.xeric.panel.summary.TaskListPanel;
-import io.septem150.xeric.task.TaskBase;
 import java.awt.*;
 import java.time.Instant;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.*;
@@ -75,8 +73,8 @@ public class SummaryPanel extends JPanel {
     clogLabel.setForeground(ColorScheme.BRAND_ORANGE);
   }
 
-  public void refresh(Map<Integer, TaskBase> allTasks) {
-    if (allTasks == null) return;
+  public void refresh() {
+    if (playerData.getAllTasks() == null) return;
     makeLayout();
     makeStaticData();
     if (!playerData.isLoggedIn()) {
@@ -84,8 +82,8 @@ public class SummaryPanel extends JPanel {
     } else {
       layout.show(this, LOGGED_IN_CONSTRAINT);
       clogLabel.setVisible(playerData.getCollectionLog().getLastUpdated().equals(Instant.EPOCH));
-      idCardPanel.refresh(allTasks);
-      taskListPanel.refresh(allTasks);
+      idCardPanel.refresh();
+      taskListPanel.refresh();
     }
     revalidate();
   }

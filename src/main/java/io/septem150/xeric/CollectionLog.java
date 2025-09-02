@@ -12,16 +12,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.client.config.ConfigManager;
 
 @Slf4j
-@Singleton
 public class CollectionLog {
   // Clog Constants
   public static final int COLLECTION_LOG_SETUP_SCRIPT_ID = 7797;
@@ -42,8 +38,7 @@ public class CollectionLog {
   @Getter @NonNull private Instant lastUpdated = Instant.EPOCH;
   private final Set<ClogItem> items = new HashSet<>();
 
-  @Inject
-  public CollectionLog(Client client, ConfigManager configManager, @Named("xericGson") Gson gson) {
+  public CollectionLog(Client client, ConfigManager configManager, Gson gson) {
     this.client = client;
     this.configManager = configManager;
     this.gson = gson;

@@ -12,27 +12,18 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Provides;
 import io.septem150.xeric.data.*;
-import io.septem150.xeric.data.AccountType;
-import io.septem150.xeric.data.AchievementDiary;
-import io.septem150.xeric.data.ClogItem;
-import io.septem150.xeric.data.DiaryProgress;
 import io.septem150.xeric.lib.RuntimeTypeAdapterFactory;
 import io.septem150.xeric.task.*;
 import io.septem150.xeric.util.WorldUtil;
 import java.awt.*;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -81,7 +72,6 @@ public class ProjectXericPlugin extends Plugin {
   private Map<Integer, ClogItem> allItemsById;
   private Map<String, ClogItem> allItemsByName;
   private Map<Integer, CombatAchievement> allCombatAchievements;
-  private Map<Integer, TaskBase> allTasks;
   private int ticksTilClientReady;
   private int ticksTilUpdate;
   private Set<TaskType> pendingUpdates;
@@ -93,7 +83,7 @@ public class ProjectXericPlugin extends Plugin {
     ticksTilUpdate = 0;
     pendingUpdates = new HashSet<>();
     panel.startUp();
-    SwingUtilities.invokeLater(() -> panel.refresh(allTasks));
+    SwingUtilities.invokeLater(panel::refresh);
     // handle login as soon as possible from client in case
     // the player is logged in when installing or starting the plugin
     clientThread.invokeLater(
@@ -113,7 +103,6 @@ public class ProjectXericPlugin extends Plugin {
     allItemsById = null;
     allItemsByName = null;
     allCombatAchievements = null;
-    allTasks = null;
     panel.shutDown();
     log.info("{} stopped!", ProjectXericConfig.PLUGIN_NAME);
   }
@@ -141,26 +130,20 @@ public class ProjectXericPlugin extends Plugin {
                       // compare new task list to the last task list used and notify user
                       // if there's been updates to the tasks or if new ones have been added
                       if (checkForUpdatedTasks()) {
-                        playerData.getTasks().clear();
+                        playerData.clearCompletedTasks();
                         pendingUpdates.addAll(Set.of(TaskType.values()));
                         updateTaskCompletions(false);
                       } else {
-                        playerData.loadTasksFromRSProfile(allTasks);
+                        playerData.loadTasksFromRSProfile();
                         scheduleUpdate(0, Set.of(TaskType.values()));
                       }
-                      SwingUtilities.invokeLater(() -> panel.refresh(allTasks));
+                      SwingUtilities.invokeLater(panel::refresh);
                     }));
   }
 
   private void handleLogout() {
     playerData.logout();
     ticksTilClientReady = 2;
-    // reset whether the clog interface has been opened on logout in case
-    // the player leaves this client open and then obtains an item on another
-    // client before logging in again to this one
-    playerData.getCollectionLog().setInterfaceOpened(false);
-    playerData.getCollectionLog().saveToRSProfile();
-    playerData.saveTasksToRSProfile(md5Hash(gson.toJson(allTasks.values())));
   }
 
   @Subscribe
@@ -176,7 +159,7 @@ public class ProjectXericPlugin extends Plugin {
     if (pendingUpdates.isEmpty()) return;
     boolean updated = updateTaskCompletions();
     if (updated) {
-      SwingUtilities.invokeLater(() -> panel.refresh(allTasks));
+      SwingUtilities.invokeLater(panel::refresh);
     }
   }
 
@@ -316,7 +299,7 @@ public class ProjectXericPlugin extends Plugin {
     if (!event.getGroup().equals(ProjectXericConfig.CONFIG_GROUP)) return;
     if (event.getKey().equals(ProjectXericConfig.CONFIG_KEY_SLAYER)) {
       playerData.setSlayerException(Boolean.parseBoolean(event.getNewValue()));
-      SwingUtilities.invokeLater(() -> panel.refresh(allTasks));
+      SwingUtilities.invokeLater(panel::refresh);
     }
   }
 
@@ -349,16 +332,15 @@ public class ProjectXericPlugin extends Plugin {
     log.debug(
         "Called updateTaskCompletions with: {}",
         pendingUpdates.stream().map(TaskType::getName).collect(Collectors.toSet()));
-    Set<TaskBase> allTasksByType =
-        allTasks.values().stream()
+    Set<TaskBase> remainingTasksToCheck =
+        playerData.getRemainingTasks().stream()
             .filter(task -> pendingUpdates.contains(task.getType()))
             .collect(Collectors.toSet());
-    Set<TaskBase> remainingTasks = Sets.difference(allTasksByType, playerData.getTasks());
     boolean updated = false;
-    for (TaskBase task : remainingTasks) {
+    for (TaskBase task : remainingTasksToCheck) {
       if (task.isCompleted(playerData)) {
         updated = true;
-        playerData.getTasks().add(task);
+        playerData.addCompletedTask(task);
         if (showMessage) {
           client.addChatMessage(
               ChatMessageType.GAMEMESSAGE,
@@ -489,7 +471,7 @@ public class ProjectXericPlugin extends Plugin {
             .scheme("https")
             .host("api.projectxeric.com")
             .addPathSegment("v1")
-            .addPathSegment(ProjectXericConfig.CONFIG_KEY_TASKS)
+            .addPathSegment("tasks")
             .build();
     Request request =
         new Request.Builder()
@@ -521,9 +503,7 @@ public class ProjectXericPlugin extends Plugin {
                   }
                   Type type = new TypeToken<Set<TaskBase>>() {}.getType();
                   Set<TaskBase> tasks = gson.fromJson(bodyString, type);
-                  allTasks =
-                      tasks.stream()
-                          .collect(Collectors.toMap(TaskBase::getId, Function.identity()));
+                  playerData.setAllTasks(tasks);
                   future.complete(null);
                 } catch (IOException | JsonParseException err) {
                   onFailure(call, new IOException(err));
@@ -551,18 +531,7 @@ public class ProjectXericPlugin extends Plugin {
   }
 
   private boolean checkForUpdatedTasks() {
-    String tasksHash = md5Hash(gson.toJson(allTasks.values()));
-    String prevTasksHash =
-        configManager.getRSProfileConfiguration(
-            ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_TASKS_HASH);
-    if (prevTasksHash == null || !prevTasksHash.equals(tasksHash)) {
-      for (RuneScapeProfile rsProfile : configManager.getRSProfiles()) {
-        String profileKey = rsProfile.getKey();
-        configManager.unsetConfiguration(
-            ProjectXericConfig.CONFIG_GROUP, profileKey, ProjectXericConfig.CONFIG_KEY_TASKS);
-      }
-      configManager.setRSProfileConfiguration(
-          ProjectXericConfig.CONFIG_GROUP, ProjectXericConfig.CONFIG_KEY_TASKS_HASH, tasksHash);
+    if (playerData.isTaskListUpdated()) {
       client.addChatMessage(
           ChatMessageType.GAMEMESSAGE,
           "",
@@ -641,17 +610,6 @@ public class ProjectXericPlugin extends Plugin {
       }
     }
     return allCaTaskStructIds;
-  }
-
-  private String md5Hash(@NonNull String input) {
-    try {
-      return String.format(
-          "%032x",
-          new BigInteger(
-              1, MessageDigest.getInstance("MD5").digest(input.getBytes(StandardCharsets.UTF_8))));
-    } catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   private void scheduleUpdate(int tickDelay, Set<TaskType> taskTypes) {
