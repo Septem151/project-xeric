@@ -78,6 +78,11 @@ public class ProjectXericPanel extends PluginPanel {
   /** Adds this Side Panel to the RuneLite client toolbar */
   public void startUp() {
     clientToolbar.addNavigation(navigationButton);
+    summaryPanel.startUp();
+  }
+
+  public void startUpChildren() {
+    summaryPanel.startupChildren();
   }
 
   /** Removes this Side Panel from the RuneLite client toolbar */

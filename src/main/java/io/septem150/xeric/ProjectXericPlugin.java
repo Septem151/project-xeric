@@ -137,6 +137,7 @@ public class ProjectXericPlugin extends Plugin {
                         playerData.loadTasksFromRSProfile();
                         scheduleUpdate(0, Set.of(TaskType.values()));
                       }
+                      panel.startUpChildren();
                       SwingUtilities.invokeLater(panel::refresh);
                     }));
   }

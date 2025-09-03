@@ -1,8 +1,6 @@
 package io.septem150.xeric.panel;
 
 import io.septem150.xeric.PlayerData;
-import io.septem150.xeric.panel.summary.IdCardPanel;
-import io.septem150.xeric.panel.summary.TaskListPanel;
 import java.awt.*;
 import java.time.Instant;
 import javax.inject.Inject;
@@ -18,10 +16,21 @@ import net.runelite.client.ui.FontManager;
 public class SummaryPanel extends JPanel {
   public static final String TOOLTIP = "Player Summary";
   public static final String TAB_ICON = "summary_tab_icon.png";
+  private static final String LOGGED_OUT_CONSTRAINT = "LOGGED_OUT";
+  private static final String LOGGED_IN_CONSTRAINT = "LOGGED_IN";
 
   private final TaskListPanel taskListPanel;
   private final IdCardPanel idCardPanel;
   private final PlayerData playerData;
+
+  private final CardLayout layout = new CardLayout();
+  private final JLabel loginLabel = new JLabel();
+  private final JLabel clogLabel = new JLabel();
+  private final JPanel loggedOutPanel = new JPanel();
+  private final JPanel loggedInPanel = new JPanel();
+  private final JPanel taskListContainerPanel = new JPanel();
+
+  private boolean loaded;
 
   @Inject
   private SummaryPanel(
@@ -29,54 +38,56 @@ public class SummaryPanel extends JPanel {
     this.taskListPanel = taskListPanel;
     this.idCardPanel = idCardPanel;
     this.playerData = playerData;
-    makeLayout();
-    makeStaticData();
   }
 
-  private static final String LOGGED_OUT_CONSTRAINT = "LOGGED_OUT";
-  private static final String LOGGED_IN_CONSTRAINT = "LOGGED_IN";
-  private final CardLayout layout = new CardLayout();
-  private final JLabel loginLabel = new JLabel();
-  private final JLabel clogLabel = new JLabel();
-
-  private void makeLayout() {
-    removeAll();
-    setLayout(layout);
-    JPanel loggedOutPanel = new JPanel(new BorderLayout());
-    loginLabel.setBorder(new EmptyBorder(20, 0, 0, 0));
-    loginLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    loggedOutPanel.add(loginLabel, BorderLayout.NORTH);
-    add(loggedOutPanel, LOGGED_OUT_CONSTRAINT);
-    JPanel loggedInPanel = new JPanel(new BorderLayout());
-    idCardPanel.setBorder(new EmptyBorder(0, 0, 5, 0));
-    loggedInPanel.add(idCardPanel, BorderLayout.NORTH);
-    JPanel inner1 = new JPanel(new BorderLayout());
-    clogLabel.setBorder(new EmptyBorder(0, 0, 5, 0));
-    clogLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    inner1.add(clogLabel, BorderLayout.NORTH);
-    inner1.add(taskListPanel, BorderLayout.CENTER);
-    loggedInPanel.add(inner1, BorderLayout.CENTER);
-    add(loggedInPanel, LOGGED_IN_CONSTRAINT);
-  }
-
-  private void makeStaticData() {
-    setBackground(ColorScheme.DARK_GRAY_COLOR);
+  private void initComponent() {
     loginLabel.setText(
         "<html><body style='text-align: center'>Log in to start tracking Xeric"
             + " Tasks.</body></html>");
     loginLabel.setFont(FontManager.getRunescapeSmallFont());
     loginLabel.setForeground(ColorScheme.BRAND_ORANGE);
+    loginLabel.setBorder(new EmptyBorder(20, 0, 0, 0));
+    loginLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
     clogLabel.setText(
         "<html><body style='text-align: center'>Open the Collection Log to start tracking Xeric"
             + " Tasks.</body></html>");
     clogLabel.setFont(FontManager.getRunescapeSmallFont());
     clogLabel.setForeground(ColorScheme.BRAND_ORANGE);
+    clogLabel.setBorder(new EmptyBorder(0, 0, 5, 0));
+    clogLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+    loggedOutPanel.setLayout(new BorderLayout());
+    loggedOutPanel.add(loginLabel, BorderLayout.NORTH);
+
+    loggedInPanel.setLayout(new BorderLayout());
+    loggedInPanel.add(idCardPanel, BorderLayout.NORTH);
+    loggedInPanel.add(taskListContainerPanel, BorderLayout.CENTER);
+
+    taskListContainerPanel.setLayout(new BorderLayout());
+    taskListContainerPanel.add(clogLabel, BorderLayout.NORTH);
+    taskListContainerPanel.add(taskListPanel, BorderLayout.CENTER);
+
+    setLayout(layout);
+    setBackground(ColorScheme.DARK_GRAY_COLOR);
+    add(loggedOutPanel, LOGGED_OUT_CONSTRAINT);
+    add(loggedInPanel, LOGGED_IN_CONSTRAINT);
+  }
+
+  public void startUp() {
+    if (!loaded) {
+      removeAll();
+      initComponent();
+      loaded = true;
+    }
+    refresh();
+  }
+
+  public void startupChildren() {
+    taskListPanel.startUp();
   }
 
   public void refresh() {
-    if (playerData.getAllTasks() == null) return;
-    makeLayout();
-    makeStaticData();
     if (!playerData.isLoggedIn()) {
       layout.show(this, LOGGED_OUT_CONSTRAINT);
     } else {

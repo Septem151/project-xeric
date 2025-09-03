@@ -1,4 +1,4 @@
-package io.septem150.xeric.panel.summary;
+package io.septem150.xeric.panel;
 
 import com.google.common.collect.Iterables;
 import io.septem150.xeric.PlayerData;
@@ -41,6 +41,7 @@ public class IdCardPanel extends JPanel {
     this.spriteManager = spriteManager;
     this.playerData = playerData;
 
+    setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
     add(wrappedPanel, BorderLayout.NORTH);
 
     SwingUtil.removeButtonDecorations(screenshotButton);
