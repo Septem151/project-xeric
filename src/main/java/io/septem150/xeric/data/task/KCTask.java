@@ -41,6 +41,30 @@ public class KCTask extends Task {
     iconMap.put("Clues", new ImageCoord(5853, 0));
   }
 
+  public static String fixBossName(String bossName) {
+    // handle special cases where hiscore name doesn't match in-game message name for boss
+    switch (bossName) {
+      case "Hueycoatl":
+        return HiscoreSkill.THE_HUEYCOATL.getName();
+      case "Lunar Chest":
+        return HiscoreSkill.LUNAR_CHESTS.getName();
+      case "Chambers of Xeric Challenge Mode":
+        return HiscoreSkill.CHAMBERS_OF_XERIC_CHALLENGE_MODE.getName();
+      case "easy":
+        return HiscoreSkill.CLUE_SCROLL_EASY.getName();
+      case "medium":
+        return HiscoreSkill.CLUE_SCROLL_MEDIUM.getName();
+      case "hard":
+        return HiscoreSkill.CLUE_SCROLL_HARD.getName();
+      case "elite":
+        return HiscoreSkill.CLUE_SCROLL_ELITE.getName();
+      case "master":
+        return HiscoreSkill.CLUE_SCROLL_MASTER.getName();
+      default:
+        return bossName;
+    }
+  }
+
   @Override
   public boolean checkCompletion(@NonNull PlayerInfo playerInfo) {
     String name = boss;

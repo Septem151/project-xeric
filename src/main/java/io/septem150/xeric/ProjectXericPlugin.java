@@ -35,15 +35,11 @@ import net.runelite.client.plugins.PluginDescriptor;
 @Slf4j
 @PluginDescriptor(name = ProjectXericConfig.NAME)
 public final class ProjectXericPlugin extends Plugin {
-  @Inject
-  private @Named("xericGson") Gson gson;
-
   @Inject private ConfigManager configManager;
   @Inject private ProjectXericManager manager;
   @Inject private EventBus eventBus;
 
   private ProjectXericPanel panel;
-  private int updatePanel;
 
   @Override
   protected void startUp() throws Exception {
