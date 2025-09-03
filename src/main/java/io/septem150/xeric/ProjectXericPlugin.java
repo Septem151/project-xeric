@@ -13,7 +13,7 @@ import io.septem150.xeric.data.task.LocalTaskStore;
 import io.septem150.xeric.data.task.QuestTask;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
-import io.septem150.xeric.panel.PanelUpdate;
+import io.septem150.xeric.data.task.TaskType;
 import io.septem150.xeric.panel.ProjectXericPanel;
 import io.septem150.xeric.util.RuntimeTypeAdapterFactory;
 import javax.inject.Inject;
@@ -21,7 +21,6 @@ import javax.inject.Named;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.events.CommandExecuted;
-import net.runelite.api.events.GameTick;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
@@ -51,8 +50,7 @@ public final class ProjectXericPlugin extends Plugin {
     log.info("Project Xeric started!");
     panel = injector.getInstance(ProjectXericPanel.class);
     eventBus.register(manager);
-    eventBus.register(panel);
-    manager.startUp();
+    manager.startUp(panel);
     panel.startUp();
     SwingUtilities.invokeLater(panel::refresh);
   }
@@ -61,7 +59,6 @@ public final class ProjectXericPlugin extends Plugin {
   protected void shutDown() throws Exception {
     log.info("Project Xeric stopped!");
     eventBus.unregister(manager);
-    eventBus.unregister(panel);
     panel.shutDown();
     manager.shutDown();
   }
@@ -74,23 +71,13 @@ public final class ProjectXericPlugin extends Plugin {
           ProjectXericConfig.GROUP, ProjectXericConfig.CLOG_DATA_KEY);
       configManager.unsetRSProfileConfiguration(
           ProjectXericConfig.GROUP, ProjectXericConfig.TASKS_DATA_KEY);
+      panel.shutDown();
       manager.getPlayerInfo().clear();
       manager.shutDown();
-      manager.startUp();
+      manager.startUp(panel);
+      panel.startUp();
       SwingUtilities.invokeLater(panel::refresh);
     }
-  }
-
-  @Subscribe
-  public void onGameTick(GameTick event) {
-    if (updatePanel > 0 && --updatePanel == 0) {
-      SwingUtilities.invokeLater(panel::refresh);
-    }
-  }
-
-  @Subscribe
-  public void onPanelUpdate(PanelUpdate event) {
-    if (updatePanel <= 0) updatePanel = 3;
   }
 
   @Override
@@ -109,12 +96,12 @@ public final class ProjectXericPlugin extends Plugin {
   public Gson provideGson(Gson gson) {
     RuntimeTypeAdapterFactory<Task> taskTypeAdapterFactory =
         RuntimeTypeAdapterFactory.of(Task.class, "type", true)
-            .registerSubtype(CATask.class, CATask.CA_TASK_TYPE)
-            .registerSubtype(CollectTask.class, CollectTask.COLLECT_TASK_TYPE)
-            .registerSubtype(DiaryTask.class, DiaryTask.DIARY_TASK_TYPE)
-            .registerSubtype(KCTask.class, KCTask.KC_TASK_TYPE)
-            .registerSubtype(LevelTask.class, LevelTask.LEVEL_TASK_TYPE)
-            .registerSubtype(QuestTask.class, QuestTask.QUEST_TASK_TYPE);
+            .registerSubtype(CATask.class, TaskType.CA.getName())
+            .registerSubtype(CollectTask.class, TaskType.CLOG.getName())
+            .registerSubtype(DiaryTask.class, TaskType.DIARY.getName())
+            .registerSubtype(KCTask.class, TaskType.HISCORE.getName())
+            .registerSubtype(LevelTask.class, TaskType.LEVEL.getName())
+            .registerSubtype(QuestTask.class, TaskType.QUEST.getName());
 
     return gson.newBuilder()
         .disableHtmlEscaping()

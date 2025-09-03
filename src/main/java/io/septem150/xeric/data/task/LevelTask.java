@@ -5,17 +5,16 @@ import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import lombok.Setter;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.util.ImageUtil;
 import org.apache.commons.text.WordUtils;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Setter
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class LevelTask extends Task {
-  public static final String LEVEL_TASK_TYPE = "level";
   private String level;
   private int goal;
 

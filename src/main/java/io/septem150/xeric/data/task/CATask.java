@@ -3,16 +3,15 @@ package io.septem150.xeric.data.task;
 import io.septem150.xeric.data.player.PlayerInfo;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import lombok.Setter;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.util.ImageUtil;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Setter
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class CATask extends Task {
-  public static final String CA_TASK_TYPE = "ca";
   private int total;
 
   @Override

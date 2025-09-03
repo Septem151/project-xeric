@@ -36,7 +36,7 @@ import io.septem150.xeric.data.player.QuestProgress;
 import io.septem150.xeric.data.task.LevelTask;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
-import io.septem150.xeric.panel.PanelUpdate;
+import io.septem150.xeric.panel.ProjectXericPanel;
 import io.septem150.xeric.util.WorldUtil;
 import java.awt.Color;
 import java.io.IOException;
@@ -59,6 +59,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
@@ -82,7 +83,6 @@ import net.runelite.api.gameval.InventoryID;
 import net.runelite.api.gameval.VarbitID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
@@ -122,7 +122,6 @@ public class ProjectXericManager {
 
   private final Client client;
   private final ClientThread clientThread;
-  private final EventBus eventBus;
   private final ProjectXericConfig config;
   private final ConfigManager configManager;
   private final ItemManager itemManager;
@@ -131,6 +130,7 @@ public class ProjectXericManager {
   private final TaskStore taskStore;
   private final Gson gson;
 
+  private ProjectXericPanel panel;
   private long lastAccountId;
   private Set<Integer> remainingCaStructIds;
   private Set<Integer> completedTaskIds;
@@ -149,7 +149,6 @@ public class ProjectXericManager {
   public ProjectXericManager(
       Client client,
       ClientThread clientThread,
-      EventBus eventBus,
       ProjectXericConfig config,
       ConfigManager configManager,
       ItemManager itemManager,
@@ -159,7 +158,6 @@ public class ProjectXericManager {
       @Named("xericGson") Gson gson) {
     this.client = client;
     this.clientThread = clientThread;
-    this.eventBus = eventBus;
     this.config = config;
     this.configManager = configManager;
     this.itemManager = itemManager;
@@ -169,7 +167,8 @@ public class ProjectXericManager {
     this.gson = gson;
   }
 
-  public void startUp() {
+  public void startUp(ProjectXericPanel panel) {
+    this.panel = panel;
     lastAccountId = -1L;
     playerInfo = new PlayerInfo();
     clientThread.invokeLater(
@@ -250,7 +249,11 @@ public class ProjectXericManager {
             () -> {
               updateLevels = 2;
               updateTasks = 2;
-              eventBus.post(new PanelUpdate());
+              clientThread.invoke(
+                  () -> {
+                    panel.startUpChildren();
+                    SwingUtilities.invokeLater(panel::refresh);
+                  });
             });
   }
 
@@ -482,7 +485,7 @@ public class ProjectXericManager {
     if (!event.getGroup().equals(ProjectXericConfig.GROUP)) return;
     if (event.getKey().equals(ProjectXericConfig.SLAYER_CONFIG_KEY)) {
       playerInfo.setSlayerException(Boolean.parseBoolean(event.getNewValue()));
-      eventBus.post(new PanelUpdate());
+      SwingUtilities.invokeLater(panel::refresh);
     }
   }
 
@@ -517,10 +520,7 @@ public class ProjectXericManager {
               if (config.chatMessages()) {
                 clientThread.invokeLater(
                     () -> {
-                      int points =
-                          task.getSlayerPoints() != null && config.slayer()
-                              ? task.getSlayerPoints()
-                              : task.getTier();
+                      int points = config.slayer() ? task.getSlayerPoints() : task.getTier();
                       client.addChatMessage(
                           ChatMessageType.GAMEMESSAGE,
                           ProjectXericConfig.NAME,
@@ -536,7 +536,7 @@ public class ProjectXericManager {
           }
           if (refresh) {
             playerInfo.setTasks(new ArrayList<>(completedTasks));
-            eventBus.post(new PanelUpdate());
+            SwingUtilities.invokeLater(panel::refresh);
           }
         });
   }

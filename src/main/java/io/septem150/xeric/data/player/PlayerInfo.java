@@ -44,7 +44,7 @@ public class PlayerInfo {
     return tasks.stream()
         .mapToInt(
             task -> {
-              if (task.getSlayerPoints() != null && isSlayerException()) {
+              if (isSlayerException()) {
                 return task.getSlayerPoints();
               }
               return task.getTier();

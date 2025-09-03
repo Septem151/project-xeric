@@ -7,17 +7,16 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import lombok.Setter;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.util.ImageUtil;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Setter
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class KCTask extends Task {
-  public static final String KC_TASK_TYPE = "kc";
   private static final Map<String, ImageCoord> iconMap = new HashMap<>();
 
   private String boss;

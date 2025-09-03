@@ -3,145 +3,134 @@ package io.septem150.xeric.panel.summary;
 import io.septem150.xeric.data.ProjectXericManager;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskStore;
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Dimension;
+import io.septem150.xeric.data.task.TaskType;
+import io.septem150.xeric.util.ResourceUtil;
+import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-import net.runelite.client.callback.ClientThread;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.ColorScheme;
+import net.runelite.client.ui.components.IconTextField;
 
 @Singleton
 public class TaskListPanel extends JPanel {
-  private final CardLayout displayLayout = new CardLayout();
-
-  private final Map<Integer, JPanel> tierPanels = new HashMap<>();
-  private final Map<Integer, List<Task>> tasksPerTier = new HashMap<>();
-
   private final TaskStore taskStore;
   private final ProjectXericManager manager;
   private final SpriteManager spriteManager;
-  private final ClientThread clientThread;
+
+  private List<TaskTierPanel> tierPanels = new ArrayList<>();
+
+  private final IconTextField searchBar = new IconTextField();
+  private final JToggleButton showCompletedButton = new JToggleButton();
+  private final JPanel controlsContainerPanel = new JPanel();
+  private final JPanel taskTiersContainerPanel = new JPanel();
+  private final JScrollPane scrollContainerPanel = new JScrollPane();
 
   private boolean loaded;
 
   @Inject
-  private TaskListPanel(
-      TaskStore taskStore,
-      ProjectXericManager manager,
-      SpriteManager spriteManager,
-      ClientThread clientThread) {
+  public TaskListPanel(
+      TaskStore taskStore, ProjectXericManager manager, SpriteManager spriteManager) {
     this.taskStore = taskStore;
     this.manager = manager;
     this.spriteManager = spriteManager;
-    this.clientThread = clientThread;
-    loaded = false;
   }
 
-  private final JPanel display = new JPanel(displayLayout);
-  private final JComboBox<String> tierComboBox = new JComboBox<>();
-  private final JScrollPane scrollPane =
-      new JScrollPane(
-          display,
-          ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-          ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+  private void initComponents() {
+    // set up search bar, toggle button, and tasks panel
+    searchBar.setIcon(IconTextField.Icon.SEARCH);
+    searchBar.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+    searchBar.setHoverBackgroundColor(ColorScheme.DARK_GRAY_HOVER_COLOR);
+    searchBar
+        .getDocument()
+        .addDocumentListener(
+            new DocumentListener() {
+              @Override
+              public void insertUpdate(DocumentEvent documentEvent) {
+                reload();
+              }
 
-  private void makeLayout() {
-    removeAll();
-    setLayout(new BorderLayout());
-    tierComboBox.setBorder(new LineBorder(ColorScheme.BORDER_COLOR, 1));
-    add(tierComboBox, BorderLayout.NORTH);
-    scrollPane.setWheelScrollingEnabled(true);
-    scrollPane.setBorder(new EmptyBorder(5, 0, 0, 0));
-    add(scrollPane, BorderLayout.CENTER);
-  }
+              @Override
+              public void removeUpdate(DocumentEvent documentEvent) {
+                reload();
+              }
 
-  public void init() {
-    if (loaded) return;
-    loaded = true;
-    for (Task task : taskStore.getAll()) {
-      List<Task> tasksInTier = tasksPerTier.getOrDefault(task.getTier(), new ArrayList<>());
-      tasksInTier.add(task);
-      tasksPerTier.put(task.getTier(), tasksInTier);
+              @Override
+              public void changedUpdate(DocumentEvent documentEvent) {
+                // do nothing, event not used
+              }
+            });
+    for (TaskType taskType : TaskType.values()) {
+      searchBar.getSuggestionListModel().addElement(taskType.getName().toUpperCase());
     }
-    tierComboBox.setModel(
-        new DefaultComboBoxModel<>(
-            tasksPerTier.keySet().stream()
-                .sorted()
-                .map(TaskListPanel::tierToDropdownName)
-                .toArray(String[]::new)));
-    tierComboBox.addActionListener(
-        event -> {
-          String tierSelected =
-              Objects.requireNonNull((String) ((JComboBox<?>) event.getSource()).getSelectedItem());
-          scrollPane.getVerticalScrollBar().setValue(0);
-          displayLayout.show(display, tierSelected);
-        });
-    for (int tier : tasksPerTier.keySet()) {
-      JPanel taskList = new JPanel();
-      taskList.setLayout(new BoxLayout(taskList, BoxLayout.Y_AXIS));
-      taskList.setBorder(new EmptyBorder(0, 0, 0, 5));
-      tierPanels.put(tier, taskList);
-      display.add(taskList, tierToDropdownName(tier));
+
+    showCompletedButton.setIcon(
+        new ImageIcon(ResourceUtil.getImage("show_completed_disabled.png")));
+    showCompletedButton.setSelectedIcon(
+        new ImageIcon(ResourceUtil.getImage("show_completed_enabled.png")));
+    showCompletedButton.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+    showCompletedButton.addActionListener(unused -> reload());
+
+    // setup parent panel and add components to layout
+    controlsContainerPanel.setOpaque(false);
+    controlsContainerPanel.setLayout(new BorderLayout(5, 0));
+    controlsContainerPanel.add(searchBar, BorderLayout.CENTER);
+    controlsContainerPanel.add(showCompletedButton, BorderLayout.EAST);
+
+    taskTiersContainerPanel.setOpaque(false);
+    taskTiersContainerPanel.setLayout(new BoxLayout(taskTiersContainerPanel, BoxLayout.Y_AXIS));
+
+    scrollContainerPanel.setOpaque(false);
+    scrollContainerPanel.setViewportView(taskTiersContainerPanel);
+    scrollContainerPanel.setWheelScrollingEnabled(true);
+    scrollContainerPanel.setHorizontalScrollBarPolicy(
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+    scrollContainerPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+    setOpaque(false);
+    setLayout(new BorderLayout(0, 5));
+    add(controlsContainerPanel, BorderLayout.NORTH);
+    add(scrollContainerPanel, BorderLayout.CENTER);
+  }
+
+  public void startUp() {
+    tierPanels =
+        taskStore.getAll().stream()
+            .map(Task::getTier)
+            .distinct()
+            .sorted()
+            .map(tier -> new TaskTierPanel(tier, taskStore, manager, spriteManager))
+            .collect(Collectors.toList());
+    if (!loaded) {
+      removeAll();
+      initComponents();
+      loaded = true;
+    }
+    for (TaskTierPanel taskTierPanel : tierPanels) {
+      taskTierPanel.startUp();
     }
     reload();
   }
 
-  private static String tierToDropdownName(int tier) {
-    return "Tier " + tier + " Tasks (" + tier + " point" + (tier > 1 ? "s" : "") + " each)";
-  }
-
   public void reload() {
-    makeLayout();
-    if (manager.getPlayerInfo().getUsername() == null) return;
-    if (!loaded) {
-      init();
-    }
-    for (Entry<Integer, JPanel> entry : tierPanels.entrySet()) {
-      int tier = entry.getKey();
-      JPanel panel = entry.getValue();
-      panel.removeAll();
-      List<Task> tasks = tasksPerTier.get(tier);
-      for (int i = 0; i < tasks.size(); i++) {
-        Task task = tasks.get(i);
-        JPanel taskPanel = new JPanel();
-        taskPanel.setLayout(new BoxLayout(taskPanel, BoxLayout.X_AXIS));
-        taskPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        taskPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-        JLabel taskLabel = new JLabel(task.getName());
-        taskLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        clientThread.invokeLater(
-            () -> taskLabel.setIcon(new ImageIcon(task.getIcon(spriteManager))));
-        taskPanel.add(taskLabel);
-        taskPanel.add(Box.createHorizontalGlue());
-        JCheckBox completedCheckbox = new JCheckBox();
-        completedCheckbox.setEnabled(false);
-        completedCheckbox.setSelected(manager.getPlayerInfo().getTasks().contains(task));
-        completedCheckbox.setBorder(new EmptyBorder(0, 5, 0, 0));
-        taskPanel.add(completedCheckbox);
-        panel.add(taskPanel);
-        if (i < tasks.size() - 1) {
-          panel.add(Box.createRigidArea(new Dimension(0, 5)));
+    invalidate();
+    scrollContainerPanel.setBorder(BorderFactory.createEmptyBorder());
+    setBorder(BorderFactory.createEmptyBorder());
+    String search = searchBar.getText();
+    taskTiersContainerPanel.removeAll();
+    for (int i = 0; i < tierPanels.size(); i++) {
+      TaskTierPanel taskTierPanel = tierPanels.get(i);
+      taskTierPanel.applyFilter(search, showCompletedButton.isSelected());
+      if (taskTierPanel.isVisible()) {
+        taskTiersContainerPanel.add(taskTierPanel);
+        if (i < tierPanels.size() - 1) {
+          taskTiersContainerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         }
       }
     }
