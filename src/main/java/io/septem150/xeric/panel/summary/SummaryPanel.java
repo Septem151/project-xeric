@@ -1,6 +1,6 @@
 package io.septem150.xeric.panel.summary;
 
-import io.septem150.xeric.data.ProjectXericManager;
+import io.septem150.xeric.data.player.PlayerInfo;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import javax.inject.Inject;
@@ -19,14 +19,13 @@ public class SummaryPanel extends JPanel {
   public static final String TOOLTIP = "Player Summary";
   public static final String TAB_ICON = "summary_tab_icon.png";
 
-  private final ProjectXericManager manager;
+  private final PlayerInfo playerInfo;
   private final TaskListPanel taskListPanel;
   private final IdCard idCardPanel;
 
   @Inject
-  private SummaryPanel(
-      ProjectXericManager manager, TaskListPanel taskListPanel, IdCard idCardPanel) {
-    this.manager = manager;
+  private SummaryPanel(PlayerInfo playerInfo, TaskListPanel taskListPanel, IdCard idCardPanel) {
+    this.playerInfo = playerInfo;
     this.taskListPanel = taskListPanel;
     this.idCardPanel = idCardPanel;
   }
@@ -90,11 +89,11 @@ public class SummaryPanel extends JPanel {
   }
 
   public void refresh() {
-    if (manager.getPlayerInfo().getUsername() == null) {
+    if (playerInfo.getUsername() == null) {
       layout.show(this, LOGGED_OUT_CONSTRAINT);
     } else {
       layout.show(this, LOGGED_IN_CONSTRAINT);
-      clogLabel.setVisible(manager.getPlayerInfo().getCollectionLog().getLastOpened() == null);
+      clogLabel.setVisible(playerInfo.getCollectionLog().getLastOpened() == null);
       idCardPanel.reload();
       taskListPanel.reload();
     }

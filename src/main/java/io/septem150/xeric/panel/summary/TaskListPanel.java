@@ -1,8 +1,7 @@
 package io.septem150.xeric.panel.summary;
 
-import io.septem150.xeric.data.ProjectXericManager;
+import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
-import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.data.task.TaskType;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.*;
@@ -20,8 +19,7 @@ import net.runelite.client.ui.components.IconTextField;
 
 @Singleton
 public class TaskListPanel extends JPanel {
-  private final TaskStore taskStore;
-  private final ProjectXericManager manager;
+  private final PlayerInfo playerInfo;
   private final SpriteManager spriteManager;
 
   private List<TaskTierPanel> tierPanels = new ArrayList<>();
@@ -35,10 +33,8 @@ public class TaskListPanel extends JPanel {
   private boolean loaded;
 
   @Inject
-  public TaskListPanel(
-      TaskStore taskStore, ProjectXericManager manager, SpriteManager spriteManager) {
-    this.taskStore = taskStore;
-    this.manager = manager;
+  public TaskListPanel(PlayerInfo playerInfo, SpriteManager spriteManager) {
+    this.playerInfo = playerInfo;
     this.spriteManager = spriteManager;
   }
 
@@ -101,11 +97,11 @@ public class TaskListPanel extends JPanel {
 
   public void startUp() {
     tierPanels =
-        taskStore.getAll().stream()
+        playerInfo.getAllTasks().stream()
             .map(Task::getTier)
             .distinct()
             .sorted()
-            .map(tier -> new TaskTierPanel(tier, taskStore, manager, spriteManager))
+            .map(tier -> new TaskTierPanel(tier, playerInfo, spriteManager))
             .collect(Collectors.toList());
     if (!loaded) {
       removeAll();

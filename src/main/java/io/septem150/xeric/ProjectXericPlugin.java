@@ -1,7 +1,6 @@
 package io.septem150.xeric;
 
 import com.google.gson.Gson;
-import com.google.inject.Binder;
 import com.google.inject.Provides;
 import io.septem150.xeric.data.ProjectXericManager;
 import io.septem150.xeric.data.task.CATask;
@@ -9,10 +8,8 @@ import io.septem150.xeric.data.task.CollectTask;
 import io.septem150.xeric.data.task.DiaryTask;
 import io.septem150.xeric.data.task.KCTask;
 import io.septem150.xeric.data.task.LevelTask;
-import io.septem150.xeric.data.task.LocalTaskStore;
 import io.septem150.xeric.data.task.QuestTask;
 import io.septem150.xeric.data.task.Task;
-import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.data.task.TaskType;
 import io.septem150.xeric.panel.ProjectXericPanel;
 import io.septem150.xeric.util.RuntimeTypeAdapterFactory;
@@ -68,18 +65,11 @@ public final class ProjectXericPlugin extends Plugin {
       configManager.unsetRSProfileConfiguration(
           ProjectXericConfig.GROUP, ProjectXericConfig.TASKS_DATA_KEY);
       panel.shutDown();
-      manager.getPlayerInfo().clear();
       manager.shutDown();
       manager.startUp(panel);
       panel.startUp();
       SwingUtilities.invokeLater(panel::refresh);
     }
-  }
-
-  @Override
-  public void configure(Binder binder) {
-    super.configure(binder);
-    binder.bind(TaskStore.class).to(LocalTaskStore.class);
   }
 
   @Provides

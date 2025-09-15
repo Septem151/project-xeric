@@ -20,6 +20,33 @@ The plugin adds a sidebar panel that features two tabs:
 
 ## Changelog
 
+### 1.2.0
+
+#### Features
+
+- Tasks are stored and retrieved from https://api.projectxeric.com.
+- Sends a notice upon login when tasks are updated.
+
+### 1.1.0
+
+#### Features
+
+- Tasks are sorted by type then by name.
+- Sends a warning when Collection Log chat message notifications are off.
+
+#### Hotfixes
+
+- Known CA and KC task completion issues fixed.
+- Known collection log task completion issues fixed.
+
+#### Hotfixes
+
+- Removes item pickup subscriptions in favour of collection log chat messages.
+- Fixes invalid regex for Combat Achievements.
+- Adds Delve KC & Fortis Glory checking.
+- Fixes KC message to Hiscore conversion.
+- Warns the player if "Collection log - New addition notification" setting is off.
+
 ### 1.0.1
 
 #### Hotfixes
