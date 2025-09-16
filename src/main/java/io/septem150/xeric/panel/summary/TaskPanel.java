@@ -2,8 +2,16 @@ package io.septem150.xeric.panel.summary;
 
 import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
-import java.awt.*;
-import javax.swing.*;
+import io.septem150.xeric.data.task.TaskType;
+import java.awt.BorderLayout;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import lombok.NonNull;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.ColorScheme;
@@ -69,7 +77,7 @@ public class TaskPanel extends JPanel {
     return task.getName();
   }
 
-  public String getTaskType() {
-    return task.getType().getName();
+  public TaskType getTaskType() {
+    return task.getType();
   }
 }

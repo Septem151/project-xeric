@@ -10,35 +10,38 @@ import java.util.Objects;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.util.ImageUtil;
 
+@Slf4j
 @Setter
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class KCTask extends Task {
-  private static final Map<String, ImageCoord> iconMap = new HashMap<>();
+  private static final Map<String, ImageCoord> ICON_MAP = new HashMap<>();
 
   private String boss;
   private int total;
+  private transient String fixedBoss;
 
   static {
-    iconMap.put(HiscoreSkill.CHAMBERS_OF_XERIC_CHALLENGE_MODE.getName(), new ImageCoord(4296, 0));
-    iconMap.put(HiscoreSkill.CHAMBERS_OF_XERIC.getName(), new ImageCoord(4288, 0));
-    iconMap.put(HiscoreSkill.ALCHEMICAL_HYDRA.getName(), new ImageCoord(4289, 0));
-    iconMap.put(HiscoreSkill.AMOXLIATL.getName(), new ImageCoord(5639, 0));
-    iconMap.put(HiscoreSkill.THE_HUEYCOATL.getName(), new ImageCoord(5640, 0));
-    iconMap.put(HiscoreSkill.SARACHNIS.getName(), new ImageCoord(4269, 0));
-    iconMap.put(HiscoreSkill.HESPORI.getName(), new ImageCoord(4271, 0));
-    iconMap.put(HiscoreSkill.SKOTIZO.getName(), new ImageCoord(4272, 0));
-    iconMap.put(HiscoreSkill.LUNAR_CHESTS.getName(), new ImageCoord(5637, 0));
-    iconMap.put(HiscoreSkill.SOL_HEREDIT.getName(), new ImageCoord(5636, 0));
-    iconMap.put(HiscoreSkill.COLOSSEUM_GLORY.getName(), new ImageCoord(5862, 0));
-    iconMap.put(HiscoreSkill.WINTERTODT.getName(), new ImageCoord(4266, 0));
-    iconMap.put(HiscoreSkill.MIMIC.getName(), new ImageCoord(4260, 0));
-    iconMap.put(HiscoreSkill.YAMA.getName(), new ImageCoord(6346, 0));
-    iconMap.put(HiscoreSkill.DOOM_OF_MOKHAIOTL.getName(), new ImageCoord(6347, 0));
-    iconMap.put("Clues", new ImageCoord(5853, 0));
+    ICON_MAP.put(HiscoreSkill.CHAMBERS_OF_XERIC_CHALLENGE_MODE.getName(), new ImageCoord(4296, 0));
+    ICON_MAP.put(HiscoreSkill.CHAMBERS_OF_XERIC.getName(), new ImageCoord(4288, 0));
+    ICON_MAP.put(HiscoreSkill.ALCHEMICAL_HYDRA.getName(), new ImageCoord(4289, 0));
+    ICON_MAP.put(HiscoreSkill.AMOXLIATL.getName(), new ImageCoord(5639, 0));
+    ICON_MAP.put(HiscoreSkill.THE_HUEYCOATL.getName(), new ImageCoord(5640, 0));
+    ICON_MAP.put(HiscoreSkill.SARACHNIS.getName(), new ImageCoord(4269, 0));
+    ICON_MAP.put(HiscoreSkill.HESPORI.getName(), new ImageCoord(4271, 0));
+    ICON_MAP.put(HiscoreSkill.SKOTIZO.getName(), new ImageCoord(4272, 0));
+    ICON_MAP.put(HiscoreSkill.LUNAR_CHESTS.getName(), new ImageCoord(5637, 0));
+    ICON_MAP.put(HiscoreSkill.SOL_HEREDIT.getName(), new ImageCoord(5636, 0));
+    ICON_MAP.put(HiscoreSkill.COLOSSEUM_GLORY.getName(), new ImageCoord(5862, 0));
+    ICON_MAP.put(HiscoreSkill.WINTERTODT.getName(), new ImageCoord(4266, 0));
+    ICON_MAP.put(HiscoreSkill.MIMIC.getName(), new ImageCoord(4260, 0));
+    ICON_MAP.put(HiscoreSkill.YAMA.getName(), new ImageCoord(6346, 0));
+    ICON_MAP.put(HiscoreSkill.DOOM_OF_MOKHAIOTL.getName(), new ImageCoord(6347, 0));
+    ICON_MAP.put("Clues", new ImageCoord(5853, 0));
   }
 
   public static String fixBossName(String bossName) {
@@ -67,29 +70,28 @@ public class KCTask extends Task {
 
   @Override
   public boolean checkCompletion(@NonNull PlayerInfo playerInfo) {
-    String name = boss;
-    if ("Lunar Chest".equals(name)) {
-      name += "s";
-    } else if ("Hueycoatl".equals(name)) {
-      name = "The " + name;
+    if (boss == null) {
+      log.warn("hiscore task with id {} has null boss!", getId());
+      return false;
     }
-    KillCount kc = playerInfo.getKillCounts().getOrDefault(name, null);
-    if (kc == null) return false;
-    return kc.getCount() >= total;
+    if (fixedBoss == null) {
+      fixedBoss = KCTask.fixBossName(boss);
+    }
+    KillCount hiscore = playerInfo.getHiscores().get(fixedBoss);
+    if (hiscore == null) return false;
+    return hiscore.getCount() >= total;
   }
 
   @Override
   public BufferedImage getIcon(SpriteManager spriteManager) {
-    String name = boss;
-    if ("Lunar Chest".equals(name)) {
-      name += "s";
-    } else if ("Hueycoatl".equals(name)) {
-      name = "The " + name;
-    } else if (boss.contains("Clue")) {
-      name = "Clues";
+    if (fixedBoss == null) {
+      fixedBoss = KCTask.fixBossName(boss);
     }
-    ImageCoord coord = iconMap.get(name);
+    ImageCoord coord = ICON_MAP.get(fixedBoss.contains("Clue") ? "Clues" : fixedBoss);
     return ImageUtil.resizeImage(
-        Objects.requireNonNull(spriteManager.getSprite(coord.archive, coord.file)), 20, 20, true);
+        Objects.requireNonNull(spriteManager.getSprite(coord.archive, coord.file)),
+        ICON_SIZE,
+        ICON_SIZE,
+        true);
   }
 }

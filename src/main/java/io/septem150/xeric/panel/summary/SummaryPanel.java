@@ -3,6 +3,7 @@ package io.septem150.xeric.panel.summary;
 import io.septem150.xeric.data.player.PlayerInfo;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.time.Instant;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.JLabel;
@@ -89,11 +90,11 @@ public class SummaryPanel extends JPanel {
   }
 
   public void refresh() {
-    if (playerInfo.getUsername() == null) {
+    if (!playerInfo.isLoggedIn()) {
       layout.show(this, LOGGED_OUT_CONSTRAINT);
     } else {
       layout.show(this, LOGGED_IN_CONSTRAINT);
-      clogLabel.setVisible(playerInfo.getCollectionLog().getLastOpened() == null);
+      clogLabel.setVisible(playerInfo.getClogLastUpdated().equals(Instant.EPOCH));
       idCardPanel.reload();
       taskListPanel.reload();
     }

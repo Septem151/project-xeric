@@ -15,10 +15,10 @@ import io.septem150.xeric.panel.ProjectXericPanel;
 import io.septem150.xeric.util.RuntimeTypeAdapterFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.events.CommandExecuted;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.config.RuneScapeProfile;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
@@ -40,35 +40,36 @@ public final class ProjectXericPlugin extends Plugin {
 
   @Override
   protected void startUp() throws Exception {
-    log.info("Project Xeric started!");
     panel = injector.getInstance(ProjectXericPanel.class);
     eventBus.register(manager);
     manager.startUp(panel);
-    panel.startUp();
-    SwingUtilities.invokeLater(panel::refresh);
   }
 
   @Override
   protected void shutDown() throws Exception {
-    log.info("Project Xeric stopped!");
-    eventBus.unregister(manager);
-    panel.shutDown();
     manager.shutDown();
+    eventBus.unregister(manager);
   }
 
   @Subscribe
-  public void onCommandExecuted(CommandExecuted event) {
+  void onCommandExecuted(CommandExecuted event) {
+    // ::xeric - resets the plugin's saved data for all RS profiles then reloads
     if (event.getCommand().equals("xeric")) {
-      // ::xeric - resets your saved collection log data and refreshes the side panel
-      configManager.unsetRSProfileConfiguration(
-          ProjectXericConfig.GROUP, ProjectXericConfig.CLOG_DATA_KEY);
-      configManager.unsetRSProfileConfiguration(
-          ProjectXericConfig.GROUP, ProjectXericConfig.TASKS_DATA_KEY);
-      panel.shutDown();
-      manager.shutDown();
-      manager.startUp(panel);
-      panel.startUp();
-      SwingUtilities.invokeLater(panel::refresh);
+      for (RuneScapeProfile rsProfile : configManager.getRSProfiles()) {
+        String profileKey = rsProfile.getKey();
+        configManager.unsetConfiguration(
+            ProjectXericConfig.GROUP, profileKey, ProjectXericConfig.TASKS_DATA_KEY);
+        configManager.unsetConfiguration(
+            ProjectXericConfig.GROUP, profileKey, ProjectXericConfig.CLOG_DATA_KEY);
+        configManager.unsetConfiguration(
+            ProjectXericConfig.GROUP, profileKey, ProjectXericConfig.TASKS_HASH_DATA_KEY);
+      }
+      try {
+        shutDown();
+        startUp();
+      } catch (Exception err) {
+        throw new RuntimeException(err);
+      }
     }
   }
 
@@ -79,7 +80,7 @@ public final class ProjectXericPlugin extends Plugin {
 
   @Provides
   @Named("xericGson")
-  public Gson provideGson(Gson gson) {
+  Gson provideGson(Gson gson) {
     RuntimeTypeAdapterFactory<Task> taskTypeAdapterFactory =
         RuntimeTypeAdapterFactory.of(Task.class, "type", true)
             .registerSubtype(CATask.class, TaskType.CA.getName())

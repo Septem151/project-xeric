@@ -4,10 +4,9 @@
 
 - Project Home
   - [Changelog](#changelog)
+  - [Screenshots](#screenshots)
   - [Contributing](#contributing)
-  - [Contribution Guidelines](./docs/CONTRIBUTING.md)
-    - [Jagex Account Integration](./docs/CONTRIBUTING.md#jagex-account-integration)
-    - [Getting Started](./docs/CONTRIBUTING.md#getting-started)
+  - [Support the Project](#support-the-project)
 
 **Zeah Clan Rank & Task Tracking Plugin**
 
@@ -21,6 +20,20 @@ The plugin adds a sidebar panel that features two tabs:
 2. A Leaderboard section that has a link to the WiseOldMan group for the clan.
 
 ## Changelog
+
+### 2.0.0
+
+#### Breaking Changes
+
+This version uses an updated data storage format that is **incompatible** with the previous version
+of the plugin.
+There is no backward compatibility between this version and older versions.
+Existing <2.0.0 data storage formats will be automatically updated upon first login with this
+version.
+
+#### Hotfixes
+
+- Various performance improvements.
 
 ### 1.2.0
 
@@ -72,3 +85,10 @@ The plugin adds a sidebar panel that features two tabs:
 
 Please see the [Contribution Guidelines](./docs/CONTRIBUTING.md) for an overview on how to
 contribute to this project.
+
+## Support the Project
+
+If you enjoy using this plugin and would like to support us financially, please consider
+supporting [Septem on Ko-Fi](https://Ko-fi.com/Septem) (all proceeds go to Septem directly).
+Anything is appreciated, as running a server is not free! The project costs ~$12 annually and $5
+monthly to keep the servers running.

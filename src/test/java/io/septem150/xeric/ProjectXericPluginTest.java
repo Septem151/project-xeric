@@ -15,6 +15,7 @@ public class ProjectXericPluginTest {
    * @param args String[] program args
    * @throws Exception if a failure occurs
    */
+  @SuppressWarnings("unchecked")
   public static void main(String[] args) throws Exception {
     ExternalPluginManager.loadBuiltin(ProjectXericPlugin.class);
     RuneLite.main(args);

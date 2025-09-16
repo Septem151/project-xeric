@@ -2,12 +2,13 @@ package io.septem150.xeric.util;
 
 import com.google.common.collect.Sets;
 import java.util.Set;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import net.runelite.api.Client;
 import net.runelite.api.WorldType;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class WorldUtil {
-  private WorldUtil() {}
-
   private static final Set<WorldType> invalidWorldTypes =
       Set.of(
           WorldType.NOSAVE_MODE,

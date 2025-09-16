@@ -7,17 +7,31 @@ import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.panel.JLabeledValue;
 import io.septem150.xeric.util.ResourceUtil;
 import io.septem150.xeric.util.TransferableBufferedImage;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
@@ -158,8 +172,7 @@ public class IdCard extends JPanel {
     ClanRank playerRank = playerInfo.getRank();
     playerRank.getImageAsync(spriteManager, image -> rank.setIcon(new ImageIcon(image)));
     rank.setToolTipText(WordUtils.capitalizeFully(playerRank.name()));
-    playerInfo
-        .getAccountType()
+    Objects.requireNonNull(playerInfo.getAccountType())
         .getImageAsync(spriteManager, image -> username.setIcon(new ImageIcon(image)));
     username.setText(playerInfo.getUsername());
     points.setValue(playerPoints);
@@ -171,19 +184,13 @@ public class IdCard extends JPanel {
               herbException.setIcon(new ImageIcon(ImageUtil.resizeImage(image, 20, 20, true))));
     }
     herbException.setEnabled(
-        playerInfo.getQuests().stream()
-            .anyMatch(
-                qp ->
-                    qp.getQuest() == Quest.DRUIDIC_RITUAL && qp.getState() == QuestState.FINISHED));
+        playerInfo.getQuests().get(Quest.DRUIDIC_RITUAL).getState() == QuestState.FINISHED);
     if (chinException.getIcon() == null) {
       chinException.setIcon(
           new ImageIcon(ResourceUtil.getImage("box_trap_icon.png", 20, 20, true)));
     }
     chinException.setEnabled(
-        playerInfo.getQuests().stream()
-            .anyMatch(
-                qp ->
-                    qp.getQuest() == Quest.EAGLES_PEAK && qp.getState() != QuestState.NOT_STARTED));
+        playerInfo.getQuests().get(Quest.EAGLES_PEAK).getState() != QuestState.NOT_STARTED);
     if (slayException.getIcon() == null) {
       spriteManager.getSpriteAsync(
           216,

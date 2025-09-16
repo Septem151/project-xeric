@@ -8,10 +8,12 @@ import java.util.Objects;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.Skill;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.util.ImageUtil;
-import org.apache.commons.text.WordUtils;
 
+@Slf4j
 @Setter
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class LevelTask extends Task {
@@ -20,30 +22,34 @@ public class LevelTask extends Task {
 
   @Override
   public boolean checkCompletion(@NonNull PlayerInfo playerInfo) {
-    switch (level.toLowerCase()) {
-      case "total":
-        int total = playerInfo.getLevels().values().stream().mapToInt(Level::getAmount).sum();
+    if (level == null) {
+      log.warn("level task with id {} has null level!", getId());
+      return false;
+    }
+    switch (level.toUpperCase()) {
+      case "TOTAL":
+        int total = playerInfo.getLevels().values().stream().mapToInt(Level::getLevel).sum();
         return total >= goal;
-      case "any":
-        for (Level playerLevel : playerInfo.getLevels().values()) {
-          int currentExp = playerLevel.getExp();
-          if (currentExp >= goal) {
-            return true;
-          }
+      case "ANY":
+        for (Level skillLevel : playerInfo.getLevels().values()) {
+          if (skillLevel.getXp() >= goal) return true;
         }
         return false;
-      case "maxed":
+      case "MAXED":
         int maxed = 0;
-        for (Level playerLevel : playerInfo.getLevels().values()) {
-          if (playerLevel.getAmount() >= 99) {
-            maxed++;
-          }
+        for (Level skillLevel : playerInfo.getLevels().values()) {
+          if (skillLevel.getLevel() >= 99) maxed++;
         }
         return maxed >= goal;
       default:
-        Level playerLevel = playerInfo.getLevels().getOrDefault(WordUtils.capitalize(level), null);
-        if (playerLevel == null) return false;
-        return playerLevel.getAmount() >= goal;
+        try {
+          Level skillLevel = playerInfo.getLevels().get(Skill.valueOf(level.toUpperCase()));
+          if (skillLevel == null) return false;
+          return skillLevel.getLevel() >= goal;
+        } catch (IllegalArgumentException err) {
+          log.warn("unknown skill name parsed: {}", level.toUpperCase());
+          return false;
+        }
     }
   }
 
@@ -53,6 +59,6 @@ public class LevelTask extends Task {
       return ResourceUtil.getImage(this.getIcon(), ICON_SIZE, ICON_SIZE, true);
     }
     return ImageUtil.resizeImage(
-        Objects.requireNonNull(spriteManager.getSprite(3387, 0)), 20, 20, true);
+        Objects.requireNonNull(spriteManager.getSprite(3387, 0)), ICON_SIZE, ICON_SIZE, true);
   }
 }

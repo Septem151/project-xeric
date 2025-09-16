@@ -24,7 +24,6 @@ public abstract class Task implements Serializable {
   private String name;
   private TaskType type;
   private int tier;
-  int slayerPoints;
 
   public abstract boolean checkCompletion(@NonNull PlayerInfo playerInfo);
 

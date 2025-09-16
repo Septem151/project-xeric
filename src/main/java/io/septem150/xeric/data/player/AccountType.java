@@ -1,33 +1,35 @@
 package io.septem150.xeric.data.player;
 
 import java.awt.image.BufferedImage;
-import java.util.Objects;
 import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreEndpoint;
 import net.runelite.client.util.ImageUtil;
 
+@Slf4j
 @RequiredArgsConstructor
 @Getter
+@ToString
 public enum AccountType {
-  INVALID("Invalid", -1, -1, HiscoreEndpoint.NORMAL),
-  DEFAULT("Default", 0, 32, HiscoreEndpoint.NORMAL),
-  IRONMAN("Ironman", 1, 2, HiscoreEndpoint.IRONMAN),
-  ULTIMATE("Ultimate Ironman", 2, 3, HiscoreEndpoint.ULTIMATE_IRONMAN),
-  HARDCORE("Hardcore Ironman", 3, 10, HiscoreEndpoint.HARDCORE_IRONMAN),
-  RANKED_GIM("Ranked Group Ironman", 4, 41, HiscoreEndpoint.NORMAL),
-  HARDCORE_GIM("Hardcore Group Ironman", 5, 42, HiscoreEndpoint.NORMAL),
-  UNRANKED_GIM("Unranked Group Ironman", 6, 43, HiscoreEndpoint.NORMAL);
+  DEFAULT(0, HiscoreEndpoint.NORMAL, 32),
+  IRONMAN(1, HiscoreEndpoint.IRONMAN, 2),
+  ULTIMATE(2, HiscoreEndpoint.ULTIMATE_IRONMAN, 3),
+  HARDCORE(3, HiscoreEndpoint.HARDCORE_IRONMAN, 10),
+  RANKED_GIM(4, HiscoreEndpoint.NORMAL, 41),
+  HARDCORE_GIM(5, HiscoreEndpoint.NORMAL, 42),
+  UNRANKED_GIM(6, HiscoreEndpoint.NORMAL, 43);
 
   private static final int MODICONS_ARCHIVE_ID = 423;
+  private static final int ICON_SIZE = 14;
 
-  private final String refName;
   private final int varbValue;
-  private final int spriteId;
   private final HiscoreEndpoint hiscoreEndpoint;
+  private final int spriteId;
 
   public static AccountType fromVarbValue(int varbValue) {
     for (AccountType accountType : AccountType.values()) {
@@ -35,30 +37,14 @@ public enum AccountType {
         return accountType;
       }
     }
-    return AccountType.INVALID;
-  }
-
-  public static AccountType fromName(String name) {
-    for (AccountType accountType : AccountType.values()) {
-      if (accountType.refName.equals(name)) {
-        return accountType;
-      }
-    }
-    return AccountType.INVALID;
-  }
-
-  public BufferedImage getImage(@NonNull SpriteManager spriteManager) {
-    if (this == AccountType.INVALID) {
-      return DEFAULT.getImage(spriteManager);
-    }
-    final BufferedImage sprite = spriteManager.getSprite(MODICONS_ARCHIVE_ID, this.getSpriteId());
-    return ImageUtil.resizeImage(Objects.requireNonNull(sprite), 14, 14, true);
+    log.warn("no account type with varbValue of {}", varbValue);
+    return DEFAULT;
   }
 
   public void getImageAsync(@NonNull SpriteManager spriteManager, Consumer<BufferedImage> user) {
     spriteManager.getSpriteAsync(
         MODICONS_ARCHIVE_ID,
         this.getSpriteId(),
-        image -> user.accept(ImageUtil.resizeImage(image, 14, 14, true)));
+        image -> user.accept(ImageUtil.resizeImage(image, ICON_SIZE, ICON_SIZE, true)));
   }
 }

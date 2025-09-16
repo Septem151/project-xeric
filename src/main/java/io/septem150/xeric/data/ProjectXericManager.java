@@ -22,20 +22,21 @@ import static io.septem150.xeric.util.RegexUtil.COMBAT_TASK_REGEX;
 import static io.septem150.xeric.util.RegexUtil.COUNT_GROUP;
 import static io.septem150.xeric.util.RegexUtil.DELVE_KC_REGEX;
 import static io.septem150.xeric.util.RegexUtil.DIARY_REGEX;
+import static io.septem150.xeric.util.RegexUtil.ID_GROUP;
 import static io.septem150.xeric.util.RegexUtil.KC_REGEX;
 import static io.septem150.xeric.util.RegexUtil.NAME_GROUP;
 import static io.septem150.xeric.util.RegexUtil.QUEST_REGEX;
 
+import com.google.common.collect.Sets;
 import com.google.common.net.HttpHeaders;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.data.clog.ClogItem;
-import io.septem150.xeric.data.clog.CollectionLog;
 import io.septem150.xeric.data.diary.DiaryProgress;
+import io.septem150.xeric.data.diary.KourendDiary;
 import io.septem150.xeric.data.player.AccountType;
 import io.septem150.xeric.data.player.CombatAchievement;
 import io.septem150.xeric.data.player.KillCount;
@@ -50,12 +51,8 @@ import io.septem150.xeric.util.WorldUtil;
 import java.awt.Color;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -72,7 +69,9 @@ import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.EnumComposition;
 import net.runelite.api.GameState;
+import net.runelite.api.ItemComposition;
 import net.runelite.api.MenuAction;
+import net.runelite.api.Quest;
 import net.runelite.api.Skill;
 import net.runelite.api.StructComposition;
 import net.runelite.api.events.ChatMessage;
@@ -88,7 +87,6 @@ import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
-import net.runelite.client.hiscore.HiscoreEndpoint;
 import net.runelite.client.hiscore.HiscoreManager;
 import net.runelite.client.hiscore.HiscoreResult;
 import net.runelite.client.hiscore.HiscoreSkill;
@@ -105,7 +103,7 @@ import okhttp3.ResponseBody;
 @Slf4j
 @Singleton
 public class ProjectXericManager {
-  private static final Color DARK_GREEN = Color.decode("#006600");
+  public static final Color DARK_GREEN = Color.decode("#006600");
 
   private final Client client;
   private final ClientThread clientThread;
@@ -118,13 +116,12 @@ public class ProjectXericManager {
   private final PlayerInfo playerInfo;
 
   private ProjectXericPanel panel;
-  private long lastAccountId;
-  private Set<Integer> remainingCaStructIds;
-  private Set<ClogItem> allClogItems;
-  private boolean clogOpened;
-  private int updateGeneral;
-  private int updateTasks;
-  private int updateLevels;
+
+  private Map<Integer, CombatAchievement> allCombatAchievements;
+  private Map<Integer, ClogItem> allItemsById;
+  private Map<String, ClogItem> allItemsByName;
+  private Set<TaskType> pendingUpdates;
+  private int ticksTilUpdate;
   private int ticksTilClientReady;
 
   @Inject
@@ -151,201 +148,176 @@ public class ProjectXericManager {
 
   public void startUp(ProjectXericPanel panel) {
     this.panel = panel;
-    lastAccountId = -1L;
     ticksTilClientReady = 2;
-    updateTaskCacheAsync()
-        .thenRun(
-            () ->
-                clientThread.invokeLater(
-                    () -> {
-                      if (client.getGameState() == GameState.LOGGED_IN
-                          && WorldUtil.isValidWorldType(client)) {
-                        updateGeneral = 1;
-                      }
-                    }));
+    ticksTilUpdate = 0;
+    pendingUpdates = new HashSet<>();
+    panel.startUp();
+    SwingUtilities.invokeLater(panel::refresh);
+    // handle login as soon as possible from client in case
+    // the player is logged in when installing or starting the plugin
+    clientThread.invokeLater(
+        () -> {
+          if (client.getGameState() == GameState.LOGGED_IN && WorldUtil.isValidWorldType(client))
+            handleLogin();
+        });
+    log.info("{} started!", ProjectXericConfig.NAME);
   }
 
   public void shutDown() {
-    configManager.setRSProfileConfiguration(
-        ProjectXericConfig.GROUP,
-        ProjectXericConfig.CLOG_DATA_KEY,
-        gson.toJson(playerInfo.getCollectionLog().getItemIds()));
-    playerInfo.logout();
     playerInfo.reset();
-    lastAccountId = -1L;
-    clogOpened = false;
-    remainingCaStructIds = null;
-    allClogItems = null;
-    updateGeneral = 0;
-    updateTasks = 0;
-    updateLevels = 0;
+    ticksTilClientReady = 2;
+    ticksTilUpdate = 0;
+    pendingUpdates = null;
+    allItemsById = null;
+    allItemsByName = null;
+    allCombatAchievements = null;
+    panel.shutDown();
+    log.info("{} stopped!", ProjectXericConfig.NAME);
   }
 
-  public void reset(long accountId) {
-    if (lastAccountId == accountId) return;
-    lastAccountId = accountId;
-    playerInfo.reset();
+  private void handleLogin() {
+    // synchronous operations that can be handled directly on client thread
     updateAccountInfo();
+    updateClientCache();
+    checkClogChatMessageEnabled();
+    playerInfo.loadClogFromRSProfile();
+    updateCombatAchievements();
+    loadSkillLevels();
     updateQuests();
     updateDiaries();
-    updateCombatAchievements();
-    updateCollectionLog();
-
-    // Update player tasks and levels in the background, as these are both asynchronous processes
-    // that require network calls, and we don't want the panel or task-checking logic running until
-    // those calls are complete
-    CompletableFuture.allOf(updateTaskCacheAsync(), updatePlayerHiscores())
+    // asynchronous operations
+    updatePlayerHiscores()
+        .thenCompose(unused -> updateTaskCacheAsync())
         .thenRun(
             () ->
                 clientThread.invoke(
                     () -> {
-                      if (checkForUpdatedTasks()) {
+                      // compare new task list to the last task list used and notify user
+                      // if there's been updates to the tasks or if new ones have been added
+                      if (playerInfo.checkForUpdatedTasks()) {
                         playerInfo.clearCompletedTasks();
-                        playerInfo.setLevels(
-                            Arrays.stream(Skill.values())
-                                .map(skill -> Level.from(client, skill))
-                                .collect(Collectors.toMap(Level::getName, level -> level)));
-                        updateXericTasks(false, false);
+                        pendingUpdates.addAll(Set.of(TaskType.values()));
+                        updateXericTasks(false);
                       } else {
                         playerInfo.loadTasksFromRSProfile();
-                        updateLevels = 2;
-                        updateTasks = 2;
+                        scheduleUpdate(0, Set.of(TaskType.values()));
                       }
                       panel.startUpChildren();
                       SwingUtilities.invokeLater(panel::refresh);
                     }));
   }
 
+  private void handleLogout() {
+    playerInfo.logout();
+    ticksTilClientReady = 2;
+  }
+
+  private void scheduleUpdate(int tickDelay, Set<TaskType> taskTypes) {
+    ticksTilUpdate = ticksTilUpdate > 0 ? ticksTilUpdate : Math.max(0, tickDelay);
+    pendingUpdates.addAll(taskTypes);
+  }
+
   @Subscribe
-  public void onGameStateChanged(GameStateChanged event) {
-    if (client.getGameState() == GameState.LOGGED_IN && WorldUtil.isValidWorldType(client)) {
-      updateGeneral = 1;
-    } else if (client.getGameState() == GameState.LOGIN_SCREEN) {
-      ticksTilClientReady = 2;
-      // reset whether the clog interface has been opened on logout in case
-      // the player leaves this client open and then obtains an item on another
-      // client before logging in again to this one
-      configManager.setRSProfileConfiguration(
-          ProjectXericConfig.GROUP,
-          ProjectXericConfig.CLOG_DATA_KEY,
-          gson.toJson(playerInfo.getCollectionLog().getItemIds()));
-      playerInfo.logout();
-      clogOpened = false;
-      updateLevels = 2;
-    } else if (client.getGameState() == GameState.HOPPING) {
+  void onGameStateChanged(GameStateChanged event) {
+    if (!playerInfo.isLoggedIn() && event.getGameState() == GameState.LOGGED_IN) {
+      clientThread.invokeLater(
+          () -> {
+            if (ticksTilClientReady > 0) return false;
+            if (client.getGameState() == GameState.LOGGED_IN && WorldUtil.isValidWorldType(client))
+              handleLogin();
+            return true;
+          });
+    } else if (playerInfo.isLoggedIn() && event.getGameState() == GameState.LOGIN_SCREEN) {
+      handleLogout();
+    } else if (event.getGameState() == GameState.HOPPING) {
+      // wait 2 ticks after hopping before checking varbits and statchanges
       ticksTilClientReady = 2;
     }
   }
 
   @Subscribe
-  public void onGameTick(GameTick event) {
+  void onGameTick(GameTick event) {
     if (ticksTilClientReady > 0) {
       ticksTilClientReady--;
-      if (ticksTilClientReady == 0) {
-        checkClogChatMessageEnabled();
-      }
       return;
     }
-    if (updateGeneral > 0 && --updateGeneral == 0) {
-      reset(client.getAccountHash());
+    if (ticksTilUpdate > 0) {
+      ticksTilUpdate--;
       return;
     }
-    if (updateLevels > 0 && --updateLevels == 0) {
-      if (playerInfo.getLevels().isEmpty()) {
-        playerInfo.setLevels(
-            Arrays.stream(Skill.values())
-                .map(skill -> Level.from(client, skill))
-                .collect(Collectors.toMap(Level::getName, level -> level)));
-      }
-      updateXericTasks(true);
-      return;
-    }
-    if (updateTasks > 0 && --updateTasks == 0) {
-      updateXericTasks(false);
+    if (pendingUpdates.isEmpty()) return;
+    boolean updated = updateXericTasks();
+    if (updated) {
+      SwingUtilities.invokeLater(panel::refresh);
     }
   }
 
   @Subscribe
-  public void onChatMessage(ChatMessage event) {
+  void onChatMessage(ChatMessage event) {
     if (event.getType() != ChatMessageType.GAMEMESSAGE) return;
     String message = Text.removeTags(event.getMessage());
     Matcher caTaskMatcher = COMBAT_TASK_REGEX.matcher(message);
     if (caTaskMatcher.matches()) {
-      if (updateCombatAchievements() && updateTasks <= 0) updateTasks = 1;
+      int id = Integer.parseInt(caTaskMatcher.group(ID_GROUP).replace(",", ""));
+      playerInfo.addCombatAchievement(id, allCombatAchievements.get(id));
+      scheduleUpdate(0, Set.of(TaskType.CA));
       return;
     }
     Matcher diaryMatcher = DIARY_REGEX.matcher(message);
     if (diaryMatcher.matches()) {
       updateDiaries();
-      if (updateTasks <= 0) updateTasks = 1;
+      scheduleUpdate(0, Set.of(TaskType.DIARY));
       return;
     }
     Matcher questMatcher = QUEST_REGEX.matcher(message);
     if (questMatcher.matches()) {
       updateQuests();
-      if (updateTasks <= 0) updateTasks = 1;
-      return;
+      scheduleUpdate(0, Set.of(TaskType.QUEST));
     }
     Matcher kcMatcher = KC_REGEX.matcher(message);
     if (kcMatcher.matches()) {
       String name = KCTask.fixBossName(kcMatcher.group(NAME_GROUP));
       int count = Integer.parseInt(kcMatcher.group(COUNT_GROUP).replace(",", ""));
-      KillCount kc = playerInfo.getKillCounts().getOrDefault(name, null);
-      if (kc != null) {
-        kc.setCount(count);
-        if (updateTasks <= 0) updateTasks = 1;
-      }
+      playerInfo.addHiscore(name, new KillCount(name, count));
+      scheduleUpdate(0, Set.of(TaskType.HISCORE));
       return;
     }
     Matcher clueMatcher = CLUE_REGEX.matcher(message);
     if (clueMatcher.matches()) {
       String name = KCTask.fixBossName(clueMatcher.group(NAME_GROUP));
       int count = Integer.parseInt(clueMatcher.group(COUNT_GROUP).replace(",", ""));
-      KillCount kc = playerInfo.getKillCounts().getOrDefault(name, null);
-      if (kc != null) {
-        kc.setCount(count);
-        if (updateTasks <= 0) updateTasks = 1;
-      }
+      playerInfo.addHiscore(name, new KillCount(name, count));
+      scheduleUpdate(0, Set.of(TaskType.HISCORE));
       return;
     }
     Matcher delveMatcher = DELVE_KC_REGEX.matcher(message);
     if (delveMatcher.matches()) {
       String name = HiscoreSkill.DOOM_OF_MOKHAIOTL.getName();
       int count = Integer.parseInt(delveMatcher.group(COUNT_GROUP).replace(",", ""));
-      KillCount kc = playerInfo.getKillCounts().getOrDefault(name, null);
-      if (kc != null) {
-        kc.setCount(count);
-        if (updateTasks <= 0) updateTasks = 1;
-      }
+      playerInfo.addHiscore(name, new KillCount(name, count));
+      scheduleUpdate(0, Set.of(TaskType.HISCORE));
       return;
     }
     Matcher clogMatcher = CLOG_REGEX.matcher(message);
     if (clogMatcher.matches()) {
-      String itemName = Text.removeTags(clogMatcher.group(NAME_GROUP));
-      ClogItem newClogItem =
-          allClogItems.stream()
-              .filter(clogItem -> clogItem.getName().equals(itemName))
-              .findFirst()
-              .orElse(null);
-      if (newClogItem != null) {
-        playerInfo.getCollectionLog().add(newClogItem);
-        if (updateTasks <= 0) updateTasks = 1;
-      }
+      String itemName = clogMatcher.group(NAME_GROUP);
+      ClogItem clogItem = allItemsByName.get(itemName);
+      playerInfo.addClogItem(clogItem);
+      scheduleUpdate(0, Set.of(TaskType.CLOG));
     }
   }
 
   @Subscribe
   public void onStatChanged(StatChanged event) {
-    if (playerInfo.getLevels().isEmpty()) return;
-    Level level = playerInfo.getLevels().getOrDefault(event.getSkill().getName(), null);
-    if (level == null) {
-      level = new Level();
-      level.setName(event.getSkill().getName());
+    if (ticksTilClientReady > 0) return;
+    Level skillLevel =
+        playerInfo.getLevels().computeIfAbsent(event.getSkill(), key -> new Level(key, 0, 1));
+    if (skillLevel.getXp() < event.getXp()) {
+      skillLevel.setXp(event.getXp());
+      skillLevel.setLevel(event.getLevel());
+      // only refresh level stats every 6 ticks
+      scheduleUpdate(6, Set.of(TaskType.LEVEL));
     }
-    if (level.getExp() == event.getXp()) return;
-    level.setAmount(event.getLevel());
-    level.setExp(event.getXp());
-    if (updateLevels <= 0 && level.isAccurate()) updateLevels = 5;
   }
 
   @Subscribe
@@ -361,53 +333,39 @@ public class ProjectXericManager {
       int count = event.getValue();
       String gloryName = HiscoreSkill.COLOSSEUM_GLORY.getName();
       KillCount gloryHiscore =
-          playerInfo
-              .getKillCounts()
-              .computeIfAbsent(
-                  gloryName,
-                  key -> {
-                    KillCount kc = new KillCount();
-                    kc.setName(key);
-                    kc.setCount(0);
-                    return kc;
-                  });
+          playerInfo.getHiscores().computeIfAbsent(gloryName, key -> new KillCount(key, 0));
       if (gloryHiscore.getCount() < count) {
         gloryHiscore.setCount(count);
-        if (updateTasks <= 0) updateTasks = 1;
+        scheduleUpdate(0, Set.of(TaskType.HISCORE));
       }
     }
   }
 
   @Subscribe
-  public void onScriptPreFired(ScriptPreFired event) {
+  void onScriptPreFired(ScriptPreFired event) {
     if (event.getScriptId() != COLLECTION_LOG_TRANSMIT_SCRIPT_ID) return;
     int itemId = (int) event.getScriptEvent().getArguments()[1];
-    if (playerInfo.getCollectionLog().getItems().stream()
-        .noneMatch(item -> item.getId() == itemId)) {
-      ClogItem clogItem = ClogItem.from(client, itemId);
-      playerInfo.getCollectionLog().getItems().add(clogItem);
-    }
+    ClogItem clogItem = allItemsById.get(itemId);
+    playerInfo.addClogItem(clogItem);
+    // schedule an update in 2 ticks to let all items load
+    // this method is called for each new item, but delay starts after first call
+    scheduleUpdate(2, Set.of(TaskType.CLOG));
   }
 
   @Subscribe
-  public void onScriptPostFired(ScriptPostFired event) {
-    if (event.getScriptId() != COLLECTION_LOG_SETUP_SCRIPT_ID) {
+  void onScriptPostFired(ScriptPostFired event) {
+    if (playerInfo.isClogInterfaceOpened() || event.getScriptId() != COLLECTION_LOG_SETUP_SCRIPT_ID)
       return;
-    }
-    if (!clogOpened) {
-      playerInfo.getCollectionLog().setLastOpened(Instant.now());
-      // taken from WikiSync, not really sure what script is being run,
-      // but it appears that simulating a click on the Search button
-      // loads the script that checks for obtained clog items (not quantities though)
-      client.menuAction(-1, 40697932, MenuAction.CC_OP, 1, -1, "Search", null);
-      client.runScript(2240);
-      clogOpened = true;
-      updateTasks = 3;
-    }
+    // taken from WikiSync, not really sure what script is being run,
+    // but it appears that simulating a click on the Search button
+    // loads the script that checks for obtained clog items (not quantities though)
+    client.menuAction(-1, 40697932, MenuAction.CC_OP, 1, -1, "Search", null);
+    client.runScript(2240);
+    playerInfo.setClogInterfaceOpened(true);
   }
 
   @Subscribe
-  public void onConfigChanged(ConfigChanged event) {
+  void onConfigChanged(ConfigChanged event) {
     if (!event.getGroup().equals(ProjectXericConfig.GROUP)) return;
     if (event.getKey().equals(ProjectXericConfig.SLAYER_CONFIG_KEY)) {
       playerInfo.setSlayerException(Boolean.parseBoolean(event.getNewValue()));
@@ -415,12 +373,14 @@ public class ProjectXericManager {
     }
   }
 
-  private void updateXericTasks(boolean onlyLevels, boolean showMessage) {
+  private boolean updateXericTasks(boolean showMessage) {
+    log.debug(
+        "Called updateTaskCompletions with: {}",
+        pendingUpdates.stream().map(TaskType::getName).collect(Collectors.toSet()));
     Set<Task> remainingTasksToCheck =
         playerInfo.getRemainingTasks().stream()
-            .filter(task -> !onlyLevels || task.getType() == TaskType.LEVEL)
+            .filter(task -> pendingUpdates.contains(task.getType()))
             .collect(Collectors.toSet());
-    log.debug("iterating through {} tasks", remainingTasksToCheck.size());
     boolean updated = false;
     for (Task task : remainingTasksToCheck) {
       if (task.checkCompletion(playerInfo)) {
@@ -439,13 +399,12 @@ public class ProjectXericManager {
         }
       }
     }
-    if (updated) {
-      SwingUtilities.invokeLater(panel::refresh);
-    }
+    pendingUpdates.clear();
+    return updated;
   }
 
-  private void updateXericTasks(boolean onlyLevels) {
-    updateXericTasks(onlyLevels, config.chatMessages());
+  private boolean updateXericTasks() {
+    return updateXericTasks(config.chatMessages());
   }
 
   private void updateAccountInfo() {
@@ -456,84 +415,51 @@ public class ProjectXericManager {
   }
 
   private void updateQuests() {
-    playerInfo.setQuests(
-        QuestProgress.trackedQuests.stream()
-            .map(quest -> QuestProgress.from(client, quest))
-            .collect(Collectors.toList()));
+    // load player quests
+    for (Quest quest : QuestProgress.TRACKED_QUESTS) {
+      playerInfo.addQuest(quest, new QuestProgress(quest, quest.getState(client)));
+    }
   }
 
   private void updateDiaries() {
-    playerInfo.setDiaries(
-        DiaryProgress.trackedDiaries.stream()
-            .map(diary -> DiaryProgress.from(client, diary))
-            .collect(Collectors.toList()));
+    // load player diaries
+    for (KourendDiary diary : DiaryProgress.TRACKED_DIARIES) {
+      playerInfo
+          .getDiaries()
+          .put(
+              diary,
+              new DiaryProgress(
+                  diary,
+                  client.getVarbitValue(diary.getCountVarb()),
+                  client.getVarbitValue(diary.getCompletedVarb()) == 1));
+    }
   }
 
-  private boolean updateCombatAchievements() {
-    if (remainingCaStructIds == null) {
-      remainingCaStructIds = requestAllCaTaskStructIds();
-    }
-    Set<CombatAchievement> cas = new HashSet<>(playerInfo.getCombatAchievements());
-    boolean refresh = false;
-    Iterator<Integer> iterator = remainingCaStructIds.iterator();
-    while (iterator.hasNext()) {
-      int caStructId = iterator.next();
-      StructComposition struct = client.getStructComposition(caStructId);
-      int caTaskId = struct.getIntValue(CA_STRUCT_ID_PARAM_ID);
-      client.runScript(4834, caTaskId);
+  private void updateCombatAchievements() {
+    // load player combat achievements
+    Set<CombatAchievement> remainingCombatAchievements =
+        Sets.difference(
+            new HashSet<>(allCombatAchievements.values()),
+            new HashSet<>(playerInfo.getCombatAchievements().values()));
+    for (CombatAchievement combatAchievement : remainingCombatAchievements) {
+      client.runScript(4834, combatAchievement.getId());
       boolean unlocked = client.getIntStack()[client.getIntStackSize() - 1] != 0;
       if (unlocked) {
-        CombatAchievement combatAchievement = new CombatAchievement();
-        combatAchievement.setId(caTaskId);
-        combatAchievement.setName(struct.getStringValue(CA_STRUCT_NAME_PARAM_ID));
-        combatAchievement.setPoints(struct.getIntValue(CA_STRUCT_TIER_PARAM_ID));
-        cas.add(combatAchievement);
-        iterator.remove();
-        refresh = true;
+        playerInfo.addCombatAchievement(combatAchievement.getId(), combatAchievement);
       }
     }
-    if (refresh) {
-      playerInfo.setCombatAchievements(new ArrayList<>(cas));
-    }
-    return refresh;
   }
 
-  private void updateCollectionLog() {
-    allClogItems = requestAllClogItems();
-    Set<Integer> obtainedClogItemIds = null;
-    Instant clogUpdated = null;
-
-    // Attempt to load collection log data from RuneLite Profile data first
-    try {
-      Type type = new TypeToken<Set<Integer>>() {}.getType();
-      obtainedClogItemIds =
-          gson.fromJson(
-              configManager.getRSProfileConfiguration(
-                  ProjectXericConfig.GROUP, ProjectXericConfig.CLOG_DATA_KEY),
-              type);
-    } catch (JsonSyntaxException exc) {
-      log.warn("malformed stored clog data found, will ignore and overwrite.");
-      configManager.unsetRSProfileConfiguration(
-          ProjectXericConfig.GROUP, ProjectXericConfig.CLOG_DATA_KEY);
+  private void loadSkillLevels() {
+    // load player levels
+    for (Skill skill : Skill.values()) {
+      Level skillLevel = playerInfo.getLevels().computeIfAbsent(skill, key -> new Level(key, 0, 1));
+      int skillXp = client.getSkillExperience(skill);
+      if (skillLevel.getXp() < skillXp) {
+        skillLevel.setXp(skillXp);
+        skillLevel.setLevel(client.getRealSkillLevel(skill));
+      }
     }
-    // Save empty clog to RuneLite Profile if malformed clog data or null key
-    if (obtainedClogItemIds == null) {
-      obtainedClogItemIds = new HashSet<>();
-      configManager.setRSProfileConfiguration(
-          ProjectXericConfig.GROUP,
-          ProjectXericConfig.CLOG_DATA_KEY,
-          gson.toJson(obtainedClogItemIds));
-    } else {
-      clogUpdated = Instant.now();
-    }
-
-    CollectionLog clog = new CollectionLog();
-    clog.setLastOpened(clogUpdated);
-    clog.setItems(
-        obtainedClogItemIds.stream()
-            .map(itemId -> ClogItem.from(client, itemId))
-            .collect(Collectors.toList()));
-    playerInfo.setCollectionLog(clog);
   }
 
   private void checkClogChatMessageEnabled() {
@@ -553,20 +479,30 @@ public class ProjectXericManager {
     }
   }
 
-  private boolean checkForUpdatedTasks() {
-    if (playerInfo.isTaskListUpdated()) {
-      client.addChatMessage(
-          ChatMessageType.GAMEMESSAGE,
-          "",
-          String.format(
-              "[%s] Info: %s",
-              ColorUtil.wrapWithColorTag(ProjectXericConfig.NAME, DARK_GREEN),
-              ColorUtil.wrapWithColorTag(
-                  "Tasks have been updated! Check your tasks in the side panel.", Color.RED)),
-          null);
-      return true;
+  private void updateClientCache() {
+    // check if clog items need to be cached
+    if (allItemsById == null || allItemsByName == null) {
+      allItemsById = new HashMap<>();
+      allItemsByName = new HashMap<>();
+      for (int itemId : requestAllClogItems()) {
+        ItemComposition itemComposition = client.getItemDefinition(itemId);
+        ClogItem clogItem = new ClogItem(itemId, itemComposition.getMembersName());
+        allItemsById.put(itemId, clogItem);
+        allItemsByName.put(clogItem.getName(), clogItem);
+      }
     }
-    return false;
+    // check if combat achievements need to be cached
+    if (allCombatAchievements == null) {
+      allCombatAchievements = new HashMap<>();
+      for (int caStructId : requestAllCaTaskStructIds()) {
+        StructComposition struct = client.getStructComposition(caStructId);
+        int caId = struct.getIntValue(CA_STRUCT_ID_PARAM_ID);
+        String caName = struct.getStringValue(CA_STRUCT_NAME_PARAM_ID);
+        int caPoints = struct.getIntValue(CA_STRUCT_TIER_PARAM_ID);
+        CombatAchievement combatAchievement = new CombatAchievement(caId, caName, caPoints);
+        allCombatAchievements.put(caId, combatAchievement);
+      }
+    }
   }
 
   private CompletableFuture<Void> updateTaskCacheAsync() {
@@ -618,28 +554,34 @@ public class ProjectXericManager {
   }
 
   private CompletableFuture<Void> updatePlayerHiscores() {
-    return CompletableFuture.runAsync(
+    // load player hiscores from jagex
+    final String username = client.getLocalPlayer().getName();
+    final AccountType accountType =
+        AccountType.fromVarbValue(client.getVarbitValue(VarbitID.IRONMAN));
+    CompletableFuture<Void> future = new CompletableFuture<>();
+    executor.execute(
         () -> {
-          HiscoreEndpoint hiscoreEndpoint = playerInfo.getAccountType().getHiscoreEndpoint();
-          Map<String, KillCount> kcs = new HashMap<>();
           try {
-            HiscoreResult result =
-                hiscoreManager.lookup(client.getLocalPlayer().getName(), hiscoreEndpoint);
-            KillCount.hiscoreSkills.forEach(
-                hiscoreSkill -> {
-                  KillCount killCount = new KillCount();
-                  killCount.setCount(Math.max(0, result.getSkill(hiscoreSkill).getLevel()));
-                  killCount.setName(hiscoreSkill.getName());
-                  kcs.put(killCount.getName(), killCount);
-                });
-            playerInfo.setKillCounts(kcs);
-          } catch (IOException exc) {
-            log.warn(
-                "IOException while looking up hiscores for player '{}'",
-                client.getLocalPlayer().getName());
+            HiscoreResult hiscoreResult =
+                hiscoreManager.lookup(username, accountType.getHiscoreEndpoint());
+            for (HiscoreSkill hiscoreSkill : KillCount.HISCORE_SKILLS) {
+              String name = hiscoreSkill.getName();
+              int count = Math.max(0, hiscoreResult.getSkill(hiscoreSkill).getLevel());
+              if (count == 0) {
+                // fallback to checking killcount config if player not ranked on hiscore
+                Integer configCount =
+                    configManager.getRSProfileConfiguration(
+                        "killcount", name.toLowerCase(), Integer.class);
+                if (configCount != null) count = configCount;
+              }
+              playerInfo.addHiscore(name, new KillCount(name, count));
+            }
+            future.complete(null);
+          } catch (IOException err) {
+            future.completeExceptionally(err);
           }
-        },
-        executor);
+        });
+    return future;
   }
 
   private Set<Integer> requestAllCaTaskStructIds() {
@@ -670,12 +612,13 @@ public class ProjectXericManager {
    * @see <a
    *     href="https://github.com/weirdgloop/WikiSync/blob/master/src/main/java/com/andmcadams/wikisync/WikiSyncPlugin.java">WikiSyncPlugin</a>
    */
-  private Set<ClogItem> requestAllClogItems() {
-    Set<ClogItem> clogItems = new HashSet<>();
+  private Set<Integer> requestAllClogItems() {
+    Set<Integer> clogItems = new HashSet<>();
     // Some items with data saved on them have replacements to fix a duping issue (satchels,
     // flamtaer bag)
     // Enum 3721 contains a mapping of the item ids to replace -> ids to replace them with
     EnumComposition itemReplacementMapping = client.getEnum(ITEM_REPLACEMENT_MAPPING_ENUM_ID);
+
     // 2102 - Struct that contains the highest level tabs in the collection log (Bosses, Raids, etc)
     // https://chisel.weirdgloop.org/structs/index.html?type=enums&id=2102
     int[] clogTopTabsEnum = client.getEnum(CLOG_TOP_TABS_ENUM_ID).getIntVals();
@@ -698,19 +641,13 @@ public class ProjectXericManager {
         StructComposition clogSubTabStruct = client.getStructComposition(clogSubTabStructId);
         int[] clogSubTabItemIds =
             client.getEnum(clogSubTabStruct.getIntValue(CLOG_SUB_TAB_ITEMS_PARAM_ID)).getIntVals();
-        for (int clogSubTabItemId : clogSubTabItemIds) {
-          ClogItem clogItem = ClogItem.from(client, clogSubTabItemId);
-          if (Arrays.stream(itemReplacementMapping.getKeys())
-              .anyMatch(key -> key == clogSubTabItemId)) {
-            clogItem.setId(itemReplacementMapping.getIntValue(clogSubTabItemId));
-          }
-          // remove duplicate Prospector outfit
-          if (!UNUSED_PROSPECTOR_ITEM_IDS.contains(clogSubTabItemId)) {
-            clogItems.add(clogItem);
-          }
-        }
+        for (int clogSubTabItemId : clogSubTabItemIds) clogItems.add(clogSubTabItemId);
       }
     }
+    for (int badItemId : itemReplacementMapping.getKeys()) clogItems.remove(badItemId);
+    for (int goodItemId : itemReplacementMapping.getIntVals()) clogItems.add(goodItemId);
+    // remove duplicate Prospector outfit
+    for (int prospectorItemId : UNUSED_PROSPECTOR_ITEM_IDS) clogItems.remove(prospectorItemId);
     return clogItems;
   }
 }

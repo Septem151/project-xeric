@@ -1,17 +1,25 @@
 package io.septem150.xeric.data.player;
 
 import java.util.List;
-import lombok.Data;
-import net.runelite.api.Client;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 import net.runelite.api.Quest;
 import net.runelite.api.QuestState;
 
-@Data
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 public class QuestProgress {
-  private Quest quest;
-  private QuestState state;
+  @NonNull private final Quest quest;
+  @EqualsAndHashCode.Exclude @NonNull private QuestState state;
 
-  public static final List<Quest> trackedQuests =
+  public static final List<Quest> TRACKED_QUESTS =
       List.of(
           Quest.DRUIDIC_RITUAL,
           Quest.EAGLES_PEAK,
@@ -38,14 +46,4 @@ public class QuestProgress {
           Quest.THE_FINAL_DAWN,
           Quest.SHADOWS_OF_CUSTODIA,
           Quest.SCRAMBLED);
-
-  public static QuestProgress from(Client client, Quest quest) {
-    if (client == null || !client.isClientThread()) {
-      throw new RuntimeException("must be on client thread");
-    }
-    QuestProgress progress = new QuestProgress();
-    progress.quest = quest;
-    progress.state = quest.getState(client);
-    return progress;
-  }
 }

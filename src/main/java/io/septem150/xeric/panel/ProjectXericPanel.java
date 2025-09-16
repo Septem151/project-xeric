@@ -4,12 +4,18 @@ import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.panel.leaderboard.LeaderboardPanel;
 import io.septem150.xeric.panel.summary.SummaryPanel;
 import io.septem150.xeric.util.ResourceUtil;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
 import lombok.extern.slf4j.Slf4j;
@@ -80,7 +86,6 @@ public class ProjectXericPanel extends PluginPanel {
   public void startUp() {
     clientToolbar.addNavigation(navigationButton);
     summaryPanel.startUp();
-    leaderboardPanel.startUp();
   }
 
   public void startUpChildren() {

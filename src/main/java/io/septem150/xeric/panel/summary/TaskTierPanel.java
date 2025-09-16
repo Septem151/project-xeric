@@ -3,13 +3,19 @@ package io.septem150.xeric.panel.summary;
 import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskType;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -105,7 +111,7 @@ public class TaskTierPanel extends JPanel {
     int countShown = 0;
     for (TaskPanel taskPanel : taskPanels) {
       taskPanel.refresh();
-      if ((taskPanel.getTaskType().equalsIgnoreCase(search)
+      if ((taskPanel.getTaskType().getName().equalsIgnoreCase(search)
               || (Arrays.stream(TaskType.values())
                       .noneMatch(taskType -> taskType.getName().equalsIgnoreCase(search)))
                   && taskPanel.getTaskName().toLowerCase().contains(search.toLowerCase()))

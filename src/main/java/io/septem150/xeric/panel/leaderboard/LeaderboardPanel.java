@@ -54,8 +54,6 @@ public class LeaderboardPanel extends JPanel {
     womButton.setToolTipText("View the Leaderboard on Wise Old Man");
   }
 
-  public void startUp() {}
-
   public void refresh() {
     revalidate();
   }
