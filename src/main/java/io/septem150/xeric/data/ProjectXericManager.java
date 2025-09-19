@@ -559,7 +559,7 @@ public class ProjectXericManager {
 
   private void checkClogChatMessageEnabled() {
     // warn if player doesn't have collection log chat drops enabled
-    if (client.getVarbitValue(VarbitID.OPTION_COLLECTION_NEW_ITEM) != 1) {
+    if (client.getVarbitValue(VarbitID.OPTION_COLLECTION_NEW_ITEM) % 2 != 1) {
       client.addChatMessage(
           ChatMessageType.GAMEMESSAGE,
           "",
