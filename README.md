@@ -5,9 +5,9 @@
 - Project Home
   - [Changelog](#changelog)
   - [Contributing](#contributing)
-- [Contribution Guidelines](./docs/CONTRIBUTING.md)
-  - [Jagex Account Integration](./docs/CONTRIBUTING.md#jagex-account-integration)
-  - [Getting Started](./docs/CONTRIBUTING.md#getting-started)
+  - [Contribution Guidelines](./docs/CONTRIBUTING.md)
+    - [Jagex Account Integration](./docs/CONTRIBUTING.md#jagex-account-integration)
+    - [Getting Started](./docs/CONTRIBUTING.md#getting-started)
 
 **Zeah Clan Rank & Task Tracking Plugin**
 
@@ -21,6 +21,14 @@ The plugin adds a sidebar panel that features two tabs:
 2. A Leaderboard section that has a link to the WiseOldMan group for the clan.
 
 ## Changelog
+
+### 1.1.1
+
+#### Hotfixes
+
+- Collection Log chat message warning no longer shows when both Collection Log Popup and Chat
+  Message notifications are enabled.
+- Toggling "Slayer Exception" no longer gives 0 points for most tasks, and is purely visual.
 
 ### 1.1.0
 
