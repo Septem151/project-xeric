@@ -41,15 +41,7 @@ public class PlayerInfo {
   }
 
   public int getPoints() {
-    return tasks.stream()
-        .mapToInt(
-            task -> {
-              if (isSlayerException()) {
-                return task.getSlayerPoints();
-              }
-              return task.getTier();
-            })
-        .sum();
+    return tasks.stream().mapToInt(Task::getTier).sum();
   }
 
   public ClanRank getRank() {
