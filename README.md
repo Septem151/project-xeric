@@ -22,6 +22,13 @@ The plugin adds a sidebar panel that features two tabs:
 
 ## Changelog
 
+### 1.2.0
+
+#### Features
+
+- Tasks are stored and retrieved from https://api.projectxeric.com.
+- Sends a notice upon login when tasks are updated.
+
 ### 1.1.1
 
 #### Hotfixes

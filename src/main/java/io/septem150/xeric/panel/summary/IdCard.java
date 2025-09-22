@@ -1,11 +1,9 @@
 package io.septem150.xeric.panel.summary;
 
 import com.google.common.collect.Iterables;
-import io.septem150.xeric.data.ProjectXericManager;
 import io.septem150.xeric.data.player.ClanRank;
 import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
-import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.panel.JLabeledValue;
 import io.septem150.xeric.util.ResourceUtil;
 import io.septem150.xeric.util.TransferableBufferedImage;
@@ -34,14 +32,12 @@ import org.apache.commons.text.WordUtils;
 
 @Singleton
 public class IdCard extends JPanel {
-  private final ProjectXericManager manager;
-  private final TaskStore taskStore;
+  private final PlayerInfo playerInfo;
   private final SpriteManager spriteManager;
 
   @Inject
-  private IdCard(ProjectXericManager manager, TaskStore taskStore, SpriteManager spriteManager) {
-    this.manager = manager;
-    this.taskStore = taskStore;
+  private IdCard(PlayerInfo playerInfo, SpriteManager spriteManager) {
+    this.playerInfo = playerInfo;
     this.spriteManager = spriteManager;
 
     setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
@@ -158,7 +154,6 @@ public class IdCard extends JPanel {
   }
 
   private void makeDynamicData() {
-    PlayerInfo playerInfo = manager.getPlayerInfo();
     int playerPoints = playerInfo.getPoints();
     ClanRank playerRank = playerInfo.getRank();
     playerRank.getImageAsync(spriteManager, image -> rank.setIcon(new ImageIcon(image)));
@@ -197,7 +192,7 @@ public class IdCard extends JPanel {
               slayException.setIcon(new ImageIcon(ImageUtil.resizeImage(image, 20, 20, true))));
     }
     slayException.setEnabled(playerInfo.isSlayerException());
-    tasksCompleted.setValue(playerInfo.getTasks().size());
+    tasksCompleted.setValue(playerInfo.getCompletedTasks().size());
     pointsToNextRank.setValue(playerRank.getNextRank().getPointsNeeded() - playerPoints);
     highestTierCompleted.setValue(getHighestTierCompleted());
   }
@@ -209,17 +204,20 @@ public class IdCard extends JPanel {
   }
 
   private String getHighestTierCompleted() {
-    List<Task> tasks = taskStore.getAll();
     List<Integer> tiers =
-        tasks.stream().map(Task::getTier).distinct().sorted().collect(Collectors.toList());
+        playerInfo.getAllTasks().stream()
+            .map(Task::getTier)
+            .distinct()
+            .sorted()
+            .collect(Collectors.toList());
     int highestTier = 0;
     int maxTiers = Optional.ofNullable(Iterables.getLast(tiers, 0)).orElse(0);
     for (int tier = 1; tier <= maxTiers; tier++) {
-      if (manager.getPlayerInfo().getTasks().isEmpty()) break;
+      if (playerInfo.getCompletedTasks().isEmpty()) break;
       boolean completed = true;
-      for (Task task : tasks) {
+      for (Task task : playerInfo.getAllTasks()) {
         if (task.getTier() != tier) continue;
-        if (!manager.getPlayerInfo().getTasks().contains(task)) {
+        if (!playerInfo.getCompletedTasks().contains(task)) {
           completed = false;
           break;
         }

@@ -1,8 +1,7 @@
 package io.septem150.xeric.panel.summary;
 
-import io.septem150.xeric.data.ProjectXericManager;
+import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
-import io.septem150.xeric.data.task.TaskStore;
 import io.septem150.xeric.data.task.TaskType;
 import java.awt.*;
 import java.util.ArrayList;
@@ -21,8 +20,7 @@ public class TaskTierPanel extends JPanel {
   @Getter private final int tier;
   private List<TaskPanel> taskPanels = new ArrayList<>();
 
-  private final transient TaskStore taskStore;
-  private final transient ProjectXericManager manager;
+  private final transient PlayerInfo playerInfo;
   private final transient SpriteManager spriteManager;
 
   private final JLabel tierAndCountLabel = new JLabel();
@@ -31,13 +29,9 @@ public class TaskTierPanel extends JPanel {
   private boolean loaded;
 
   public TaskTierPanel(
-      int tier,
-      @NonNull TaskStore taskStore,
-      @NonNull ProjectXericManager manager,
-      @NonNull SpriteManager spriteManager) {
+      int tier, @NonNull PlayerInfo playerInfo, @NonNull SpriteManager spriteManager) {
     this.tier = tier;
-    this.taskStore = taskStore;
-    this.manager = manager;
+    this.playerInfo = playerInfo;
     this.spriteManager = spriteManager;
   }
 
@@ -69,10 +63,10 @@ public class TaskTierPanel extends JPanel {
 
   public void startUp() {
     taskPanels =
-        taskStore.getAll().stream()
+        playerInfo.getAllTasks().stream()
             .filter(task -> task.getTier() == tier)
             .sorted(Comparator.comparing(Task::getType).thenComparing(Task::getName))
-            .map(task -> new TaskPanel(task, manager, spriteManager))
+            .map(task -> new TaskPanel(task, playerInfo, spriteManager))
             .collect(Collectors.toList());
     if (!loaded) {
       removeAll();

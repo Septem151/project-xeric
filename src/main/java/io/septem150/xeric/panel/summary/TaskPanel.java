@@ -1,6 +1,6 @@
 package io.septem150.xeric.panel.summary;
 
-import io.septem150.xeric.data.ProjectXericManager;
+import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
 import java.awt.*;
 import javax.swing.*;
@@ -11,7 +11,7 @@ import net.runelite.client.ui.ColorScheme;
 public class TaskPanel extends JPanel {
   private final Task task;
 
-  private final transient ProjectXericManager manager;
+  private final transient PlayerInfo playerInfo;
   private final transient SpriteManager spriteManager;
 
   private final JLabel nameAndIconLabel = new JLabel();
@@ -20,11 +20,9 @@ public class TaskPanel extends JPanel {
   private boolean loaded;
 
   public TaskPanel(
-      @NonNull Task task,
-      @NonNull ProjectXericManager manager,
-      @NonNull SpriteManager spriteManager) {
+      @NonNull Task task, @NonNull PlayerInfo playerInfo, @NonNull SpriteManager spriteManager) {
     this.task = task;
-    this.manager = manager;
+    this.playerInfo = playerInfo;
     this.spriteManager = spriteManager;
   }
 
@@ -38,7 +36,7 @@ public class TaskPanel extends JPanel {
 
     // set up completed checkbox
     completedCheckbox.setEnabled(false);
-    completedCheckbox.setSelected(manager.getPlayerInfo().getTasks().contains(task));
+    completedCheckbox.setSelected(playerInfo.getCompletedTasks().contains(task));
     completedCheckbox.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 5));
 
     // setup parent panel and add components to layout
@@ -59,7 +57,7 @@ public class TaskPanel extends JPanel {
   }
 
   public void refresh() {
-    completedCheckbox.setSelected(manager.getPlayerInfo().getTasks().contains(task));
+    completedCheckbox.setSelected(playerInfo.getCompletedTasks().contains(task));
     revalidate();
   }
 
