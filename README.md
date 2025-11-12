@@ -21,6 +21,13 @@ The plugin adds a sidebar panel that features two tabs:
 
 ## Changelog
 
+### 2.0.1
+
+#### Hotfixes
+
+- Increase delay of plugin functionality when logging in from 2 ticks to 3 ticks to prevent
+  erroneous warning messages on lower-end computers.
+
 ### 2.0.0
 
 #### Breaking Changes

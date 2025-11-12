@@ -148,7 +148,7 @@ public class ProjectXericManager {
 
   public void startUp(ProjectXericPanel panel) {
     this.panel = panel;
-    ticksTilClientReady = 2;
+    ticksTilClientReady = 3;
     ticksTilUpdate = 0;
     pendingUpdates = new HashSet<>();
     panel.startUp();
@@ -165,7 +165,7 @@ public class ProjectXericManager {
 
   public void shutDown() {
     playerInfo.reset();
-    ticksTilClientReady = 2;
+    ticksTilClientReady = 3;
     ticksTilUpdate = 0;
     pendingUpdates = null;
     allItemsById = null;
@@ -209,7 +209,7 @@ public class ProjectXericManager {
 
   private void handleLogout() {
     playerInfo.logout();
-    ticksTilClientReady = 2;
+    ticksTilClientReady = 3;
   }
 
   private void scheduleUpdate(int tickDelay, Set<TaskType> taskTypes) {
@@ -230,8 +230,8 @@ public class ProjectXericManager {
     } else if (playerInfo.isLoggedIn() && event.getGameState() == GameState.LOGIN_SCREEN) {
       handleLogout();
     } else if (event.getGameState() == GameState.HOPPING) {
-      // wait 2 ticks after hopping before checking varbits and statchanges
-      ticksTilClientReady = 2;
+      // wait 3 ticks after hopping before checking varbits and statchanges
+      ticksTilClientReady = 3;
     }
   }
 
