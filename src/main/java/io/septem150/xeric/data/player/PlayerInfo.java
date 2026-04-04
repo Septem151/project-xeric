@@ -14,14 +14,12 @@ import io.septem150.xeric.data.diary.KourendDiary;
 import io.septem150.xeric.data.task.Task;
 import java.awt.Color;
 import java.lang.reflect.Type;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,9 +35,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.Quest;
+import net.runelite.api.QuestState;
 import net.runelite.api.Skill;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.config.RuneScapeProfile;
 import net.runelite.client.util.ColorUtil;
 
 @Slf4j
@@ -58,6 +56,7 @@ public class PlayerInfo {
   private boolean loggedIn;
   @Nullable private String username;
   @Nullable private AccountType accountType;
+  @Setter private long accountHash = -1;
 
   @Setter private boolean slayerException;
   private final Map<Quest, QuestProgress> quests = new EnumMap<>(Quest.class);
@@ -79,10 +78,11 @@ public class PlayerInfo {
     collectionLog = new CollectionLog(client, configManager, gson);
   }
 
-  public void login(String username, AccountType accountType) {
+  public void login(String username, AccountType accountType, long accountHash) {
     loggedIn = true;
     this.username = username;
     this.accountType = accountType;
+    this.accountHash = accountHash;
   }
 
   public void logout() {
@@ -104,6 +104,7 @@ public class PlayerInfo {
     loggedIn = false;
     username = null;
     accountType = null;
+    accountHash = -1;
     slayerException = false;
     quests.clear();
     diaries.clear();
@@ -168,47 +169,37 @@ public class PlayerInfo {
             allTasks.stream()
                 .filter(task -> taskIds.contains(task.getId()))
                 .collect(Collectors.toSet()));
-        remainingTasks.addAll(Sets.difference(allTasks, completedTasks));
       }
     } catch (JsonParseException err) {
       log.error("malformed task data in profile");
       configManager.unsetRSProfileConfiguration(
           ProjectXericConfig.GROUP, ProjectXericConfig.TASKS_DATA_KEY);
     }
+    remainingTasks.addAll(Sets.difference(allTasks, completedTasks));
   }
 
-  private boolean isTaskListUpdated() {
+  public boolean isTaskListUpdated() {
     String prevTasksHash =
         configManager.getRSProfileConfiguration(
             ProjectXericConfig.GROUP, ProjectXericConfig.TASKS_HASH_DATA_KEY);
     if (prevTasksHash == null || !prevTasksHash.equals(tasksHash)) {
-      for (RuneScapeProfile rsProfile : configManager.getRSProfiles()) {
-        String profileKey = rsProfile.getKey();
-        configManager.unsetConfiguration(
-            ProjectXericConfig.GROUP, profileKey, ProjectXericConfig.TASKS_DATA_KEY);
-      }
       configManager.setRSProfileConfiguration(
           ProjectXericConfig.GROUP, ProjectXericConfig.TASKS_HASH_DATA_KEY, tasksHash);
-
       return true;
     }
     return false;
   }
 
-  public boolean checkForUpdatedTasks() {
-    if (isTaskListUpdated()) {
-      client.addChatMessage(
-          ChatMessageType.GAMEMESSAGE,
-          "",
-          String.format(
-              "[%s] Info: %s",
-              ColorUtil.wrapWithColorTag(ProjectXericConfig.NAME, ProjectXericManager.DARK_GREEN),
-              ColorUtil.wrapWithColorTag(
-                  "Tasks have been updated! Check your tasks in the side panel.", Color.RED)),
-          null);
-      return true;
-    }
-    return false;
+  public void notifyTasksUpdated() {
+    client.addChatMessage(
+        ChatMessageType.GAMEMESSAGE,
+        "",
+        String.format(
+            "[%s] Info: %s",
+            ColorUtil.wrapWithColorTag(ProjectXericConfig.NAME, ProjectXericManager.DARK_GREEN),
+            ColorUtil.wrapWithColorTag(
+                "Tasks have been updated! Check your tasks in the side panel.", Color.RED)),
+        null);
   }
 
   public void clearCompletedTasks() {
@@ -217,25 +208,31 @@ public class PlayerInfo {
     remainingTasks.addAll(Sets.difference(allTasks, completedTasks));
   }
 
-  public void setAllTasks(Set<Task> tasks) {
+  public void setAllTasks(Set<Task> tasks, String hash) {
     allTasks.clear();
     allTasks.addAll(tasks);
-    try {
-      tasksHash =
-          String.format(
-              "%032x",
-              new BigInteger(
-                  1,
-                  MessageDigest.getInstance("MD5")
-                      .digest(gson.toJson(allTasks).getBytes(StandardCharsets.UTF_8))));
-    } catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException(e);
-    }
+    tasksHash = hash;
   }
 
   public void addCompletedTask(Task task) {
     completedTasks.add(task);
     remainingTasks.remove(task);
+  }
+
+  public List<String> getExceptions() {
+    List<String> exceptions = new ArrayList<>();
+    QuestProgress druidicRitual = quests.get(Quest.DRUIDIC_RITUAL);
+    if (druidicRitual != null && druidicRitual.getState() == QuestState.FINISHED) {
+      exceptions.add("herblore");
+    }
+    QuestProgress eaglesPeak = quests.get(Quest.EAGLES_PEAK);
+    if (eaglesPeak != null && eaglesPeak.getState() != QuestState.NOT_STARTED) {
+      exceptions.add("boxtraps");
+    }
+    if (slayerException) {
+      exceptions.add("slayer");
+    }
+    return exceptions;
   }
 
   public int getPoints() {
