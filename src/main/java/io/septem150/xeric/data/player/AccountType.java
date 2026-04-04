@@ -2,6 +2,7 @@ package io.septem150.xeric.data.player;
 
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +17,13 @@ import net.runelite.client.util.ImageUtil;
 @Getter
 @ToString
 public enum AccountType {
-  DEFAULT(0, HiscoreEndpoint.NORMAL, 32),
-  IRONMAN(1, HiscoreEndpoint.IRONMAN, 2),
-  ULTIMATE(2, HiscoreEndpoint.ULTIMATE_IRONMAN, 3),
-  HARDCORE(3, HiscoreEndpoint.HARDCORE_IRONMAN, 10),
-  RANKED_GIM(4, HiscoreEndpoint.NORMAL, 41),
-  HARDCORE_GIM(5, HiscoreEndpoint.NORMAL, 42),
-  UNRANKED_GIM(6, HiscoreEndpoint.NORMAL, 43);
+  DEFAULT(0, HiscoreEndpoint.NORMAL, 32, null),
+  IRONMAN(1, HiscoreEndpoint.IRONMAN, 2, "im"),
+  ULTIMATE(2, HiscoreEndpoint.ULTIMATE_IRONMAN, 3, "uim"),
+  HARDCORE(3, HiscoreEndpoint.HARDCORE_IRONMAN, 10, "hcim"),
+  RANKED_GIM(4, HiscoreEndpoint.NORMAL, 41, "gim"),
+  HARDCORE_GIM(5, HiscoreEndpoint.NORMAL, 42, "hcgim"),
+  UNRANKED_GIM(6, HiscoreEndpoint.NORMAL, 43, "ugim");
 
   private static final int MODICONS_ARCHIVE_ID = 423;
   private static final int ICON_SIZE = 14;
@@ -30,6 +31,7 @@ public enum AccountType {
   private final int varbValue;
   private final HiscoreEndpoint hiscoreEndpoint;
   private final int spriteId;
+  @Nullable private final String apiName;
 
   public static AccountType fromVarbValue(int varbValue) {
     for (AccountType accountType : AccountType.values()) {

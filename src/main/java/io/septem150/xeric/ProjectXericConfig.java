@@ -16,6 +16,8 @@ public interface ProjectXericConfig extends Config {
   String CLOG_DATA_KEY = "clog";
   String TASKS_DATA_KEY = "tasks";
   String TASKS_HASH_DATA_KEY = "tasks_hash";
+  String USERNAME_DATA_KEY = "username";
+  String ACCOUNT_TYPE_DATA_KEY = "account_type";
   String SLAYER_CONFIG_KEY = "slayer";
   String CHAT_MESSAGES_CONFIG_KEY = "chat_messages";
 

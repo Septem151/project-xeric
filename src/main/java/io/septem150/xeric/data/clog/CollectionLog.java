@@ -1,7 +1,6 @@
 package io.septem150.xeric.data.clog;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import io.septem150.xeric.ProjectXericConfig;
@@ -47,7 +46,6 @@ public class CollectionLog {
     this.gson = gson;
   }
 
-  @CanIgnoreReturnValue
   public boolean add(@Nullable ClogItem item) {
     if (item == null) return false;
     final boolean added = items.add(item);
@@ -90,7 +88,6 @@ public class CollectionLog {
     }
   }
 
-  @CanIgnoreReturnValue
   private boolean fromRSProfileJson(@Nullable String json) throws JsonParseException {
     if (json == null) return false;
     RSProfileClog profileClog = gson.fromJson(json, RSProfileClog.class);

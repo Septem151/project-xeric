@@ -3,6 +3,7 @@ package io.septem150.xeric.panel.summary;
 import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskType;
+import io.septem150.xeric.util.ImageService;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ import javax.swing.SwingConstants;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.client.game.SpriteManager;
 
 @Slf4j
 public class TaskTierPanel extends JPanel {
@@ -27,7 +27,7 @@ public class TaskTierPanel extends JPanel {
   private List<TaskPanel> taskPanels = new ArrayList<>();
 
   private final transient PlayerInfo playerInfo;
-  private final transient SpriteManager spriteManager;
+  private final transient ImageService imageService;
 
   private final JLabel tierAndCountLabel = new JLabel();
   private final JPanel tasksContainerPanel = new JPanel();
@@ -35,10 +35,10 @@ public class TaskTierPanel extends JPanel {
   private boolean loaded;
 
   public TaskTierPanel(
-      int tier, @NonNull PlayerInfo playerInfo, @NonNull SpriteManager spriteManager) {
+      int tier, @NonNull PlayerInfo playerInfo, @NonNull ImageService imageService) {
     this.tier = tier;
     this.playerInfo = playerInfo;
-    this.spriteManager = spriteManager;
+    this.imageService = imageService;
   }
 
   private void initComponents() {
@@ -72,7 +72,7 @@ public class TaskTierPanel extends JPanel {
         playerInfo.getAllTasks().stream()
             .filter(task -> task.getTier() == tier)
             .sorted(Comparator.comparing(Task::getType).thenComparing(Task::getName))
-            .map(task -> new TaskPanel(task, playerInfo, spriteManager))
+            .map(task -> new TaskPanel(task, playerInfo, imageService))
             .collect(Collectors.toList());
     if (!loaded) {
       removeAll();

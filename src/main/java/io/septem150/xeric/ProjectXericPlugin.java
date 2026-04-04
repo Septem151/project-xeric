@@ -10,8 +10,10 @@ import io.septem150.xeric.data.task.KCTask;
 import io.septem150.xeric.data.task.LevelTask;
 import io.septem150.xeric.data.task.QuestTask;
 import io.septem150.xeric.data.task.Task;
+import io.septem150.xeric.data.task.TaskService;
 import io.septem150.xeric.data.task.TaskType;
 import io.septem150.xeric.panel.ProjectXericPanel;
+import io.septem150.xeric.util.ImageService;
 import io.septem150.xeric.util.RuntimeTypeAdapterFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,6 +37,8 @@ public final class ProjectXericPlugin extends Plugin {
   @Inject private ConfigManager configManager;
   @Inject private ProjectXericManager manager;
   @Inject private EventBus eventBus;
+  @Inject private TaskService taskService;
+  @Inject private ImageService imageService;
 
   private ProjectXericPanel panel;
 
@@ -64,6 +68,8 @@ public final class ProjectXericPlugin extends Plugin {
         configManager.unsetConfiguration(
             ProjectXericConfig.GROUP, profileKey, ProjectXericConfig.TASKS_HASH_DATA_KEY);
       }
+      taskService.deleteCache();
+      imageService.clearCache();
       try {
         shutDown();
         startUp();

@@ -28,11 +28,8 @@ import static io.septem150.xeric.util.RegexUtil.NAME_GROUP;
 import static io.septem150.xeric.util.RegexUtil.QUEST_REGEX;
 
 import com.google.common.collect.Sets;
-import com.google.common.net.HttpHeaders;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
 import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.data.clog.ClogItem;
 import io.septem150.xeric.data.diary.DiaryProgress;
@@ -50,9 +47,9 @@ import io.septem150.xeric.panel.ProjectXericPanel;
 import io.septem150.xeric.util.WorldUtil;
 import java.awt.Color;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -63,7 +60,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.swing.SwingUtilities;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -92,13 +88,6 @@ import net.runelite.client.hiscore.HiscoreResult;
 import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.util.ColorUtil;
 import net.runelite.client.util.Text;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 @Slf4j
 @Singleton
@@ -110,10 +99,10 @@ public class ProjectXericManager {
   private final ProjectXericConfig config;
   private final ConfigManager configManager;
   private final ScheduledExecutorService executor;
-  private final OkHttpClient httpClient;
   private final HiscoreManager hiscoreManager;
   private final Gson gson;
   private final PlayerInfo playerInfo;
+  private final ProjectXericApiClient apiClient;
 
   private ProjectXericPanel panel;
 
@@ -121,6 +110,8 @@ public class ProjectXericManager {
   private Map<Integer, ClogItem> allItemsById;
   private Map<String, ClogItem> allItemsByName;
   private Set<TaskType> pendingUpdates;
+  private Map<Integer, String> previousTaskHashes;
+  private JsonObject pendingPlayerUpdate;
   private int ticksTilUpdate;
   private int ticksTilClientReady;
 
@@ -131,19 +122,19 @@ public class ProjectXericManager {
       ProjectXericConfig config,
       ConfigManager configManager,
       ScheduledExecutorService executor,
-      OkHttpClient httpClient,
       HiscoreManager hiscoreManager,
       @Named("xericGson") Gson gson,
-      PlayerInfo playerInfo) {
+      PlayerInfo playerInfo,
+      ProjectXericApiClient apiClient) {
     this.client = client;
     this.clientThread = clientThread;
     this.config = config;
     this.configManager = configManager;
     this.executor = executor;
-    this.httpClient = httpClient;
     this.hiscoreManager = hiscoreManager;
     this.gson = gson;
     this.playerInfo = playerInfo;
+    this.apiClient = apiClient;
   }
 
   public void startUp(ProjectXericPanel panel) {
@@ -187,27 +178,36 @@ public class ProjectXericManager {
     updateDiaries();
     // asynchronous operations
     updatePlayerHiscores()
-        .thenCompose(unused -> updateTaskCacheAsync())
+        .thenCompose(unused -> apiClient.fetchTasksAsync())
+        .thenAccept(
+            result -> {
+              previousTaskHashes = result.getPreviousTaskHashes();
+              playerInfo.setAllTasks(
+                  result.getTaskResponse().getTasks(), result.getTaskResponse().getHash());
+            })
         .thenRun(
-            () ->
-                clientThread.invoke(
-                    () -> {
-                      // compare new task list to the last task list used and notify user
-                      // if there's been updates to the tasks or if new ones have been added
-                      if (playerInfo.checkForUpdatedTasks()) {
-                        playerInfo.clearCompletedTasks();
-                        pendingUpdates.addAll(Set.of(TaskType.values()));
-                        updateXericTasks(false);
-                      } else {
-                        playerInfo.loadTasksFromRSProfile();
-                        scheduleUpdate(0, Set.of(TaskType.values()));
-                      }
-                      panel.startUpChildren();
-                      SwingUtilities.invokeLater(panel::refresh);
-                    }));
+            () -> {
+              playerInfo.loadTasksFromRSProfile();
+              boolean hasTaskChanges = playerInfo.isTaskListUpdated() && handleTaskListChange();
+              stageAccountUpdate();
+              flushPlayerUpdate();
+              SwingUtilities.invokeLater(
+                  () -> {
+                    panel.startUpChildren();
+                    panel.refresh();
+                  });
+              clientThread.invokeLater(
+                  () -> {
+                    if (hasTaskChanges) {
+                      playerInfo.notifyTasksUpdated();
+                    }
+                    scheduleUpdate(0, Set.of(TaskType.values()));
+                  });
+            });
   }
 
   private void handleLogout() {
+    flushPlayerUpdate();
     playerInfo.logout();
     ticksTilClientReady = 3;
   }
@@ -247,6 +247,7 @@ public class ProjectXericManager {
     }
     if (pendingUpdates.isEmpty()) return;
     boolean updated = updateXericTasks();
+    flushPlayerUpdate();
     if (updated) {
       SwingUtilities.invokeLater(panel::refresh);
     }
@@ -382,10 +383,12 @@ public class ProjectXericManager {
             .filter(task -> pendingUpdates.contains(task.getType()))
             .collect(Collectors.toSet());
     boolean updated = false;
+    Set<Task> newlyCompleted = new HashSet<>();
     for (Task task : remainingTasksToCheck) {
       if (task.checkCompletion(playerInfo)) {
         updated = true;
         playerInfo.addCompletedTask(task);
+        newlyCompleted.add(task);
         if (showMessage) {
           client.addChatMessage(
               ChatMessageType.GAMEMESSAGE,
@@ -400,6 +403,9 @@ public class ProjectXericManager {
       }
     }
     pendingUpdates.clear();
+    if (!newlyCompleted.isEmpty()) {
+      stageTaskCompletion(newlyCompleted);
+    }
     return updated;
   }
 
@@ -407,10 +413,41 @@ public class ProjectXericManager {
     return updateXericTasks(config.chatMessages());
   }
 
+  private boolean handleTaskListChange() {
+    // diff new task hashes against previous cache to find changed tasks
+    Set<Task> changedTasks = new HashSet<>();
+    if (previousTaskHashes != null) {
+      for (Task newTask : playerInfo.getAllTasks()) {
+        String oldHash = previousTaskHashes.get(newTask.getId());
+        if (oldHash == null || !oldHash.equals(newTask.getHash())) {
+          changedTasks.add(newTask);
+        }
+      }
+      previousTaskHashes = null;
+    }
+
+    if (changedTasks.isEmpty()) {
+      return false;
+    }
+
+    // remove completions for changed tasks and queue their types for re-check
+    playerInfo.getCompletedTasks().removeAll(changedTasks);
+    playerInfo.getRemainingTasks().clear();
+    playerInfo
+        .getRemainingTasks()
+        .addAll(Sets.difference(playerInfo.getAllTasks(), playerInfo.getCompletedTasks()));
+    clientThread.invokeLater(
+        () ->
+            scheduleUpdate(
+                0, changedTasks.stream().map(Task::getType).collect(Collectors.toSet())));
+    return true;
+  }
+
   private void updateAccountInfo() {
     playerInfo.login(
         client.getLocalPlayer().getName(),
-        AccountType.fromVarbValue(client.getVarbitValue(VarbitID.IRONMAN)));
+        AccountType.fromVarbValue(client.getVarbitValue(VarbitID.IRONMAN)),
+        client.getAccountHash());
     playerInfo.setSlayerException(config.slayer());
   }
 
@@ -479,6 +516,59 @@ public class ProjectXericManager {
     }
   }
 
+  private void stageAccountUpdate() {
+    AccountType accountType = playerInfo.getAccountType();
+    if (accountType == null
+        || accountType.getApiName() == null
+        || playerInfo.getAccountHash() == -1) return;
+    stageIfChanged(ProjectXericConfig.USERNAME_DATA_KEY, "username", playerInfo.getUsername());
+    stageIfChanged(
+        ProjectXericConfig.ACCOUNT_TYPE_DATA_KEY, "accountType", accountType.getApiName());
+    stageExceptions();
+  }
+
+  private void stageExceptions() {
+    List<String> exceptions = playerInfo.getExceptions();
+    String json = gson.toJson(exceptions);
+    String stored = configManager.getRSProfileConfiguration(ProjectXericConfig.GROUP, "exceptions");
+    if (!json.equals(stored)) {
+      if (pendingPlayerUpdate == null) {
+        pendingPlayerUpdate = new JsonObject();
+      }
+      pendingPlayerUpdate.add("exceptions", gson.toJsonTree(exceptions));
+      configManager.setRSProfileConfiguration(ProjectXericConfig.GROUP, "exceptions", json);
+    }
+  }
+
+  private void stageTaskCompletion(Set<Task> tasks) {
+    if (playerInfo.getAccountHash() == -1) return;
+    if (pendingPlayerUpdate == null) {
+      pendingPlayerUpdate = new JsonObject();
+    }
+    pendingPlayerUpdate.add(
+        "completedTasks",
+        gson.toJsonTree(tasks.stream().map(Task::getId).collect(Collectors.toSet())));
+  }
+
+  private void stageIfChanged(String configKey, String jsonKey, String value) {
+    String stored = configManager.getRSProfileConfiguration(ProjectXericConfig.GROUP, configKey);
+    if (value != null && !value.equals(stored)) {
+      if (pendingPlayerUpdate == null) {
+        pendingPlayerUpdate = new JsonObject();
+      }
+      pendingPlayerUpdate.addProperty(jsonKey, value);
+      configManager.setRSProfileConfiguration(ProjectXericConfig.GROUP, configKey, value);
+    }
+  }
+
+  private void flushPlayerUpdate() {
+    if (pendingPlayerUpdate == null || playerInfo.getAccountHash() == -1) return;
+    pendingPlayerUpdate.addProperty("accountHash", playerInfo.getAccountHash());
+    pendingPlayerUpdate.addProperty("tasksHash", playerInfo.getTasksHash());
+    apiClient.postPlayerData(pendingPlayerUpdate);
+    pendingPlayerUpdate = null;
+  }
+
   private void updateClientCache() {
     // check if clog items need to be cached
     if (allItemsById == null || allItemsByName == null) {
@@ -503,54 +593,6 @@ public class ProjectXericManager {
         allCombatAchievements.put(caId, combatAchievement);
       }
     }
-  }
-
-  private CompletableFuture<Void> updateTaskCacheAsync() {
-    CompletableFuture<Void> future = new CompletableFuture<>();
-    HttpUrl url =
-        new HttpUrl.Builder()
-            .scheme("https")
-            .host("api.projectxeric.com")
-            .addPathSegment("v1")
-            .addPathSegment("tasks")
-            .build();
-    Request request =
-        new Request.Builder()
-            .get()
-            .url(url)
-            .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8")
-            .build();
-    httpClient
-        .newCall(request)
-        .enqueue(
-            new Callback() {
-              @Override
-              public void onFailure(@NonNull Call call, @NonNull IOException err) {
-                log.warn("api call to tasks failed: {}", err.getMessage());
-                future.completeExceptionally(err);
-              }
-
-              @Override
-              public void onResponse(@NonNull Call call, @NonNull Response response) {
-                try (Response res = response) {
-                  ResponseBody body = res.body();
-                  if (body == null) {
-                    throw new IOException("response body empty");
-                  }
-                  String bodyString = body.string();
-                  if (!res.isSuccessful()) {
-                    JsonObject json = gson.fromJson(bodyString, JsonObject.class);
-                    throw new IOException(json.get("error").getAsString());
-                  }
-                  Type type = new TypeToken<Set<Task>>() {}.getType();
-                  playerInfo.setAllTasks(gson.fromJson(bodyString, type));
-                  future.complete(null);
-                } catch (IOException | JsonParseException err) {
-                  onFailure(call, new IOException(err));
-                }
-              }
-            });
-    return future;
   }
 
   private CompletableFuture<Void> updatePlayerHiscores() {

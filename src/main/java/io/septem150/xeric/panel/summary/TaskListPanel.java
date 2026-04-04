@@ -3,6 +3,7 @@ package io.septem150.xeric.panel.summary;
 import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskType;
+import io.septem150.xeric.util.ImageService;
 import io.septem150.xeric.util.ResourceUtil;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -21,14 +22,13 @@ import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.components.IconTextField;
 
 @Singleton
 public class TaskListPanel extends JPanel {
   private final PlayerInfo playerInfo;
-  private final SpriteManager spriteManager;
+  private final ImageService imageService;
 
   private List<TaskTierPanel> tierPanels = new ArrayList<>();
 
@@ -41,9 +41,9 @@ public class TaskListPanel extends JPanel {
   private boolean loaded;
 
   @Inject
-  public TaskListPanel(PlayerInfo playerInfo, SpriteManager spriteManager) {
+  public TaskListPanel(PlayerInfo playerInfo, ImageService imageService) {
     this.playerInfo = playerInfo;
-    this.spriteManager = spriteManager;
+    this.imageService = imageService;
   }
 
   private void initComponents() {
@@ -109,7 +109,7 @@ public class TaskListPanel extends JPanel {
             .map(Task::getTier)
             .distinct()
             .sorted()
-            .map(tier -> new TaskTierPanel(tier, playerInfo, spriteManager))
+            .map(tier -> new TaskTierPanel(tier, playerInfo, imageService))
             .collect(Collectors.toList());
     if (!loaded) {
       removeAll();
