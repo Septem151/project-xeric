@@ -29,6 +29,7 @@ import static io.septem150.xeric.util.RegexUtil.QUEST_REGEX;
 
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.data.clog.ClogItem;
@@ -49,7 +50,6 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -207,6 +207,9 @@ public class ProjectXericManager {
   }
 
   private void handleLogout() {
+    if (pendingPlayerUpdate == null) {
+      pendingPlayerUpdate = new JsonObject();
+    }
     flushPlayerUpdate();
     playerInfo.logout();
     ticksTilClientReady = 3;
@@ -524,19 +527,10 @@ public class ProjectXericManager {
     stageIfChanged(ProjectXericConfig.USERNAME_DATA_KEY, "username", playerInfo.getUsername());
     stageIfChanged(
         ProjectXericConfig.ACCOUNT_TYPE_DATA_KEY, "accountType", accountType.getApiName());
-    stageExceptions();
-  }
-
-  private void stageExceptions() {
-    List<String> exceptions = playerInfo.getExceptions();
-    String json = gson.toJson(exceptions);
-    String stored = configManager.getRSProfileConfiguration(ProjectXericConfig.GROUP, "exceptions");
-    if (!json.equals(stored)) {
-      if (pendingPlayerUpdate == null) {
-        pendingPlayerUpdate = new JsonObject();
-      }
-      pendingPlayerUpdate.add("exceptions", gson.toJsonTree(exceptions));
-      configManager.setRSProfileConfiguration(ProjectXericConfig.GROUP, "exceptions", json);
+    stageIfChanged("exceptions", "exceptions", gson.toJsonTree(playerInfo.getExceptions()));
+    // Always send an update so the backend records last_submission_at
+    if (pendingPlayerUpdate == null) {
+      pendingPlayerUpdate = new JsonObject();
     }
   }
 
@@ -550,14 +544,20 @@ public class ProjectXericManager {
         gson.toJsonTree(tasks.stream().map(Task::getId).collect(Collectors.toSet())));
   }
 
-  private void stageIfChanged(String configKey, String jsonKey, String value) {
+  private void stageIfChanged(String configKey, String jsonKey, Object value) {
+    if (value == null) return;
+    String serialized = value instanceof String ? (String) value : gson.toJson(value);
     String stored = configManager.getRSProfileConfiguration(ProjectXericConfig.GROUP, configKey);
-    if (value != null && !value.equals(stored)) {
+    if (!serialized.equals(stored)) {
       if (pendingPlayerUpdate == null) {
         pendingPlayerUpdate = new JsonObject();
       }
-      pendingPlayerUpdate.addProperty(jsonKey, value);
-      configManager.setRSProfileConfiguration(ProjectXericConfig.GROUP, configKey, value);
+      if (value instanceof String) {
+        pendingPlayerUpdate.addProperty(jsonKey, (String) value);
+      } else {
+        pendingPlayerUpdate.add(jsonKey, (JsonElement) value);
+      }
+      configManager.setRSProfileConfiguration(ProjectXericConfig.GROUP, configKey, serialized);
     }
   }
 
