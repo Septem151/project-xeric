@@ -12,7 +12,9 @@
     },
     {
       "count": 1,
-      "detail": [20718],
+      "detail": [
+        20718
+      ],
       "hash": "b21178",
       "icon": "burnt_page.png",
       "id": 6,
@@ -22,7 +24,9 @@
     },
     {
       "count": 1,
-      "detail": [31032],
+      "detail": [
+        31032
+      ],
       "hash": "c01d41",
       "icon": "ent_branch.png",
       "id": 16,
@@ -32,7 +36,9 @@
     },
     {
       "count": 1,
-      "detail": [6183],
+      "detail": [
+        6183
+      ],
       "hash": "a1da5e",
       "icon": "frog_token.png",
       "id": 4,
@@ -42,7 +48,13 @@
     },
     {
       "count": 5,
-      "detail": [25129, 25131, 25133, 25135, 25137],
+      "detail": [
+        25129,
+        25131,
+        25133,
+        25135,
+        25137
+      ],
       "hash": "a4aae4",
       "icon": "beekeepers_hat.png",
       "id": 12,
@@ -52,7 +64,11 @@
     },
     {
       "count": 3,
-      "detail": [6654, 6655, 6656],
+      "detail": [
+        6654,
+        6655,
+        6656
+      ],
       "hash": "9f8c95",
       "icon": "camo_helmet.png",
       "id": 13,
@@ -62,7 +78,11 @@
     },
     {
       "count": 3,
-      "detail": [6180, 6181, 6182],
+      "detail": [
+        6180,
+        6181,
+        6182
+      ],
       "hash": "dda8cf",
       "icon": "lederhosen_hat.png",
       "id": 14,
@@ -72,7 +92,13 @@
     },
     {
       "count": 5,
-      "detail": [3057, 3058, 3059, 3060, 3061],
+      "detail": [
+        3057,
+        3058,
+        3059,
+        3060,
+        3061
+      ],
       "hash": "744988",
       "icon": "mime_mask.png",
       "id": 11,
@@ -82,7 +108,13 @@
     },
     {
       "count": 5,
-      "detail": [7592, 7593, 7594, 7595, 7596],
+      "detail": [
+        7592,
+        7593,
+        7594,
+        7595,
+        7596
+      ],
       "hash": "f3c3b9",
       "icon": "zombie_mask.png",
       "id": 15,
@@ -92,7 +124,9 @@
     },
     {
       "count": 1,
-      "detail": [11849],
+      "detail": [
+        11849
+      ],
       "hash": "538f6d",
       "icon": "mark_of_grace.png",
       "id": 5,
@@ -102,7 +136,13 @@
     },
     {
       "count": 5,
-      "detail": [13357, 13358, 13359, 13360, 13361],
+      "detail": [
+        13357,
+        13358,
+        13359,
+        13360,
+        13361
+      ],
       "hash": "25fb99",
       "icon": "shayzien_helm_1.png",
       "id": 10,
@@ -112,7 +152,9 @@
     },
     {
       "count": 1,
-      "detail": [20712],
+      "detail": [
+        20712
+      ],
       "hash": "d1277e",
       "icon": "warm_gloves.png",
       "id": 7,
@@ -157,7 +199,10 @@
     },
     {
       "count": 1,
-      "detail": [22844, 22846],
+      "detail": [
+        22844,
+        22846
+      ],
       "hash": "8c9090",
       "icon": "pearl_fishing_rod.png",
       "id": 26,
@@ -167,7 +212,12 @@
     },
     {
       "count": 1,
-      "detail": [13258, 13259, 13260, 13261],
+      "detail": [
+        13258,
+        13259,
+        13260,
+        13261
+      ],
       "hash": "e04c99",
       "icon": "angler_hat.png",
       "id": 23,
@@ -177,7 +227,12 @@
     },
     {
       "count": 1,
-      "detail": [13640, 13642, 13644, 13646],
+      "detail": [
+        13640,
+        13642,
+        13644,
+        13646
+      ],
       "hash": "b7d98d",
       "icon": "farmers_strawhat.png",
       "id": 31,
@@ -187,7 +242,12 @@
     },
     {
       "count": 1,
-      "detail": [10933, 10939, 10940, 10941],
+      "detail": [
+        10933,
+        10939,
+        10940,
+        10941
+      ],
       "hash": "0f2139",
       "icon": "lumberjack_hat.png",
       "id": 19,
@@ -197,7 +257,12 @@
     },
     {
       "count": 1,
-      "detail": [28616, 28618, 28620, 28622],
+      "detail": [
+        28616,
+        28618,
+        28620,
+        28622
+      ],
       "hash": "c57193",
       "icon": "pheasant_hat.png",
       "id": 24,
@@ -207,7 +272,9 @@
     },
     {
       "count": 1,
-      "detail": [20720],
+      "detail": [
+        20720
+      ],
       "hash": "25d6b8",
       "icon": "bruma_torch.png",
       "id": 17,
@@ -217,7 +284,9 @@
     },
     {
       "count": 1,
-      "detail": [20754],
+      "detail": [
+        20754
+      ],
       "hash": "849817",
       "icon": "giant_key.png",
       "id": 21,
@@ -227,7 +296,9 @@
     },
     {
       "count": 1,
-      "detail": [28140],
+      "detail": [
+        28140
+      ],
       "hash": "d0ef1b",
       "icon": "log_basket.png",
       "id": 20,
@@ -237,7 +308,9 @@
     },
     {
       "count": 1,
-      "detail": [22374],
+      "detail": [
+        22374
+      ],
       "hash": "c2bfbe",
       "icon": "mossy_key.png",
       "id": 22,
@@ -247,7 +320,9 @@
     },
     {
       "count": 1,
-      "detail": [28674],
+      "detail": [
+        28674
+      ],
       "hash": "c07b7a",
       "icon": "sturdy_beehive_parts.png",
       "id": 18,
@@ -257,7 +332,9 @@
     },
     {
       "count": 1,
-      "detail": [28924],
+      "detail": [
+        28924
+      ],
       "hash": "4b694d",
       "icon": "sunfire_splinters.png",
       "id": 27,
@@ -267,7 +344,9 @@
     },
     {
       "count": 1,
-      "detail": [13392],
+      "detail": [
+        13392
+      ],
       "hash": "1a9b14",
       "icon": "xerics_talisman.png",
       "id": 25,
@@ -322,7 +401,12 @@
     },
     {
       "count": 2,
-      "detail": [13258, 13259, 13260, 13261],
+      "detail": [
+        13258,
+        13259,
+        13260,
+        13261
+      ],
       "hash": "58656f",
       "icon": "angler_hat.png",
       "id": 60,
@@ -332,7 +416,12 @@
     },
     {
       "count": 2,
-      "detail": [13640, 13642, 13644, 13646],
+      "detail": [
+        13640,
+        13642,
+        13644,
+        13646
+      ],
       "hash": "4374ea",
       "icon": "farmers_strawhat.png",
       "id": 40,
@@ -342,7 +431,12 @@
     },
     {
       "count": 2,
-      "detail": [10933, 10939, 10940, 10941],
+      "detail": [
+        10933,
+        10939,
+        10940,
+        10941
+      ],
       "hash": "85060e",
       "icon": "lumberjack_hat.png",
       "id": 46,
@@ -352,7 +446,12 @@
     },
     {
       "count": 2,
-      "detail": [28616, 28618, 28620, 28622],
+      "detail": [
+        28616,
+        28618,
+        28620,
+        28622
+      ],
       "hash": "f7c159",
       "icon": "pheasant_hat.png",
       "id": 59,
@@ -362,7 +461,11 @@
     },
     {
       "count": 3,
-      "detail": [19679, 19681, 19683],
+      "detail": [
+        19679,
+        19681,
+        19683
+      ],
       "hash": "8d9c44",
       "icon": "dark_totem.png",
       "id": 44,
@@ -372,7 +475,9 @@
     },
     {
       "count": 1,
-      "detail": [19677],
+      "detail": [
+        19677
+      ],
       "hash": "cb3054",
       "icon": "ancient_shard.png",
       "id": 42,
@@ -382,7 +487,11 @@
     },
     {
       "count": 1,
-      "detail": [22881, 22883, 22885],
+      "detail": [
+        22881,
+        22883,
+        22885
+      ],
       "hash": "bc5d58",
       "icon": "hespori.png",
       "id": 53,
@@ -392,7 +501,9 @@
     },
     {
       "count": 1,
-      "detail": [7989],
+      "detail": [
+        7989
+      ],
       "hash": "a25513",
       "icon": "big_bass.png",
       "id": 58,
@@ -402,7 +513,9 @@
     },
     {
       "count": 1,
-      "detail": [30040],
+      "detail": [
+        30040
+      ],
       "hash": "2b4d62",
       "icon": "colossal_wyrm_teleport_scroll.png",
       "id": 56,
@@ -412,7 +525,12 @@
     },
     {
       "count": 4,
-      "detail": [20704, 20706, 20708, 20710],
+      "detail": [
+        20704,
+        20706,
+        20708,
+        20710
+      ],
       "hash": "c26fb6",
       "icon": "pyromancer_hood.png",
       "id": 57,
@@ -422,7 +540,9 @@
     },
     {
       "count": 1,
-      "detail": [23517],
+      "detail": [
+        23517
+      ],
       "hash": "d1fa1b",
       "icon": "giant_egg_sac.png",
       "id": 52,
@@ -432,7 +552,9 @@
     },
     {
       "count": 1,
-      "detail": [30088],
+      "detail": [
+        30088
+      ],
       "hash": "f9ed65",
       "icon": "huasca_seed.png",
       "id": 55,
@@ -442,7 +564,9 @@
     },
     {
       "count": 1,
-      "detail": [28146],
+      "detail": [
+        28146
+      ],
       "hash": "246b52",
       "icon": "log_brace.png",
       "id": 48,
@@ -452,7 +576,9 @@
     },
     {
       "count": 1,
-      "detail": [10976],
+      "detail": [
+        10976
+      ],
       "hash": "310fee",
       "icon": "long_bone.png",
       "id": 43,
@@ -462,7 +588,13 @@
     },
     {
       "count": 5,
-      "detail": [13377, 13378, 13379, 13380, 13381],
+      "detail": [
+        13377,
+        13378,
+        13379,
+        13380,
+        13381
+      ],
       "hash": "1d155d",
       "icon": "shayzien_helm_5.png",
       "id": 41,
@@ -472,7 +604,9 @@
     },
     {
       "count": 1,
-      "detail": [28630],
+      "detail": [
+        28630
+      ],
       "hash": "c4c23f",
       "icon": "twitchers_gloves.png",
       "id": 47,
@@ -583,7 +717,12 @@
     },
     {
       "count": 3,
-      "detail": [10933, 10939, 10940, 10941],
+      "detail": [
+        10933,
+        10939,
+        10940,
+        10941
+      ],
       "hash": "112d56",
       "icon": "lumberjack_hat.png",
       "id": 76,
@@ -593,7 +732,11 @@
     },
     {
       "count": 3,
-      "detail": [22881, 22883, 22885],
+      "detail": [
+        22881,
+        22883,
+        22885
+      ],
       "hash": "ac0c2c",
       "icon": "hespori.png",
       "id": 83,
@@ -603,7 +746,9 @@
     },
     {
       "count": 1,
-      "detail": [7991],
+      "detail": [
+        7991
+      ],
       "hash": "8ce692",
       "icon": "big_swordfish.png",
       "id": 73,
@@ -613,7 +758,9 @@
     },
     {
       "count": 1,
-      "detail": [31052],
+      "detail": [
+        31052
+      ],
       "hash": "159fa2",
       "icon": "bow_string_spool.png",
       "id": 75,
@@ -623,7 +770,9 @@
     },
     {
       "count": 1,
-      "detail": [28166],
+      "detail": [
+        28166
+      ],
       "hash": "8661af",
       "icon": "clothes_pouch.png",
       "id": 77,
@@ -633,7 +782,9 @@
     },
     {
       "count": 1,
-      "detail": [28177],
+      "detail": [
+        28177
+      ],
       "hash": "4e74c5",
       "icon": "felling_axe_handle.png",
       "id": 78,
@@ -643,7 +794,9 @@
     },
     {
       "count": 1,
-      "detail": [29895],
+      "detail": [
+        29895
+      ],
       "hash": "714f8f",
       "icon": "frozen_tear.png",
       "id": 71,
@@ -653,7 +806,12 @@
     },
     {
       "count": 4,
-      "detail": [13640, 13642, 13644, 13646],
+      "detail": [
+        13640,
+        13642,
+        13644,
+        13646
+      ],
       "hash": "25bbb6",
       "icon": "farmers_strawhat.png",
       "id": 82,
@@ -663,7 +821,12 @@
     },
     {
       "count": 4,
-      "detail": [28616, 28618, 28620, 28622],
+      "detail": [
+        28616,
+        28618,
+        28620,
+        28622
+      ],
       "hash": "49c066",
       "icon": "pheasant_hat.png",
       "id": 70,
@@ -673,7 +836,9 @@
     },
     {
       "count": 1,
-      "detail": [22840],
+      "detail": [
+        22840
+      ],
       "hash": "a8a9d0",
       "icon": "golden_tench.png",
       "id": 72,
@@ -683,7 +848,9 @@
     },
     {
       "count": 1,
-      "detail": [13353],
+      "detail": [
+        13353
+      ],
       "hash": "e58c76",
       "icon": "gricollers_can.png",
       "id": 79,
@@ -693,7 +860,9 @@
     },
     {
       "count": 1,
-      "detail": [13226],
+      "detail": [
+        13226
+      ],
       "hash": "57b712",
       "icon": "herb_sack.png",
       "id": 80,
@@ -703,7 +872,9 @@
     },
     {
       "count": 1,
-      "detail": [28655],
+      "detail": [
+        28655
+      ],
       "hash": "85c9c4",
       "icon": "petal_garland.png",
       "id": 84,
@@ -713,7 +884,9 @@
     },
     {
       "count": 1,
-      "detail": [13639],
+      "detail": [
+        13639
+      ],
       "hash": "936aee",
       "icon": "seed_box.png",
       "id": 81,
@@ -723,7 +896,9 @@
     },
     {
       "count": 1,
-      "detail": [2366],
+      "detail": [
+        2366
+      ],
       "hash": "90fb93",
       "icon": "shield_left_half.png",
       "id": 74,
@@ -733,7 +908,9 @@
     },
     {
       "count": 1,
-      "detail": [30068],
+      "detail": [
+        30068
+      ],
       "hash": "ca5212",
       "icon": "soiled_page.png",
       "id": 69,
@@ -743,7 +920,9 @@
     },
     {
       "count": 1,
-      "detail": [20716],
+      "detail": [
+        20716
+      ],
       "hash": "256044",
       "icon": "tome_of_fire.png",
       "id": 67,
@@ -815,7 +994,10 @@
     },
     {
       "count": 2,
-      "detail": [22844, 22846],
+      "detail": [
+        22844,
+        22846
+      ],
       "hash": "6da5b3",
       "icon": "pearl_fishing_rod.png",
       "id": 111,
@@ -825,7 +1007,9 @@
     },
     {
       "count": 1,
-      "detail": [7993],
+      "detail": [
+        7993
+      ],
       "hash": "7afbc2",
       "icon": "big_shark.png",
       "id": 112,
@@ -835,7 +1019,10 @@
     },
     {
       "count": 1,
-      "detail": [25844, 25846],
+      "detail": [
+        25844,
+        25846
+      ],
       "hash": "0e26c4",
       "icon": "giant_egg_sac.png",
       "id": 98,
@@ -845,7 +1032,9 @@
     },
     {
       "count": 1,
-      "detail": [22994],
+      "detail": [
+        22994
+      ],
       "hash": "ddf124",
       "icon": "bottomless_compost_bucket.png",
       "id": 95,
@@ -855,7 +1044,9 @@
     },
     {
       "count": 1,
-      "detail": [30042],
+      "detail": [
+        30042
+      ],
       "hash": "6f3d11",
       "icon": "calcified_acorn.png",
       "id": 113,
@@ -865,7 +1056,9 @@
     },
     {
       "count": 1,
-      "detail": [30957],
+      "detail": [
+        30957
+      ],
       "hash": "b87b49",
       "icon": "earthbound_tecpatl.png",
       "id": 108,
@@ -875,7 +1068,9 @@
     },
     {
       "count": 1,
-      "detail": [31043],
+      "detail": [
+        31043
+      ],
       "hash": "2a3c66",
       "icon": "fletching_knife.png",
       "id": 106,
@@ -885,7 +1080,12 @@
     },
     {
       "count": 4,
-      "detail": [13258, 13259, 13260, 13261],
+      "detail": [
+        13258,
+        13259,
+        13260,
+        13261
+      ],
       "hash": "7db281",
       "icon": "angler_hat.png",
       "id": 110,
@@ -895,7 +1095,9 @@
     },
     {
       "count": 1,
-      "detail": [31034],
+      "detail": [
+        31034
+      ],
       "hash": "8342e5",
       "icon": "greenman_mask.png",
       "id": 107,
@@ -905,7 +1107,9 @@
     },
     {
       "count": 1,
-      "detail": [30085],
+      "detail": [
+        30085
+      ],
       "hash": "a2daa7",
       "icon": "hueycoatl_hide.png",
       "id": 102,
@@ -915,7 +1119,9 @@
     },
     {
       "count": 1,
-      "detail": [23522],
+      "detail": [
+        23522
+      ],
       "hash": "9fb698",
       "icon": "mask_of_ranul.png",
       "id": 97,
@@ -925,7 +1131,9 @@
     },
     {
       "count": 1,
-      "detail": [29892],
+      "detail": [
+        29892
+      ],
       "hash": "bd9ac1",
       "icon": "pendant_of_ates.png",
       "id": 104,
@@ -935,7 +1143,10 @@
     },
     {
       "count": 1,
-      "detail": [21027, 21047],
+      "detail": [
+        21027,
+        21047
+      ],
       "hash": "3fa4bf",
       "icon": "torn_prayer_scroll.png",
       "id": 100,
@@ -945,7 +1156,9 @@
     },
     {
       "count": 1,
-      "detail": [33133],
+      "detail": [
+        33133
+      ],
       "hash": "ffde75",
       "icon": "herb_sack.png",
       "id": 308,
@@ -955,7 +1168,9 @@
     },
     {
       "count": 1,
-      "detail": [29084],
+      "detail": [
+        29084
+      ],
       "hash": "27ff67",
       "icon": "sulphur_blades.png",
       "id": 105,
@@ -1131,7 +1346,17 @@
     },
     {
       "count": 1,
-      "detail": [20693, 20851, 21273, 23495, 28960, 30152, 30154, 30888, 31130],
+      "detail": [
+        20693,
+        20851,
+        21273,
+        23495,
+        28960,
+        30152,
+        30154,
+        30888,
+        31130
+      ],
       "hash": "3bee20",
       "icon": "pet_icon.png",
       "id": 145,
@@ -1141,7 +1366,15 @@
     },
     {
       "count": 1,
-      "detail": [13320, 13321, 13322, 20659, 20661, 20663, 20665],
+      "detail": [
+        13320,
+        13321,
+        13322,
+        20659,
+        20661,
+        20663,
+        20665
+      ],
       "hash": "f41038",
       "icon": "pet_icon.png",
       "id": 146,
@@ -1151,7 +1384,11 @@
     },
     {
       "count": 1,
-      "detail": [28933, 28936, 28939],
+      "detail": [
+        28933,
+        28936,
+        28939
+      ],
       "hash": "2e3e60",
       "icon": "sunfire_fanatic_helm.png",
       "id": 123,
@@ -1161,7 +1398,11 @@
     },
     {
       "count": 3,
-      "detail": [7989, 7991, 7993],
+      "detail": [
+        7989,
+        7991,
+        7993
+      ],
       "hash": "f3563a",
       "icon": "big_shark.png",
       "id": 143,
@@ -1171,7 +1412,9 @@
     },
     {
       "count": 1,
-      "detail": [30795],
+      "detail": [
+        30795
+      ],
       "hash": "3f6ec5",
       "icon": "barrel_of_demonic_tallow.png",
       "id": 119,
@@ -1181,7 +1424,10 @@
     },
     {
       "count": 2,
-      "detail": [25844, 25846],
+      "detail": [
+        25844,
+        25846
+      ],
       "hash": "c3e131",
       "icon": "giant_egg_sac.png",
       "id": 134,
@@ -1191,7 +1437,9 @@
     },
     {
       "count": 1,
-      "detail": [10977],
+      "detail": [
+        10977
+      ],
       "hash": "b076dc",
       "icon": "curved_bone.png",
       "id": 140,
@@ -1201,7 +1449,9 @@
     },
     {
       "count": 1,
-      "detail": [31111],
+      "detail": [
+        31111
+      ],
       "hash": "1c56d0",
       "icon": "demon_tear.png",
       "id": 45,
@@ -1211,7 +1461,9 @@
     },
     {
       "count": 1,
-      "detail": [1249],
+      "detail": [
+        1249
+      ],
       "hash": "dc4451",
       "icon": "dragon_spear.png",
       "id": 141,
@@ -1221,7 +1473,9 @@
     },
     {
       "count": 1,
-      "detail": [28942],
+      "detail": [
+        28942
+      ],
       "hash": "256f04",
       "icon": "echo_crystal.png",
       "id": 122,
@@ -1231,7 +1485,9 @@
     },
     {
       "count": 1,
-      "detail": [22838],
+      "detail": [
+        22838
+      ],
       "hash": "459c00",
       "icon": "fish_sack.png",
       "id": 142,
@@ -1241,7 +1497,9 @@
     },
     {
       "count": 1,
-      "detail": [30763],
+      "detail": [
+        30763
+      ],
       "hash": "315489",
       "icon": "forgotten_lockbox.png",
       "id": 118,
@@ -1251,7 +1509,9 @@
     },
     {
       "count": 1,
-      "detail": [29889],
+      "detail": [
+        29889
+      ],
       "hash": "55a1f9",
       "icon": "glacial_temotli.png",
       "id": 138,
@@ -1261,7 +1521,9 @@
     },
     {
       "count": 1,
-      "detail": [30765],
+      "detail": [
+        30765
+      ],
       "hash": "c2edd6",
       "icon": "oathplate_shards.png",
       "id": 117,
@@ -1271,7 +1533,9 @@
     },
     {
       "count": 1,
-      "detail": [29974],
+      "detail": [
+        29974
+      ],
       "hash": "da5603",
       "icon": "prescription_goggles.png",
       "id": 144,
@@ -1281,7 +1545,9 @@
     },
     {
       "count": 1,
-      "detail": [23528],
+      "detail": [
+        23528
+      ],
       "hash": "d9d094",
       "icon": "sarachnis_cudgel.png",
       "id": 133,
@@ -1291,7 +1557,9 @@
     },
     {
       "count": 1,
-      "detail": [30066],
+      "detail": [
+        30066
+      ],
       "hash": "bae95b",
       "icon": "tome_of_earth.png",
       "id": 136,
@@ -1474,7 +1742,11 @@
     },
     {
       "count": 2,
-      "detail": [28933, 28936, 28939],
+      "detail": [
+        28933,
+        28936,
+        28939
+      ],
       "hash": "1fa4aa",
       "icon": "sunfire_fanatic_helm.png",
       "id": 155,
@@ -1485,8 +1757,18 @@
     {
       "count": 1,
       "detail": [
-        13652, 20997, 21000, 21003, 21012, 21015, 21018, 21021, 21024, 21034,
-        21043, 21079
+        13652,
+        20997,
+        21000,
+        21003,
+        21012,
+        21015,
+        21018,
+        21021,
+        21024,
+        21034,
+        21043,
+        21079
       ],
       "hash": "1f5d99",
       "icon": "cox_chest.png",
@@ -1497,7 +1779,9 @@
     },
     {
       "count": 1,
-      "detail": [21275],
+      "detail": [
+        21275
+      ],
       "hash": "7a66af",
       "icon": "dark_claw.png",
       "id": 157,
@@ -1507,7 +1791,9 @@
     },
     {
       "count": 1,
-      "detail": [30070],
+      "detail": [
+        30070
+      ],
       "hash": "4d2289",
       "icon": "dragon_hunter_wand.png",
       "id": 161,
@@ -1517,7 +1803,9 @@
     },
     {
       "count": 1,
-      "detail": [13576],
+      "detail": [
+        13576
+      ],
       "hash": "2f8754",
       "icon": "dragon_warhammer.png",
       "id": 154,
@@ -1527,7 +1815,9 @@
     },
     {
       "count": 1,
-      "detail": [28626],
+      "detail": [
+        28626
+      ],
       "hash": "bbc32f",
       "icon": "fox_whistle.png",
       "id": 163,
@@ -1537,7 +1827,12 @@
     },
     {
       "count": 4,
-      "detail": [29974, 29978, 29982, 29986],
+      "detail": [
+        29974,
+        29978,
+        29982,
+        29986
+      ],
       "hash": "ac92a0",
       "icon": "prescription_goggles.png",
       "id": 173,
@@ -1547,7 +1842,12 @@
     },
     {
       "count": 4,
-      "detail": [10933, 10939, 10940, 10941],
+      "detail": [
+        10933,
+        10939,
+        10940,
+        10941
+      ],
       "hash": "e8bbb8",
       "icon": "lumberjack_hat.png",
       "id": 171,
@@ -1557,7 +1857,9 @@
     },
     {
       "count": 1,
-      "detail": [28663],
+      "detail": [
+        28663
+      ],
       "hash": "78f520",
       "icon": "golden_pheasant_egg.png",
       "id": 164,
@@ -1567,7 +1869,16 @@
     },
     {
       "count": 8,
-      "detail": [13258, 13259, 13260, 13261, 22838, 22840, 22844, 22846],
+      "detail": [
+        13258,
+        13259,
+        13260,
+        13261,
+        22838,
+        22840,
+        22844,
+        22846
+      ],
       "hash": "d1df88",
       "icon": "golden_tench.png",
       "id": 165,
@@ -1578,8 +1889,18 @@
     {
       "count": 12,
       "detail": [
-        28988, 28997, 29000, 29004, 29007, 29010, 29013, 29016, 29019, 29022,
-        29025, 29028
+        28988,
+        28997,
+        29000,
+        29004,
+        29007,
+        29010,
+        29013,
+        29016,
+        29019,
+        29022,
+        29025,
+        29028
       ],
       "hash": "a3b6d2",
       "id": 166,
@@ -1589,7 +1910,9 @@
     },
     {
       "count": 1,
-      "detail": [30759],
+      "detail": [
+        30759
+      ],
       "hash": "50d790",
       "icon": "soulflame_horn.png",
       "id": 192,
@@ -1783,7 +2106,11 @@
     },
     {
       "count": 1,
-      "detail": [30750, 30753, 30756],
+      "detail": [
+        30750,
+        30753,
+        30756
+      ],
       "hash": "bb1d2d",
       "icon": "oathplate_helm.png",
       "id": 193,
@@ -1802,7 +2129,17 @@
     },
     {
       "count": 3,
-      "detail": [20693, 20851, 21273, 23495, 28960, 30152, 30154, 30888, 31130],
+      "detail": [
+        20693,
+        20851,
+        21273,
+        23495,
+        28960,
+        30152,
+        30154,
+        30888,
+        31130
+      ],
       "hash": "52a65b",
       "icon": "pet_icon.png",
       "id": 202,
@@ -1812,7 +2149,15 @@
     },
     {
       "count": 3,
-      "detail": [13320, 13321, 13322, 20659, 20661, 20663, 20665],
+      "detail": [
+        13320,
+        13321,
+        13322,
+        20659,
+        20661,
+        20663,
+        20665
+      ],
       "hash": "db3fbc",
       "icon": "pet_icon.png",
       "id": 203,
@@ -1823,8 +2168,18 @@
     {
       "count": 5,
       "detail": [
-        13652, 20997, 21000, 21003, 21012, 21015, 21018, 21021, 21024, 21034,
-        21043, 21079
+        13652,
+        20997,
+        21000,
+        21003,
+        21012,
+        21015,
+        21018,
+        21021,
+        21024,
+        21034,
+        21043,
+        21079
       ],
       "hash": "260401",
       "icon": "cox_chest.png",
@@ -1835,7 +2190,9 @@
     },
     {
       "count": 1,
-      "detail": [31081],
+      "detail": [
+        31081
+      ],
       "hash": "bd9fad",
       "icon": "antler_guard.png",
       "id": 196,
@@ -1845,7 +2202,9 @@
     },
     {
       "count": 1,
-      "detail": [6573],
+      "detail": [
+        6573
+      ],
       "hash": "894d5f",
       "icon": "onyx.png",
       "id": 189,
@@ -1855,7 +2214,10 @@
     },
     {
       "count": 2,
-      "detail": [21009, 21028],
+      "detail": [
+        21009,
+        21028
+      ],
       "hash": "5ff320",
       "icon": "dharpoon_dsword.png",
       "id": 301,
@@ -1865,7 +2227,9 @@
     },
     {
       "count": 1,
-      "detail": [28947],
+      "detail": [
+        28947
+      ],
       "hash": "a7d8a6",
       "icon": "dizanas_quiver.png",
       "id": 187,
@@ -1875,7 +2239,9 @@
     },
     {
       "count": 1,
-      "detail": [6739],
+      "detail": [
+        6739
+      ],
       "hash": "59a09c",
       "icon": "dragon_axe.png",
       "id": 172,
@@ -1885,7 +2251,9 @@
     },
     {
       "count": 1,
-      "detail": [20736],
+      "detail": [
+        20736
+      ],
       "hash": "cde99a",
       "icon": "dust_battlestaff.png",
       "id": 304,
@@ -1895,7 +2263,11 @@
     },
     {
       "count": 3,
-      "detail": [28933, 28936, 28939],
+      "detail": [
+        28933,
+        28936,
+        28939
+      ],
       "hash": "25ef65",
       "icon": "sunfire_fanatic_helm.png",
       "id": 188,
@@ -1905,7 +2277,9 @@
     },
     {
       "count": 1,
-      "detail": [23525],
+      "detail": [
+        23525
+      ],
       "hash": "88e6d9",
       "icon": "jar_of_eyes.png",
       "id": 199,
@@ -1915,7 +2289,9 @@
     },
     {
       "count": 1,
-      "detail": [29996],
+      "detail": [
+        29996
+      ],
       "hash": "e8379d",
       "icon": "reagent_pouch.png",
       "id": 204,
@@ -2097,7 +2473,11 @@
     },
     {
       "count": 1,
-      "detail": [20997, 21003, 21043],
+      "detail": [
+        20997,
+        21003,
+        21043
+      ],
       "hash": "27136f",
       "icon": "cox_chest.png",
       "id": 214,
@@ -2107,7 +2487,9 @@
     },
     {
       "count": 1,
-      "detail": [24670],
+      "detail": [
+        24670
+      ],
       "hash": "76a420",
       "icon": "twisted_ancestral_colour_kit.png",
       "id": 224,
@@ -2117,7 +2499,12 @@
     },
     {
       "count": 1,
-      "detail": [20433, 20436, 20439, 20442],
+      "detail": [
+        20433,
+        20436,
+        20439,
+        20442
+      ],
       "hash": "a41a94",
       "icon": "evil_chicken_head.png",
       "id": 229,
@@ -2128,8 +2515,18 @@
     {
       "count": 10,
       "detail": [
-        13652, 20997, 21000, 21003, 21012, 21015, 21018, 21021, 21024, 21034,
-        21043, 21079
+        13652,
+        20997,
+        21000,
+        21003,
+        21012,
+        21015,
+        21018,
+        21021,
+        21024,
+        21034,
+        21043,
+        21079
       ],
       "hash": "f0adfc",
       "icon": "cox_chest.png",
@@ -2140,7 +2537,11 @@
     },
     {
       "count": 2,
-      "detail": [30750, 30753, 30756],
+      "detail": [
+        30750,
+        30753,
+        30756
+      ],
       "hash": "64778e",
       "icon": "oathplate_helm.png",
       "id": 218,
@@ -2150,7 +2551,12 @@
     },
     {
       "count": 2,
-      "detail": [20433, 20436, 20439, 20442],
+      "detail": [
+        20433,
+        20436,
+        20439,
+        20442
+      ],
       "hash": "62aca6",
       "icon": "evil_chicken_head.png",
       "id": 230,
@@ -2169,7 +2575,17 @@
     },
     {
       "count": 5,
-      "detail": [20693, 20851, 21273, 23495, 28960, 30152, 30154, 30888, 31130],
+      "detail": [
+        20693,
+        20851,
+        21273,
+        23495,
+        28960,
+        30152,
+        30154,
+        30888,
+        31130
+      ],
       "hash": "6caa6c",
       "icon": "pet_icon.png",
       "id": 233,
@@ -2179,7 +2595,15 @@
     },
     {
       "count": 5,
-      "detail": [13320, 13321, 13322, 20659, 20661, 20663, 20665],
+      "detail": [
+        13320,
+        13321,
+        13322,
+        20659,
+        20661,
+        20663,
+        20665
+      ],
       "hash": "76a1f4",
       "icon": "pet_icon.png",
       "id": 234,
@@ -2189,7 +2613,9 @@
     },
     {
       "count": 1,
-      "detail": [31088],
+      "detail": [
+        31088
+      ],
       "hash": "b89425",
       "icon": "avernic_treads.png",
       "id": 221,
@@ -2199,7 +2625,9 @@
     },
     {
       "count": 1,
-      "detail": [30002],
+      "detail": [
+        30002
+      ],
       "hash": "2fb84e",
       "icon": "chugging_barrel.png",
       "id": 232,
@@ -2209,7 +2637,9 @@
     },
     {
       "count": 1,
-      "detail": [31115],
+      "detail": [
+        31115
+      ],
       "hash": "6c65f9",
       "icon": "eye_of_ayak.png",
       "id": 220,
@@ -2219,7 +2649,14 @@
     },
     {
       "count": 6,
-      "detail": [31088, 31099, 31109, 31111, 31115, 31130],
+      "detail": [
+        31088,
+        31099,
+        31109,
+        31111,
+        31115,
+        31130
+      ],
       "hash": "d314ff",
       "id": 223,
       "name": "Greenlog Mokhaiotl",
@@ -2229,7 +2666,16 @@
     {
       "count": 11,
       "detail": [
-        30750, 30753, 30756, 30759, 30763, 30765, 30775, 30795, 30805, 30806,
+        30750,
+        30753,
+        30756,
+        30759,
+        30763,
+        30765,
+        30775,
+        30795,
+        30805,
+        30806,
         30888
       ],
       "hash": "451805",
@@ -2240,7 +2686,9 @@
     },
     {
       "count": 1,
-      "detail": [28919],
+      "detail": [
+        28919
+      ],
       "hash": "143a93",
       "icon": "tonalztics_of_ralos.png",
       "id": 227,
@@ -2250,7 +2698,9 @@
     },
     {
       "count": 1,
-      "detail": [6571],
+      "detail": [
+        6571
+      ],
       "hash": "e90824",
       "icon": "uncut_onyx.png",
       "id": 231,
@@ -2442,7 +2892,11 @@
     },
     {
       "count": 3,
-      "detail": [30750, 30753, 30756],
+      "detail": [
+        30750,
+        30753,
+        30756
+      ],
       "hash": "6e3773",
       "icon": "oathplate_helm.png",
       "id": 256,
@@ -2452,7 +2906,12 @@
     },
     {
       "count": 3,
-      "detail": [20433, 20436, 20439, 20442],
+      "detail": [
+        20433,
+        20436,
+        20439,
+        20442
+      ],
       "hash": "22e1e1",
       "icon": "evil_chicken_head.png",
       "id": 261,
@@ -2489,7 +2948,17 @@
     },
     {
       "count": 7,
-      "detail": [20693, 20851, 21273, 23495, 28960, 30152, 30154, 30888, 31130],
+      "detail": [
+        20693,
+        20851,
+        21273,
+        23495,
+        28960,
+        30152,
+        30154,
+        30888,
+        31130
+      ],
       "hash": "d31cde",
       "icon": "pet_icon.png",
       "id": 270,
@@ -2499,7 +2968,15 @@
     },
     {
       "count": 7,
-      "detail": [13320, 13321, 13322, 20659, 20661, 20663, 20665],
+      "detail": [
+        13320,
+        13321,
+        13322,
+        20659,
+        20661,
+        20663,
+        20665
+      ],
       "hash": "f5349d",
       "icon": "pet_icon.png",
       "id": 271,
@@ -2509,7 +2986,17 @@
     },
     {
       "count": 8,
-      "detail": [20693, 20851, 21273, 23495, 28960, 30152, 30154, 30888, 31130],
+      "detail": [
+        20693,
+        20851,
+        21273,
+        23495,
+        28960,
+        30152,
+        30154,
+        30888,
+        31130
+      ],
       "hash": "57062e",
       "icon": "pet_icon.png",
       "id": 257,
@@ -2519,7 +3006,17 @@
     },
     {
       "count": 9,
-      "detail": [20693, 20851, 21273, 23495, 28960, 30152, 30154, 30888, 31130],
+      "detail": [
+        20693,
+        20851,
+        21273,
+        23495,
+        28960,
+        30152,
+        30154,
+        30888,
+        31130
+      ],
       "hash": "9ce959",
       "icon": "pet_icon.png",
       "id": 259,
@@ -2529,7 +3026,9 @@
     },
     {
       "count": 1,
-      "detail": [30111],
+      "detail": [
+        30111
+      ],
       "hash": "e46e2c",
       "icon": "helmet_of_the_moon.png",
       "id": 280,
@@ -2539,7 +3038,9 @@
     },
     {
       "count": 1,
-      "detail": [11286],
+      "detail": [
+        11286
+      ],
       "hash": "c6cf2c",
       "icon": "draconic_visage.png",
       "id": 243,
@@ -2549,7 +3050,9 @@
     },
     {
       "count": 1,
-      "detail": [3140],
+      "detail": [
+        3140
+      ],
       "hash": "cc70aa",
       "icon": "dragon_chainbody.png",
       "id": 278,
@@ -2559,7 +3062,12 @@
     },
     {
       "count": 4,
-      "detail": [20433, 20436, 20439, 20442],
+      "detail": [
+        20433,
+        20436,
+        20439,
+        20442
+      ],
       "hash": "a8472b",
       "icon": "evil_chicken_head.png",
       "id": 275,
@@ -2570,9 +3078,29 @@
     {
       "count": 23,
       "detail": [
-        6573, 13652, 20851, 20997, 21000, 21003, 21012, 21015, 21018, 21021,
-        21024, 21027, 21034, 21043, 21047, 21079, 22386, 22388, 22390, 22392,
-        22394, 22396, 24670
+        6573,
+        13652,
+        20851,
+        20997,
+        21000,
+        21003,
+        21012,
+        21015,
+        21018,
+        21021,
+        21024,
+        21027,
+        21034,
+        21043,
+        21047,
+        21079,
+        22386,
+        22388,
+        22390,
+        22392,
+        22394,
+        22396,
+        24670
       ],
       "hash": "503f42",
       "icon": "cox_chest.png",
@@ -2583,7 +3111,9 @@
     },
     {
       "count": 1,
-      "detail": [19701],
+      "detail": [
+        19701
+      ],
       "hash": "57ab43",
       "icon": "jar_of_darkness.png",
       "id": 277,
@@ -2593,7 +3123,9 @@
     },
     {
       "count": 1,
-      "detail": [22386],
+      "detail": [
+        22386
+      ],
       "hash": "0f585e",
       "icon": "metamorphic_dust.png",
       "id": 250,
@@ -2603,7 +3135,9 @@
     },
     {
       "count": 1,
-      "detail": [13233],
+      "detail": [
+        13233
+      ],
       "hash": "79fc15",
       "icon": "smouldering_stone.png",
       "id": 244,
@@ -2613,7 +3147,9 @@
     },
     {
       "count": 1,
-      "detail": [20590],
+      "detail": [
+        20590
+      ],
       "hash": "f63b26",
       "icon": "stale_baguette.png",
       "id": 276,
@@ -2623,7 +3159,9 @@
     },
     {
       "count": 1,
-      "detail": [20997],
+      "detail": [
+        20997
+      ],
       "hash": "de5021",
       "icon": "twisted_bow.png",
       "id": 248,
@@ -2633,7 +3171,9 @@
     },
     {
       "count": 1,
-      "detail": [22396],
+      "detail": [
+        22396
+      ],
       "hash": "669789",
       "icon": "xerics_champion.png",
       "id": 254,
@@ -2643,7 +3183,9 @@
     },
     {
       "count": 1,
-      "detail": [22394],
+      "detail": [
+        22394
+      ],
       "hash": "ec79c0",
       "icon": "xerics_general.png",
       "id": 253,
@@ -2653,7 +3195,9 @@
     },
     {
       "count": 1,
-      "detail": [22388],
+      "detail": [
+        22388
+      ],
       "hash": "8e0421",
       "icon": "xerics_warrior.png",
       "id": 249,
@@ -2663,7 +3207,9 @@
     },
     {
       "count": 1,
-      "detail": [22392],
+      "detail": [
+        22392
+      ],
       "hash": "7fc5a9",
       "icon": "xerics_sentinel.png",
       "id": 252,
@@ -2673,7 +3219,9 @@
     },
     {
       "count": 1,
-      "detail": [22390],
+      "detail": [
+        22390
+      ],
       "hash": "ffc4cc",
       "icon": "xerics_warrior.png",
       "id": 251,
