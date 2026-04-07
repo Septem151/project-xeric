@@ -36,7 +36,7 @@ public enum ClanRank {
   MAXED(1650, 3247, 0);
 
   /** All ranks sorted by points needed to obtain. */
-  public static final List<ClanRank> ALL_RANKS =
+  private static final List<ClanRank> ALL_RANKS =
       Arrays.stream(ClanRank.values())
           .sorted(Comparator.comparingInt(r -> r.pointsNeeded))
           .collect(Collectors.toList());

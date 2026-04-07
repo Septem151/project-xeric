@@ -72,6 +72,7 @@ public class ProjectXericApiClient {
                         JsonObject json = gson.fromJson(errBody.string(), JsonObject.class);
                         if (json.has("error")) msg = json.get("error").getAsString();
                       } catch (Exception ignored) {
+                        // Ignore any parsing errors from error responses
                       }
                     }
                     throw new IOException(msg);
