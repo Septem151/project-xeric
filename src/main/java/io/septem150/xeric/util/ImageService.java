@@ -33,15 +33,27 @@ public class ImageService {
     this.apiClient = apiClient;
     ICONS_DIR.mkdirs();
     for (TaskType type : TaskType.values()) {
-      String filename = "default_" + type.getName() + "_task.png";
       defaultIcons.put(
           type,
-          ImageUtil.resizeImage(
-              ImageUtil.loadImageResource(ProjectXericPlugin.class, "images/" + filename),
-              ICON_SIZE,
-              ICON_SIZE,
-              true));
+          resizeIcon(
+              ImageUtil.loadImageResource(
+                  ProjectXericPlugin.class, "images/default_" + type.getName() + "_task.png")));
     }
+  }
+
+  private static BufferedImage resizeIcon(BufferedImage image) {
+    return ImageUtil.resizeImage(image, ICON_SIZE, ICON_SIZE, true);
+  }
+
+  private static String resolveIconFilename(Task task) {
+    if (task.getIcon() != null) return task.getIcon();
+    if (task instanceof KCTask) {
+      String boss = ((KCTask) task).getBoss();
+      if (boss != null) {
+        return boss.toLowerCase().replace(" ", "_").replaceAll("[():]", "") + ".png";
+      }
+    }
+    return null;
   }
 
   public BufferedImage getDefaultIcon(TaskType type) {
@@ -49,22 +61,15 @@ public class ImageService {
   }
 
   public void loadTaskIcon(Task task, Consumer<BufferedImage> callback) {
-    String icon = task.getIcon();
-    if (icon == null && task instanceof KCTask) {
-      icon = deriveKcIconFilename((KCTask) task);
-    }
-    if (icon == null) {
-      return;
-    }
-    final String iconFilename = icon;
+    String iconFilename = resolveIconFilename(task);
+    if (iconFilename == null) return;
 
-    // check disk cache
     File cachedFile = new File(ICONS_DIR, iconFilename);
     if (cachedFile.exists()) {
       try {
         BufferedImage image = ImageIO.read(cachedFile);
         if (image != null) {
-          callback.accept(ImageUtil.resizeImage(image, ICON_SIZE, ICON_SIZE, true));
+          callback.accept(resizeIcon(image));
           return;
         }
       } catch (IOException e) {
@@ -73,25 +78,9 @@ public class ImageService {
       }
     }
 
-    // fetch from server
     apiClient
         .fetchTaskIcon(iconFilename)
-        .thenAccept(
-            bytes -> {
-              try {
-                BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
-                if (image == null) return;
-                try {
-                  ICONS_DIR.mkdirs();
-                  ImageIO.write(image, "png", cachedFile);
-                } catch (IOException e) {
-                  log.warn("Failed to cache icon: {}", iconFilename, e);
-                }
-                callback.accept(ImageUtil.resizeImage(image, ICON_SIZE, ICON_SIZE, true));
-              } catch (IOException e) {
-                log.warn("Failed to read task icon: {}", iconFilename, e);
-              }
-            })
+        .thenAccept(bytes -> loadAndCacheIcon(bytes, cachedFile, iconFilename, callback))
         .exceptionally(
             err -> {
               log.warn("Failed to fetch task icon: {}", iconFilename, err);
@@ -99,10 +88,21 @@ public class ImageService {
             });
   }
 
-  private static String deriveKcIconFilename(KCTask task) {
-    String boss = task.getBoss();
-    if (boss == null) return null;
-    return boss.toLowerCase().replace(" ", "_").replaceAll("[():]", "") + ".png";
+  private void loadAndCacheIcon(
+      byte[] bytes, File cachedFile, String iconFilename, Consumer<BufferedImage> callback) {
+    try {
+      BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
+      if (image == null) return;
+      try {
+        ICONS_DIR.mkdirs();
+        ImageIO.write(image, "png", cachedFile);
+      } catch (IOException e) {
+        log.warn("Failed to cache icon: {}", iconFilename, e);
+      }
+      callback.accept(resizeIcon(image));
+    } catch (IOException e) {
+      log.warn("Failed to read task icon: {}", iconFilename, e);
+    }
   }
 
   public void clearCache() {
