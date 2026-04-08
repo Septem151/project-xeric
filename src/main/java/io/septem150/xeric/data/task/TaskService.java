@@ -27,29 +27,35 @@ public class TaskService {
     this.gson = gson;
   }
 
-  @Nullable public String getCachedHash() {
-    if (!CACHE_FILE.exists()) {
+  @Nullable private String readCacheFile() {
+    if (!CACHE_FILE.exists()) return null;
+    try {
+      return Files.readString(CACHE_FILE.toPath());
+    } catch (IOException e) {
+      log.warn("Failed to read task cache", e);
       return null;
     }
+  }
+
+  @Nullable public String getCachedHash() {
+    String content = readCacheFile();
+    if (content == null) return null;
     try {
-      String content = Files.readString(CACHE_FILE.toPath());
       JsonObject obj = gson.fromJson(content, JsonObject.class);
       return obj.has("hash") ? obj.get("hash").getAsString() : null;
     } catch (Exception e) {
-      log.warn("Failed to read cached task hash", e);
+      log.warn("Failed to parse cached task hash", e);
       return null;
     }
   }
 
   @Nullable public TaskResponse loadFromCache() {
-    if (!CACHE_FILE.exists()) {
-      return null;
-    }
+    String content = readCacheFile();
+    if (content == null) return null;
     try {
-      String content = Files.readString(CACHE_FILE.toPath());
       return gson.fromJson(content, TaskResponse.class);
     } catch (Exception e) {
-      log.warn("Failed to load tasks from cache", e);
+      log.warn("Failed to parse tasks from cache", e);
       return null;
     }
   }
@@ -59,10 +65,7 @@ public class TaskService {
       CACHE_DIR.mkdirs();
       File tempFile = new File(CACHE_DIR, "tasks.json.tmp");
       Files.write(tempFile.toPath(), body.getBytes(StandardCharsets.UTF_8));
-      if (!tempFile.renameTo(CACHE_FILE)) {
-        Files.copy(tempFile.toPath(), CACHE_FILE.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Files.delete(tempFile.toPath());
-      }
+      Files.move(tempFile.toPath(), CACHE_FILE.toPath(), StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
       log.warn("Failed to save tasks to cache", e);
     }
@@ -70,9 +73,9 @@ public class TaskService {
 
   public void deleteCache() {
     try {
-      Files.delete(CACHE_FILE.toPath());
+      Files.deleteIfExists(CACHE_FILE.toPath());
     } catch (IOException e) {
-      log.warn("Failed to delete tasks from cache", e);
+      log.warn("Failed to delete task cache", e);
     }
   }
 }

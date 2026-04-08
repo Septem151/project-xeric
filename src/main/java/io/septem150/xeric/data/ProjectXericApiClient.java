@@ -13,7 +13,7 @@ import java.util.concurrent.CompletionException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import lombok.Getter;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -46,7 +46,18 @@ public class ProjectXericApiClient {
   }
 
   private HttpUrl.Builder baseUrl() {
-    return HttpUrl.parse(API_BASE_URL).newBuilder();
+    return HttpUrl.parse(API_BASE_URL).newBuilder().addPathSegment("v2");
+  }
+
+  private Request get(String... segments) {
+    HttpUrl.Builder url = baseUrl();
+    for (String s : segments) url.addPathSegment(s);
+    return new Request.Builder().get().url(url.build()).build();
+  }
+
+  private TaskFetchResult cachedResult() {
+    TaskResponse cached = taskService.loadFromCache();
+    return cached != null && cached.getTasks() != null ? new TaskFetchResult(cached, null) : null;
   }
 
   private <T> CompletableFuture<T> executeAsync(
@@ -101,7 +112,7 @@ public class ProjectXericApiClient {
     Request request =
         new Request.Builder()
             .post(RequestBody.create(JSON_MEDIA_TYPE, gson.toJson(json)))
-            .url(baseUrl().addPathSegment("v2").addPathSegment("player").build())
+            .url(baseUrl().addPathSegment("player").build())
             .build();
     executeAsync(request)
         .exceptionally(
@@ -113,37 +124,23 @@ public class ProjectXericApiClient {
 
   public CompletableFuture<TaskFetchResult> fetchTasksAsync() {
     String cachedHash = taskService.getCachedHash();
-    Request hashRequest =
-        new Request.Builder()
-            .get()
-            .url(
-                baseUrl()
-                    .addPathSegment("v2")
-                    .addPathSegment("tasks")
-                    .addPathSegment("hash")
-                    .build())
-            .build();
 
-    return executeAsync(hashRequest)
+    return executeAsync(get("tasks", "hash"))
         .thenCompose(
             bodyString -> {
               String serverHash =
                   gson.fromJson(bodyString, JsonObject.class).get("hash").getAsString();
               if (serverHash.equals(cachedHash)) {
-                TaskResponse cached = taskService.loadFromCache();
-                if (cached != null && cached.getTasks() != null) {
-                  return CompletableFuture.completedFuture(new TaskFetchResult(cached, null));
-                }
+                TaskFetchResult cached = cachedResult();
+                if (cached != null) return CompletableFuture.completedFuture(cached);
               }
               return fetchFullTaskList();
             })
         .exceptionally(
             err -> {
               log.warn("Failed to fetch tasks: {}", err.getMessage());
-              TaskResponse cached = taskService.loadFromCache();
-              if (cached != null && cached.getTasks() != null) {
-                return new TaskFetchResult(cached, null);
-              }
+              TaskFetchResult cached = cachedResult();
+              if (cached != null) return cached;
               throw err instanceof CompletionException
                   ? (CompletionException) err
                   : new CompletionException(err);
@@ -151,19 +148,13 @@ public class ProjectXericApiClient {
   }
 
   private CompletableFuture<TaskFetchResult> fetchFullTaskList() {
-    Request request =
-        new Request.Builder()
-            .get()
-            .url(baseUrl().addPathSegment("v2").addPathSegment("tasks").build())
-            .build();
-
-    return executeAsync(request)
+    return executeAsync(get("tasks"))
         .thenApply(
             bodyString -> {
               Map<Integer, String> oldHashes = new HashMap<>();
-              TaskResponse oldCached = taskService.loadFromCache();
-              if (oldCached != null && oldCached.getTasks() != null) {
-                for (Task oldTask : oldCached.getTasks()) {
+              TaskFetchResult oldCached = cachedResult();
+              if (oldCached != null) {
+                for (Task oldTask : oldCached.getTaskResponse().getTasks()) {
                   oldHashes.put(oldTask.getId(), oldTask.getHash());
                 }
               }
@@ -182,17 +173,9 @@ public class ProjectXericApiClient {
     return executeAsync(request, ResponseBody::bytes);
   }
 
-  /**
-   * Result of a task fetch — contains the task response and optionally the previous task hashes.
-   */
-  @Getter
+  @Value
   public static class TaskFetchResult {
-    private final TaskResponse taskResponse;
-    private final Map<Integer, String> previousTaskHashes;
-
-    public TaskFetchResult(TaskResponse taskResponse, Map<Integer, String> previousTaskHashes) {
-      this.taskResponse = taskResponse;
-      this.previousTaskHashes = previousTaskHashes;
-    }
+    TaskResponse taskResponse;
+    Map<Integer, String> previousTaskHashes;
   }
 }
