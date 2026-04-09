@@ -2,17 +2,20 @@ package io.septem150.xeric.data;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import io.septem150.xeric.data.player.Rank;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskResponse;
 import io.septem150.xeric.data.task.TaskService;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import lombok.Getter;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Call;
@@ -164,6 +167,21 @@ public class ProjectXericApiClient {
             });
   }
 
+  public CompletableFuture<List<Rank>> fetchRanksAsync() {
+    return executeAsync(get("ranks"))
+        .thenApply(body -> gson.fromJson(body, RankFetchResult.class).getRanks());
+  }
+
+  public CompletableFuture<byte[]> fetchRankIcon(String iconFilename) {
+    HttpUrl url = HttpUrl.parse(IMAGES_BASE_URL + "ranks/" + iconFilename);
+    if (url == null) {
+      return CompletableFuture.failedFuture(
+          new IOException("Invalid rank icon URL: " + iconFilename));
+    }
+    Request request = new Request.Builder().get().url(url).build();
+    return executeAsync(request, ResponseBody::bytes);
+  }
+
   public CompletableFuture<byte[]> fetchTaskIcon(String iconFilename) {
     HttpUrl url = HttpUrl.parse(IMAGES_BASE_URL + "tasks/" + iconFilename);
     if (url == null) {
@@ -177,5 +195,10 @@ public class ProjectXericApiClient {
   public static class TaskFetchResult {
     TaskResponse taskResponse;
     Map<Integer, String> previousTaskHashes;
+  }
+
+  @Getter
+  public static class RankFetchResult {
+    private List<Rank> ranks;
   }
 }

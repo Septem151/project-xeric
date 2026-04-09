@@ -2,6 +2,7 @@ package io.septem150.xeric.util;
 
 import io.septem150.xeric.ProjectXericPlugin;
 import io.septem150.xeric.data.ProjectXericApiClient;
+import io.septem150.xeric.data.player.Rank;
 import io.septem150.xeric.data.task.KCTask;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskType;
@@ -11,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
@@ -22,8 +24,10 @@ import net.runelite.client.util.ImageUtil;
 @Slf4j
 @Singleton
 public class ImageService {
-  private static final int ICON_SIZE = 20;
+  private static final int TASK_ICON_SIZE = 20;
+  private static final int RANK_ICON_SIZE = 32;
   private static final File ICONS_DIR = new File(RuneLite.RUNELITE_DIR, "project-xeric/icons");
+  private static final File RANKS_DIR = new File(RuneLite.RUNELITE_DIR, "project-xeric/ranks");
 
   private final ProjectXericApiClient apiClient;
   private final Map<TaskType, BufferedImage> defaultIcons = new EnumMap<>(TaskType.class);
@@ -32,17 +36,19 @@ public class ImageService {
   public ImageService(ProjectXericApiClient apiClient) {
     this.apiClient = apiClient;
     ICONS_DIR.mkdirs();
+    RANKS_DIR.mkdirs();
     for (TaskType type : TaskType.values()) {
       defaultIcons.put(
           type,
-          resizeIcon(
+          resize(
               ImageUtil.loadImageResource(
-                  ProjectXericPlugin.class, "images/default_" + type.getName() + "_task.png")));
+                  ProjectXericPlugin.class, "images/default_" + type.getName() + "_task.png"),
+              TASK_ICON_SIZE));
     }
   }
 
-  private static BufferedImage resizeIcon(BufferedImage image) {
-    return ImageUtil.resizeImage(image, ICON_SIZE, ICON_SIZE, true);
+  private static BufferedImage resize(BufferedImage image, int size) {
+    return ImageUtil.resizeImage(image, size, size, true);
   }
 
   private static String resolveIconFilename(Task task) {
@@ -63,50 +69,69 @@ public class ImageService {
   public void loadTaskIcon(Task task, Consumer<BufferedImage> callback) {
     String iconFilename = resolveIconFilename(task);
     if (iconFilename == null) return;
+    loadIcon(
+        ICONS_DIR, iconFilename, apiClient.fetchTaskIcon(iconFilename), TASK_ICON_SIZE, callback);
+  }
 
-    File cachedFile = new File(ICONS_DIR, iconFilename);
+  public void loadRankIcon(Rank rank, Consumer<BufferedImage> callback) {
+    if (rank == null || rank.getIcon() == null) return;
+    String iconFilename = rank.getIcon();
+    loadIcon(
+        RANKS_DIR, iconFilename, apiClient.fetchRankIcon(iconFilename), RANK_ICON_SIZE, callback);
+  }
+
+  private void loadIcon(
+      File cacheDir,
+      String filename,
+      CompletableFuture<byte[]> fetchFuture,
+      int size,
+      Consumer<BufferedImage> callback) {
+    File cachedFile = new File(cacheDir, filename);
+
     if (cachedFile.exists()) {
       try {
         BufferedImage image = ImageIO.read(cachedFile);
         if (image != null) {
-          callback.accept(resizeIcon(image));
+          callback.accept(resize(image, size));
           return;
         }
       } catch (IOException e) {
-        log.warn("Corrupt cached icon, deleting: {}", iconFilename);
+        log.warn("Corrupt cached icon, deleting: {}", filename);
         cachedFile.delete();
       }
     }
 
-    apiClient
-        .fetchTaskIcon(iconFilename)
-        .thenAccept(bytes -> loadAndCacheIcon(bytes, cachedFile, iconFilename, callback))
+    fetchFuture
+        .thenAccept(
+            bytes -> {
+              try {
+                BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
+                if (image == null) return;
+                try {
+                  cacheDir.mkdirs();
+                  ImageIO.write(image, "png", cachedFile);
+                } catch (IOException e) {
+                  log.warn("Failed to cache icon: {}", filename, e);
+                }
+                callback.accept(resize(image, size));
+              } catch (IOException e) {
+                log.warn("Failed to read icon: {}", filename, e);
+              }
+            })
         .exceptionally(
             err -> {
-              log.warn("Failed to fetch task icon: {}", iconFilename, err);
+              log.warn("Failed to fetch icon: {}", filename, err);
               return null;
             });
   }
 
-  private void loadAndCacheIcon(
-      byte[] bytes, File cachedFile, String iconFilename, Consumer<BufferedImage> callback) {
-    try {
-      BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
-      if (image == null) return;
-      try {
-        ICONS_DIR.mkdirs();
-        ImageIO.write(image, "png", cachedFile);
-      } catch (IOException e) {
-        log.warn("Failed to cache icon: {}", iconFilename, e);
-      }
-      callback.accept(resizeIcon(image));
-    } catch (IOException e) {
-      log.warn("Failed to read task icon: {}", iconFilename, e);
-    }
+  public void clearCache() {
+    deleteFilesIn(ICONS_DIR);
+    deleteFilesIn(RANKS_DIR);
   }
 
-  public void clearCache() {
-    File[] files = ICONS_DIR.listFiles();
+  private static void deleteFilesIn(File dir) {
+    File[] files = dir.listFiles();
     if (files != null) {
       for (File file : files) {
         file.delete();

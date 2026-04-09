@@ -239,7 +239,7 @@ public class PlayerInfo {
     return completedTasks.stream().mapToInt(Task::getTier).sum();
   }
 
-  public ClanRank getRank() {
-    return ClanRank.fromPoints(getPoints());
+  public String getBoard() {
+    return slayerException ? "non_standard" : "standard";
   }
 }
