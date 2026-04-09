@@ -1,8 +1,8 @@
 package io.septem150.xeric.panel.summary;
 
 import com.google.common.collect.Iterables;
+import io.septem150.xeric.data.player.ClanRank;
 import io.septem150.xeric.data.player.PlayerInfo;
-import io.septem150.xeric.data.player.Rank;
 import io.septem150.xeric.data.player.RankService;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.panel.JLabeledValue;
@@ -179,7 +179,7 @@ public class IdCard extends JPanel {
   private void makeDynamicData() {
     int playerPoints = playerInfo.getPoints();
     String board = playerInfo.getBoard();
-    Rank playerRank = rankService.getRank(playerPoints, board);
+    ClanRank playerRank = rankService.getRank(playerPoints, board);
     if (playerRank != null) {
       imageService.loadRankIcon(playerRank, image -> rank.setIcon(new ImageIcon(image)));
       rank.setToolTipText(playerRank.getName());
@@ -212,7 +212,7 @@ public class IdCard extends JPanel {
     }
     slayException.setEnabled(playerInfo.isSlayerException());
     tasksCompleted.setValue(playerInfo.getCompletedTasks().size());
-    Rank nextRank = rankService.getNextRank(playerPoints, board);
+    ClanRank nextRank = rankService.getNextRank(playerPoints, board);
     pointsToNextRank.setValue(nextRank != null ? nextRank.getMinPoints() - playerPoints : 0);
     highestTierCompleted.setValue(getHighestTierCompleted());
   }

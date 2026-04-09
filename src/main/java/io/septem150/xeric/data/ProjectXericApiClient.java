@@ -2,7 +2,7 @@ package io.septem150.xeric.data;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import io.septem150.xeric.data.player.Rank;
+import io.septem150.xeric.data.player.ClanRank;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskResponse;
 import io.septem150.xeric.data.task.TaskService;
@@ -167,7 +167,7 @@ public class ProjectXericApiClient {
             });
   }
 
-  public CompletableFuture<List<Rank>> fetchRanksAsync() {
+  public CompletableFuture<List<ClanRank>> fetchRanksAsync() {
     return executeAsync(get("ranks"))
         .thenApply(body -> gson.fromJson(body, RankFetchResult.class).getRanks());
   }
@@ -199,6 +199,6 @@ public class ProjectXericApiClient {
 
   @Getter
   public static class RankFetchResult {
-    private List<Rank> ranks;
+    private List<ClanRank> ranks;
   }
 }
