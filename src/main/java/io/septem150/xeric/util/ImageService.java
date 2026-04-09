@@ -2,7 +2,7 @@ package io.septem150.xeric.util;
 
 import io.septem150.xeric.ProjectXericPlugin;
 import io.septem150.xeric.data.ProjectXericApiClient;
-import io.septem150.xeric.data.player.Rank;
+import io.septem150.xeric.data.player.ClanRank;
 import io.septem150.xeric.data.task.KCTask;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskType;
@@ -73,7 +73,7 @@ public class ImageService {
         ICONS_DIR, iconFilename, apiClient.fetchTaskIcon(iconFilename), TASK_ICON_SIZE, callback);
   }
 
-  public void loadRankIcon(Rank rank, Consumer<BufferedImage> callback) {
+  public void loadRankIcon(ClanRank rank, Consumer<BufferedImage> callback) {
     if (rank == null || rank.getIcon() == null) return;
     String iconFilename = rank.getIcon();
     loadIcon(

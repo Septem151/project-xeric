@@ -10,38 +10,38 @@ import javax.inject.Singleton;
 
 @Singleton
 public class RankService {
-  private List<Rank> standardRanks = new ArrayList<>();
-  private List<Rank> nonStandardRanks = new ArrayList<>();
+  private List<ClanRank> standardRanks = new ArrayList<>();
+  private List<ClanRank> nonStandardRanks = new ArrayList<>();
 
   @Inject
   public RankService() {}
 
-  public void setRanks(List<Rank> ranks) {
+  public void setRanks(List<ClanRank> ranks) {
     standardRanks =
         ranks.stream()
             .filter(r -> "standard".equals(r.getBoard()))
-            .sorted(Comparator.comparingInt(Rank::getMinPoints))
+            .sorted(Comparator.comparingInt(ClanRank::getMinPoints))
             .collect(Collectors.toList());
     nonStandardRanks =
         ranks.stream()
             .filter(r -> "non_standard".equals(r.getBoard()))
-            .sorted(Comparator.comparingInt(Rank::getMinPoints))
+            .sorted(Comparator.comparingInt(ClanRank::getMinPoints))
             .collect(Collectors.toList());
   }
 
-  @Nullable public Rank getRank(int points, String board) {
-    List<Rank> ranks = getRanksForBoard(board);
-    Rank obtained = null;
-    for (Rank rank : ranks) {
+  @Nullable public ClanRank getRank(int points, String board) {
+    List<ClanRank> ranks = getRanksForBoard(board);
+    ClanRank obtained = null;
+    for (ClanRank rank : ranks) {
       if (points < rank.getMinPoints()) break;
       obtained = rank;
     }
     return obtained;
   }
 
-  @Nullable public Rank getNextRank(int points, String board) {
-    List<Rank> ranks = getRanksForBoard(board);
-    for (Rank rank : ranks) {
+  @Nullable public ClanRank getNextRank(int points, String board) {
+    List<ClanRank> ranks = getRanksForBoard(board);
+    for (ClanRank rank : ranks) {
       if (rank.getMinPoints() > points) return rank;
     }
     return null;
@@ -52,7 +52,7 @@ public class RankService {
     nonStandardRanks = new ArrayList<>();
   }
 
-  private List<Rank> getRanksForBoard(String board) {
+  private List<ClanRank> getRanksForBoard(String board) {
     return "non_standard".equals(board) ? nonStandardRanks : standardRanks;
   }
 }
