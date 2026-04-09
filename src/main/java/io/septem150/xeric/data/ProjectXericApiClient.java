@@ -4,12 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.septem150.xeric.data.player.ClanRank;
 import io.septem150.xeric.data.task.Task;
-import io.septem150.xeric.data.task.TaskResponse;
 import io.septem150.xeric.data.task.TaskService;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import javax.inject.Inject;
@@ -195,6 +195,12 @@ public class ProjectXericApiClient {
   public static class TaskFetchResult {
     TaskResponse taskResponse;
     Map<Integer, String> previousTaskHashes;
+  }
+
+  @Getter
+  public static class TaskResponse {
+    private String hash;
+    private Set<Task> tasks;
   }
 
   @Getter

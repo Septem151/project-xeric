@@ -2,6 +2,7 @@ package io.septem150.xeric.data.task;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import io.septem150.xeric.data.ProjectXericApiClient.TaskResponse;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
