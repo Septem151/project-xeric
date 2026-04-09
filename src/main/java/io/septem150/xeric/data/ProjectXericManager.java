@@ -113,6 +113,7 @@ public class ProjectXericManager {
   private Map<String, ClogItem> allItemsByName;
   private Set<TaskType> pendingUpdates;
   private Map<Integer, String> previousTaskHashes;
+  private final Object playerUpdateLock = new Object();
   private JsonObject pendingPlayerUpdate;
   private int ticksTilUpdate;
   private int ticksTilClientReady;
@@ -214,10 +215,12 @@ public class ProjectXericManager {
   }
 
   private void handleLogout() {
-    if (pendingPlayerUpdate == null) {
-      pendingPlayerUpdate = new JsonObject();
+    synchronized (playerUpdateLock) {
+      if (pendingPlayerUpdate == null) {
+        pendingPlayerUpdate = new JsonObject();
+      }
+      flushPlayerUpdate();
     }
-    flushPlayerUpdate();
     playerInfo.logout();
     ticksTilClientReady = 3;
   }
@@ -529,59 +532,65 @@ public class ProjectXericManager {
   }
 
   private void stageAccountUpdate() {
-    AccountType accountType = playerInfo.getAccountType();
-    if (accountType == null
-        || accountType.getApiName() == null
-        || playerInfo.getAccountHash() == -1) return;
-    stageIfChanged(ProjectXericConfig.USERNAME_DATA_KEY, "username", playerInfo.getUsername());
-    stageIfChanged(
-        ProjectXericConfig.ACCOUNT_TYPE_DATA_KEY, "accountType", accountType.getApiName());
-    stageIfChanged("exceptions", "exceptions", gson.toJsonTree(playerInfo.getExceptions()));
-    // Always send an update so the backend records last_submission_at
-    if (pendingPlayerUpdate == null) {
-      pendingPlayerUpdate = new JsonObject();
+    synchronized (playerUpdateLock) {
+      AccountType accountType = playerInfo.getAccountType();
+      if (accountType == null
+          || accountType.getApiName() == null
+          || playerInfo.getAccountHash() == -1) return;
+      stageIfChanged(ProjectXericConfig.USERNAME_DATA_KEY, "username", playerInfo.getUsername());
+      stageIfChanged(
+          ProjectXericConfig.ACCOUNT_TYPE_DATA_KEY, "accountType", accountType.getApiName());
+      stageIfChanged("exceptions", "exceptions", gson.toJsonTree(playerInfo.getExceptions()));
+      // Always send an update so the backend records last_submission_at
+      if (pendingPlayerUpdate == null) {
+        pendingPlayerUpdate = new JsonObject();
+      }
     }
   }
 
   private void stageTaskCompletion(Set<Task> tasks) {
-    if (playerInfo.getAccountHash() == -1) return;
-    if (pendingPlayerUpdate == null) {
-      pendingPlayerUpdate = new JsonObject();
-    }
-    pendingPlayerUpdate.add(
-        "completedTasks",
-        gson.toJsonTree(tasks.stream().map(Task::getId).collect(Collectors.toSet())));
-  }
-
-  private void stageIfChanged(String configKey, String jsonKey, Object value) {
-    if (value == null) return;
-    String serialized = value instanceof String ? (String) value : gson.toJson(value);
-    String stored = configManager.getRSProfileConfiguration(ProjectXericConfig.GROUP, configKey);
-    if (!serialized.equals(stored)) {
+    synchronized (playerUpdateLock) {
+      if (playerInfo.getAccountHash() == -1) return;
       if (pendingPlayerUpdate == null) {
         pendingPlayerUpdate = new JsonObject();
       }
-      if (value instanceof String) {
-        pendingPlayerUpdate.addProperty(jsonKey, (String) value);
-      } else {
-        pendingPlayerUpdate.add(jsonKey, (JsonElement) value);
+      pendingPlayerUpdate.add(
+          "completedTasks",
+          gson.toJsonTree(tasks.stream().map(Task::getId).collect(Collectors.toSet())));
+    }
+  }
+
+  private void stageIfChanged(String configKey, String jsonKey, Object value) {
+    synchronized (playerUpdateLock) {
+      if (value == null) return;
+      String serialized = value instanceof String ? (String) value : gson.toJson(value);
+      String stored = configManager.getRSProfileConfiguration(ProjectXericConfig.GROUP, configKey);
+      if (!serialized.equals(stored)) {
+        if (pendingPlayerUpdate == null) {
+          pendingPlayerUpdate = new JsonObject();
+        }
+        if (value instanceof String) {
+          pendingPlayerUpdate.addProperty(jsonKey, (String) value);
+        } else {
+          pendingPlayerUpdate.add(jsonKey, (JsonElement) value);
+        }
+        configManager.setRSProfileConfiguration(ProjectXericConfig.GROUP, configKey, serialized);
       }
-      configManager.setRSProfileConfiguration(ProjectXericConfig.GROUP, configKey, serialized);
     }
   }
 
   private void flushPlayerUpdate() {
-    if (pendingPlayerUpdate == null || playerInfo.getAccountHash() == -1) return;
-    if (!config.submitData()
-        || playerInfo.getAccountType() == AccountType.DEFAULT
-        || playerInfo.getPoints() == 0) {
+    synchronized (playerUpdateLock) {
+      if (pendingPlayerUpdate == null || playerInfo.getAccountHash() == -1) return;
+      if (!config.submitData() || playerInfo.getAccountType() == AccountType.DEFAULT) {
+        pendingPlayerUpdate = null;
+        return;
+      }
+      pendingPlayerUpdate.addProperty("accountHash", playerInfo.getAccountHash());
+      pendingPlayerUpdate.addProperty("tasksHash", playerInfo.getTasksHash());
+      apiClient.postPlayerData(pendingPlayerUpdate);
       pendingPlayerUpdate = null;
-      return;
     }
-    pendingPlayerUpdate.addProperty("accountHash", playerInfo.getAccountHash());
-    pendingPlayerUpdate.addProperty("tasksHash", playerInfo.getTasksHash());
-    apiClient.postPlayerData(pendingPlayerUpdate);
-    pendingPlayerUpdate = null;
   }
 
   private void updateClientCache() {
