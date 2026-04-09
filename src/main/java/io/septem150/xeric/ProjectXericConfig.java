@@ -20,6 +20,7 @@ public interface ProjectXericConfig extends Config {
   String ACCOUNT_TYPE_DATA_KEY = "account_type";
   String SLAYER_CONFIG_KEY = "slayer";
   String CHAT_MESSAGES_CONFIG_KEY = "chat_messages";
+  String SUBMIT_DATA_CONFIG_KEY = "submit_data";
 
   @ConfigItem(
       keyName = SLAYER_CONFIG_KEY,
@@ -34,6 +35,14 @@ public interface ProjectXericConfig extends Config {
       name = "Task Completion Chat Messages",
       description = "Toggle on to receive chat messages upon completing tasks.")
   default boolean chatMessages() {
+    return true;
+  }
+
+  @ConfigItem(
+      keyName = SUBMIT_DATA_CONFIG_KEY,
+      name = "Submit Player Data",
+      description = "Toggle off to stop submitting player data to the leaderboard.")
+  default boolean submitData() {
     return true;
   }
 }

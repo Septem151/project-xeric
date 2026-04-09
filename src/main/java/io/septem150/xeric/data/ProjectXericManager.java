@@ -572,6 +572,12 @@ public class ProjectXericManager {
 
   private void flushPlayerUpdate() {
     if (pendingPlayerUpdate == null || playerInfo.getAccountHash() == -1) return;
+    if (!config.submitData()
+        || playerInfo.getAccountType() == AccountType.DEFAULT
+        || playerInfo.getPoints() == 0) {
+      pendingPlayerUpdate = null;
+      return;
+    }
     pendingPlayerUpdate.addProperty("accountHash", playerInfo.getAccountHash());
     pendingPlayerUpdate.addProperty("tasksHash", playerInfo.getTasksHash());
     apiClient.postPlayerData(pendingPlayerUpdate);
