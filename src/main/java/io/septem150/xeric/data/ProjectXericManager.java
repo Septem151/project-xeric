@@ -41,6 +41,7 @@ import io.septem150.xeric.data.player.KillCount;
 import io.septem150.xeric.data.player.Level;
 import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.player.QuestProgress;
+import io.septem150.xeric.data.player.RankService;
 import io.septem150.xeric.data.task.KCTask;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskType;
@@ -103,6 +104,7 @@ public class ProjectXericManager {
   private final Gson gson;
   private final PlayerInfo playerInfo;
   private final ProjectXericApiClient apiClient;
+  private final RankService rankService;
 
   private ProjectXericPanel panel;
 
@@ -125,7 +127,8 @@ public class ProjectXericManager {
       HiscoreManager hiscoreManager,
       @Named("xericGson") Gson gson,
       PlayerInfo playerInfo,
-      ProjectXericApiClient apiClient) {
+      ProjectXericApiClient apiClient,
+      RankService rankService) {
     this.client = client;
     this.clientThread = clientThread;
     this.config = config;
@@ -135,6 +138,7 @@ public class ProjectXericManager {
     this.gson = gson;
     this.playerInfo = playerInfo;
     this.apiClient = apiClient;
+    this.rankService = rankService;
   }
 
   public void startUp(ProjectXericPanel panel) {
@@ -156,6 +160,7 @@ public class ProjectXericManager {
 
   public void shutDown() {
     playerInfo.reset();
+    rankService.reset();
     ticksTilClientReady = 3;
     ticksTilUpdate = 0;
     pendingUpdates = null;
@@ -185,6 +190,8 @@ public class ProjectXericManager {
               playerInfo.setAllTasks(
                   result.getTaskResponse().getTasks(), result.getTaskResponse().getHash());
             })
+        .thenCompose(unused -> apiClient.fetchRanksAsync())
+        .thenAccept(rankService::setRanks)
         .thenRun(
             () -> {
               playerInfo.loadTasksFromRSProfile();
@@ -373,6 +380,8 @@ public class ProjectXericManager {
     if (!event.getGroup().equals(ProjectXericConfig.GROUP)) return;
     if (event.getKey().equals(ProjectXericConfig.SLAYER_CONFIG_KEY)) {
       playerInfo.setSlayerException(Boolean.parseBoolean(event.getNewValue()));
+      stageIfChanged("exceptions", "exceptions", gson.toJsonTree(playerInfo.getExceptions()));
+      flushPlayerUpdate();
       SwingUtilities.invokeLater(panel::refresh);
     }
   }
