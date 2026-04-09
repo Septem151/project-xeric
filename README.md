@@ -21,6 +21,22 @@ The plugin adds a sidebar panel that features two tabs:
 
 ## Changelog
 
+### 2.1.0
+
+The long-awaited leaderboards are finally here! This update to the plugin will track and submit
+your progress to the Zeah Ironmen clan leaderboards, which you can view at https://projectxeric.com.
+Some other general improvements were made so that tasks and ranks can be updated on the fly!
+
+#### Features
+
+- Player data is submitted to leaderboards by default with toggle to disable data submission.
+  Non-irons and accounts with 0 Xeric Points never submit player data.
+- Leaderboard panel now includes link to the official Zeah Ironmen clan leaderboards.
+
+#### Hotfixes
+
+- Load time lag at startup fixed, login should be smoother.
+
 ### 2.0.1
 
 #### Hotfixes
