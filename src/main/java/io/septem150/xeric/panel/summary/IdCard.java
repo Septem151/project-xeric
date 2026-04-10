@@ -3,8 +3,10 @@ package io.septem150.xeric.panel.summary;
 import com.google.common.collect.Iterables;
 import io.septem150.xeric.data.player.ClanRank;
 import io.septem150.xeric.data.player.PlayerInfo;
+import io.septem150.xeric.data.player.RankService;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.panel.JLabeledValue;
+import io.septem150.xeric.util.ImageService;
 import io.septem150.xeric.util.ResourceUtil;
 import io.septem150.xeric.util.TransferableBufferedImage;
 import java.awt.BorderLayout;
@@ -42,17 +44,24 @@ import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.SwingUtil;
-import org.apache.commons.text.WordUtils;
 
 @Singleton
 public class IdCard extends JPanel {
   private final PlayerInfo playerInfo;
   private final SpriteManager spriteManager;
+  private final RankService rankService;
+  private final ImageService imageService;
 
   @Inject
-  private IdCard(PlayerInfo playerInfo, SpriteManager spriteManager) {
+  private IdCard(
+      PlayerInfo playerInfo,
+      SpriteManager spriteManager,
+      RankService rankService,
+      ImageService imageService) {
     this.playerInfo = playerInfo;
     this.spriteManager = spriteManager;
+    this.rankService = rankService;
+    this.imageService = imageService;
 
     setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
     add(wrappedPanel, BorderLayout.NORTH);
@@ -169,9 +178,12 @@ public class IdCard extends JPanel {
 
   private void makeDynamicData() {
     int playerPoints = playerInfo.getPoints();
-    ClanRank playerRank = playerInfo.getRank();
-    playerRank.getImageAsync(spriteManager, image -> rank.setIcon(new ImageIcon(image)));
-    rank.setToolTipText(WordUtils.capitalizeFully(playerRank.name()));
+    String board = playerInfo.getBoard();
+    ClanRank playerRank = rankService.getRank(playerPoints, board);
+    if (playerRank != null) {
+      imageService.loadRankIcon(playerRank, image -> rank.setIcon(new ImageIcon(image)));
+      rank.setToolTipText(playerRank.getName());
+    }
     Objects.requireNonNull(playerInfo.getAccountType())
         .getImageAsync(spriteManager, image -> username.setIcon(new ImageIcon(image)));
     username.setText(playerInfo.getUsername());
@@ -200,7 +212,8 @@ public class IdCard extends JPanel {
     }
     slayException.setEnabled(playerInfo.isSlayerException());
     tasksCompleted.setValue(playerInfo.getCompletedTasks().size());
-    pointsToNextRank.setValue(playerRank.getNextRank().getPointsNeeded() - playerPoints);
+    ClanRank nextRank = rankService.getNextRank(playerPoints, board);
+    pointsToNextRank.setValue(nextRank != null ? nextRank.getMinPoints() - playerPoints : 0);
     highestTierCompleted.setValue(getHighestTierCompleted());
   }
 

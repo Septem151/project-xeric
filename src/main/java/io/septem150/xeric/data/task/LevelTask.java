@@ -1,23 +1,22 @@
 package io.septem150.xeric.data.task;
 
+import com.google.gson.annotations.SerializedName;
 import io.septem150.xeric.data.player.Level;
 import io.septem150.xeric.data.player.PlayerInfo;
-import io.septem150.xeric.util.ResourceUtil;
-import java.awt.image.BufferedImage;
-import java.util.Objects;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Skill;
-import net.runelite.client.game.SpriteManager;
-import net.runelite.client.util.ImageUtil;
 
 @Slf4j
 @Setter
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class LevelTask extends Task {
+  @SerializedName("detail")
   private String level;
+
+  @SerializedName("count")
   private int goal;
 
   @Override
@@ -51,14 +50,5 @@ public class LevelTask extends Task {
           return false;
         }
     }
-  }
-
-  @Override
-  public BufferedImage getIcon(SpriteManager spriteManager) {
-    if (this.getIcon() != null) {
-      return ResourceUtil.getImage(this.getIcon(), ICON_SIZE, ICON_SIZE, true);
-    }
-    return ImageUtil.resizeImage(
-        Objects.requireNonNull(spriteManager.getSprite(3387, 0)), ICON_SIZE, ICON_SIZE, true);
   }
 }

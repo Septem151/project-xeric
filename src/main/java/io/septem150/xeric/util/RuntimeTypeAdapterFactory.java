@@ -16,7 +16,6 @@
 
 package io.septem150.xeric.util;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -203,7 +202,6 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
    * Ensures that this factory will handle not just the given {@code baseType}, but any subtype of
    * that type.
    */
-  @CanIgnoreReturnValue
   public RuntimeTypeAdapterFactory<T> recognizeSubtypes() {
     this.recognizeSubtypes = true;
     return this;
@@ -215,7 +213,6 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
    * @throws IllegalArgumentException if either {@code type} or {@code label} have already been
    *     registered on this type adapter.
    */
-  @CanIgnoreReturnValue
   public RuntimeTypeAdapterFactory<T> registerSubtype(Class<? extends T> type, String label) {
     if (type == null || label == null) {
       throw new NullPointerException();
@@ -235,7 +232,6 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
    * @throws IllegalArgumentException if either {@code type} or its simple name have already been
    *     registered on this type adapter.
    */
-  @CanIgnoreReturnValue
   public RuntimeTypeAdapterFactory<T> registerSubtype(Class<? extends T> type) {
     return registerSubtype(type, type.getSimpleName());
   }

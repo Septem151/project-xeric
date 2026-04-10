@@ -20,3 +20,4 @@ bin/
 null-ignored.json
 dump/
 python/
+gradle.properties

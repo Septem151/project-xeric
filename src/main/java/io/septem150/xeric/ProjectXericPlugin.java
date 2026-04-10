@@ -13,6 +13,10 @@ import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskType;
 import io.septem150.xeric.panel.ProjectXericPanel;
 import io.septem150.xeric.util.RuntimeTypeAdapterFactory;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.inject.Inject;
 import javax.inject.Named;
 import lombok.extern.slf4j.Slf4j;
@@ -57,19 +61,40 @@ public final class ProjectXericPlugin extends Plugin {
     if (event.getCommand().equals("xeric")) {
       for (RuneScapeProfile rsProfile : configManager.getRSProfiles()) {
         String profileKey = rsProfile.getKey();
-        configManager.unsetConfiguration(
-            ProjectXericConfig.GROUP, profileKey, ProjectXericConfig.TASKS_DATA_KEY);
-        configManager.unsetConfiguration(
-            ProjectXericConfig.GROUP, profileKey, ProjectXericConfig.CLOG_DATA_KEY);
-        configManager.unsetConfiguration(
-            ProjectXericConfig.GROUP, profileKey, ProjectXericConfig.TASKS_HASH_DATA_KEY);
+        for (String key :
+            configManager.getRSProfileConfigurationKeys(ProjectXericConfig.GROUP, profileKey, "")) {
+          configManager.unsetConfiguration(ProjectXericConfig.GROUP, profileKey, key);
+        }
       }
+      deleteDirectory(ProjectXericConfig.CACHE_DIR);
       try {
         shutDown();
         startUp();
       } catch (Exception err) {
         throw new RuntimeException(err);
       }
+    }
+  }
+
+  private static void deleteDirectory(Path dir) {
+    if (Files.isSymbolicLink(dir)) {
+      log.error("Failed to delete cache directory: symlink detected");
+      return;
+    }
+    try (DirectoryStream<Path> subPaths = Files.newDirectoryStream(dir)) {
+      for (Path subPath : subPaths) {
+        if (Files.isSymbolicLink(subPath)) {
+          continue;
+        }
+        if (Files.isDirectory(subPath)) {
+          deleteDirectory(subPath);
+        } else {
+          Files.delete(subPath);
+        }
+      }
+      Files.delete(dir);
+    } catch (IOException e) {
+      log.error("Failed to delete cache directory", e);
     }
   }
 
