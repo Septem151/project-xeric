@@ -1,5 +1,6 @@
 package io.septem150.xeric.util;
 
+import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.ProjectXericPlugin;
 import io.septem150.xeric.data.ProjectXericApiClient;
 import io.septem150.xeric.data.player.ClanRank;
@@ -18,7 +19,6 @@ import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.client.RuneLite;
 import net.runelite.client.util.ImageUtil;
 
 @Slf4j
@@ -26,8 +26,8 @@ import net.runelite.client.util.ImageUtil;
 public class ImageService {
   private static final int TASK_ICON_SIZE = 20;
   private static final int RANK_ICON_SIZE = 32;
-  private static final File ICONS_DIR = new File(RuneLite.RUNELITE_DIR, "project-xeric/icons");
-  private static final File RANKS_DIR = new File(RuneLite.RUNELITE_DIR, "project-xeric/ranks");
+  private static final File ICONS_DIR = new File(ProjectXericConfig.CACHE_DIR, "icons");
+  private static final File RANKS_DIR = new File(ProjectXericConfig.CACHE_DIR, "ranks");
 
   private final ProjectXericApiClient apiClient;
   private final Map<TaskType, BufferedImage> defaultIcons = new EnumMap<>(TaskType.class);
@@ -123,19 +123,5 @@ public class ImageService {
               log.warn("Failed to fetch icon: {}", filename, err);
               return null;
             });
-  }
-
-  public void clearCache() {
-    deleteFilesIn(ICONS_DIR);
-    deleteFilesIn(RANKS_DIR);
-  }
-
-  private static void deleteFilesIn(File dir) {
-    File[] files = dir.listFiles();
-    if (files != null) {
-      for (File file : files) {
-        file.delete();
-      }
-    }
   }
 }

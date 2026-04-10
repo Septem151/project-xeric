@@ -3,6 +3,7 @@ package io.septem150.xeric.data;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.septem150.xeric.data.player.ClanRank;
+import io.septem150.xeric.data.player.PlayerInfo;
 import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskService;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -111,10 +113,18 @@ public class ProjectXericApiClient {
     R apply(T t) throws IOException;
   }
 
-  public void postPlayerData(JsonObject json) {
+  public void postPlayerData(PlayerInfo playerInfo, @Nullable Set<Integer> completedTaskIds) {
+    PlayerUpdate update =
+        new PlayerUpdate(
+            playerInfo.getAccountHash(),
+            playerInfo.getTasksHash(),
+            playerInfo.getUsername(),
+            playerInfo.getAccountType().getApiName(),
+            playerInfo.getExceptions(),
+            completedTaskIds);
     Request request =
         new Request.Builder()
-            .post(RequestBody.create(JSON_MEDIA_TYPE, gson.toJson(json)))
+            .post(RequestBody.create(JSON_MEDIA_TYPE, gson.toJson(update)))
             .url(baseUrl().addPathSegment("player").build())
             .build();
     executeAsync(request)
@@ -206,5 +216,15 @@ public class ProjectXericApiClient {
   @Getter
   public static class RankFetchResult {
     private List<ClanRank> ranks;
+  }
+
+  @Value
+  private static class PlayerUpdate {
+    long accountHash;
+    String tasksHash;
+    String username;
+    String accountType;
+    List<String> exceptions;
+    @Nullable Set<Integer> completedTasks;
   }
 }

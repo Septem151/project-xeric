@@ -2,6 +2,7 @@ package io.septem150.xeric.data.task;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.data.ProjectXericApiClient.TaskResponse;
 import java.io.File;
 import java.io.IOException;
@@ -13,13 +14,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.client.RuneLite;
 
 @Slf4j
 @Singleton
 public class TaskService {
-  private static final File CACHE_DIR = new File(RuneLite.RUNELITE_DIR, "project-xeric");
-  private static final File CACHE_FILE = new File(CACHE_DIR, "tasks.json");
+  private static final File CACHE_FILE = new File(ProjectXericConfig.CACHE_DIR, "tasks.json");
 
   private final Gson gson;
 
@@ -63,20 +62,12 @@ public class TaskService {
 
   public void saveToCache(String body) {
     try {
-      CACHE_DIR.mkdirs();
-      File tempFile = new File(CACHE_DIR, "tasks.json.tmp");
+      ProjectXericConfig.CACHE_DIR.mkdirs();
+      File tempFile = new File(ProjectXericConfig.CACHE_DIR, "tasks.json.tmp");
       Files.write(tempFile.toPath(), body.getBytes(StandardCharsets.UTF_8));
       Files.move(tempFile.toPath(), CACHE_FILE.toPath(), StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
       log.warn("Failed to save tasks to cache", e);
-    }
-  }
-
-  public void deleteCache() {
-    try {
-      Files.deleteIfExists(CACHE_FILE.toPath());
-    } catch (IOException e) {
-      log.warn("Failed to delete task cache", e);
     }
   }
 }

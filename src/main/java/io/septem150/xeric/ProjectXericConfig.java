@@ -1,5 +1,7 @@
 package io.septem150.xeric;
 
+import java.io.File;
+import net.runelite.client.RuneLite;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
@@ -13,11 +15,10 @@ import net.runelite.client.config.ConfigItem;
 public interface ProjectXericConfig extends Config {
   String NAME = "Project Xeric";
   String GROUP = "projectxeric";
+  File CACHE_DIR = new File(RuneLite.RUNELITE_DIR, "project-xeric");
   String CLOG_DATA_KEY = "clog";
   String TASKS_DATA_KEY = "tasks";
   String TASKS_HASH_DATA_KEY = "tasks_hash";
-  String USERNAME_DATA_KEY = "username";
-  String ACCOUNT_TYPE_DATA_KEY = "account_type";
   String SLAYER_CONFIG_KEY = "slayer";
   String CHAT_MESSAGES_CONFIG_KEY = "chat_messages";
   String SUBMIT_DATA_CONFIG_KEY = "submit_data";

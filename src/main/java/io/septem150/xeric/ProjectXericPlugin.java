@@ -10,11 +10,10 @@ import io.septem150.xeric.data.task.KCTask;
 import io.septem150.xeric.data.task.LevelTask;
 import io.septem150.xeric.data.task.QuestTask;
 import io.septem150.xeric.data.task.Task;
-import io.septem150.xeric.data.task.TaskService;
 import io.septem150.xeric.data.task.TaskType;
 import io.septem150.xeric.panel.ProjectXericPanel;
-import io.septem150.xeric.util.ImageService;
 import io.septem150.xeric.util.RuntimeTypeAdapterFactory;
+import java.io.File;
 import javax.inject.Inject;
 import javax.inject.Named;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +36,6 @@ public final class ProjectXericPlugin extends Plugin {
   @Inject private ConfigManager configManager;
   @Inject private ProjectXericManager manager;
   @Inject private EventBus eventBus;
-  @Inject private TaskService taskService;
-  @Inject private ImageService imageService;
 
   private ProjectXericPanel panel;
 
@@ -61,15 +58,12 @@ public final class ProjectXericPlugin extends Plugin {
     if (event.getCommand().equals("xeric")) {
       for (RuneScapeProfile rsProfile : configManager.getRSProfiles()) {
         String profileKey = rsProfile.getKey();
-        configManager.unsetConfiguration(
-            ProjectXericConfig.GROUP, profileKey, ProjectXericConfig.TASKS_DATA_KEY);
-        configManager.unsetConfiguration(
-            ProjectXericConfig.GROUP, profileKey, ProjectXericConfig.CLOG_DATA_KEY);
-        configManager.unsetConfiguration(
-            ProjectXericConfig.GROUP, profileKey, ProjectXericConfig.TASKS_HASH_DATA_KEY);
+        for (String key :
+            configManager.getRSProfileConfigurationKeys(ProjectXericConfig.GROUP, profileKey, "")) {
+          configManager.unsetConfiguration(ProjectXericConfig.GROUP, profileKey, key);
+        }
       }
-      taskService.deleteCache();
-      imageService.clearCache();
+      deleteDirectory(ProjectXericConfig.CACHE_DIR);
       try {
         shutDown();
         startUp();
@@ -77,6 +71,19 @@ public final class ProjectXericPlugin extends Plugin {
         throw new RuntimeException(err);
       }
     }
+  }
+
+  private static void deleteDirectory(File dir) {
+    File[] files = dir.listFiles();
+    if (files != null) {
+      for (File file : files) {
+        if (file.isDirectory()) {
+          deleteDirectory(file);
+        }
+        file.delete();
+      }
+    }
+    dir.delete();
   }
 
   @Provides

@@ -28,9 +28,6 @@ import static io.septem150.xeric.util.RegexUtil.NAME_GROUP;
 import static io.septem150.xeric.util.RegexUtil.QUEST_REGEX;
 
 import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.data.clog.ClogItem;
 import io.septem150.xeric.data.diary.DiaryProgress;
@@ -58,7 +55,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
@@ -101,7 +97,6 @@ public class ProjectXericManager {
   private final ConfigManager configManager;
   private final ScheduledExecutorService executor;
   private final HiscoreManager hiscoreManager;
-  private final Gson gson;
   private final PlayerInfo playerInfo;
   private final ProjectXericApiClient apiClient;
   private final RankService rankService;
@@ -111,10 +106,11 @@ public class ProjectXericManager {
   private Map<Integer, CombatAchievement> allCombatAchievements;
   private Map<Integer, ClogItem> allItemsById;
   private Map<String, ClogItem> allItemsByName;
-  private Set<TaskType> pendingUpdates;
+  private Set<TaskType> taskTypesToRecheck;
   private Map<Integer, String> previousTaskHashes;
   private final Object playerUpdateLock = new Object();
-  private JsonObject pendingPlayerUpdate;
+  private volatile boolean pendingFlush;
+  private Set<Integer> unsubmittedTaskIds;
   private int ticksTilUpdate;
   private int ticksTilClientReady;
 
@@ -126,7 +122,6 @@ public class ProjectXericManager {
       ConfigManager configManager,
       ScheduledExecutorService executor,
       HiscoreManager hiscoreManager,
-      @Named("xericGson") Gson gson,
       PlayerInfo playerInfo,
       ProjectXericApiClient apiClient,
       RankService rankService) {
@@ -136,7 +131,6 @@ public class ProjectXericManager {
     this.configManager = configManager;
     this.executor = executor;
     this.hiscoreManager = hiscoreManager;
-    this.gson = gson;
     this.playerInfo = playerInfo;
     this.apiClient = apiClient;
     this.rankService = rankService;
@@ -146,7 +140,7 @@ public class ProjectXericManager {
     this.panel = panel;
     ticksTilClientReady = 3;
     ticksTilUpdate = 0;
-    pendingUpdates = new HashSet<>();
+    taskTypesToRecheck = new HashSet<>();
     panel.startUp();
     SwingUtilities.invokeLater(panel::refresh);
     // handle login as soon as possible from client in case
@@ -164,7 +158,7 @@ public class ProjectXericManager {
     rankService.reset();
     ticksTilClientReady = 3;
     ticksTilUpdate = 0;
-    pendingUpdates = null;
+    taskTypesToRecheck = null;
     allItemsById = null;
     allItemsByName = null;
     allCombatAchievements = null;
@@ -197,8 +191,6 @@ public class ProjectXericManager {
             () -> {
               playerInfo.loadTasksFromRSProfile();
               boolean hasTaskChanges = playerInfo.isTaskListUpdated() && handleTaskListChange();
-              stageAccountUpdate();
-              flushPlayerUpdate();
               SwingUtilities.invokeLater(
                   () -> {
                     panel.startUpChildren();
@@ -215,19 +207,15 @@ public class ProjectXericManager {
   }
 
   private void handleLogout() {
-    synchronized (playerUpdateLock) {
-      if (pendingPlayerUpdate == null) {
-        pendingPlayerUpdate = new JsonObject();
-      }
-      flushPlayerUpdate();
-    }
+    stageTaskCompletions(playerInfo.getCompletedTasks());
+    flushPlayerUpdate();
     playerInfo.logout();
     ticksTilClientReady = 3;
   }
 
   private void scheduleUpdate(int tickDelay, Set<TaskType> taskTypes) {
     ticksTilUpdate = ticksTilUpdate > 0 ? ticksTilUpdate : Math.max(0, tickDelay);
-    pendingUpdates.addAll(taskTypes);
+    taskTypesToRecheck.addAll(taskTypes);
   }
 
   @Subscribe
@@ -258,7 +246,7 @@ public class ProjectXericManager {
       ticksTilUpdate--;
       return;
     }
-    if (pendingUpdates.isEmpty()) return;
+    if (taskTypesToRecheck.isEmpty()) return;
     boolean updated = updateXericTasks();
     flushPlayerUpdate();
     if (updated) {
@@ -383,7 +371,7 @@ public class ProjectXericManager {
     if (!event.getGroup().equals(ProjectXericConfig.GROUP)) return;
     if (event.getKey().equals(ProjectXericConfig.SLAYER_CONFIG_KEY)) {
       playerInfo.setSlayerException(Boolean.parseBoolean(event.getNewValue()));
-      stageIfChanged("exceptions", "exceptions", gson.toJsonTree(playerInfo.getExceptions()));
+      pendingFlush = true;
       flushPlayerUpdate();
       SwingUtilities.invokeLater(panel::refresh);
     }
@@ -392,10 +380,10 @@ public class ProjectXericManager {
   private boolean updateXericTasks(boolean showMessage) {
     log.debug(
         "Called updateTaskCompletions with: {}",
-        pendingUpdates.stream().map(TaskType::getName).collect(Collectors.toSet()));
+        taskTypesToRecheck.stream().map(TaskType::getName).collect(Collectors.toSet()));
     Set<Task> remainingTasksToCheck =
         playerInfo.getRemainingTasks().stream()
-            .filter(task -> pendingUpdates.contains(task.getType()))
+            .filter(task -> taskTypesToRecheck.contains(task.getType()))
             .collect(Collectors.toSet());
     boolean updated = false;
     Set<Task> newlyCompleted = new HashSet<>();
@@ -417,9 +405,9 @@ public class ProjectXericManager {
         }
       }
     }
-    pendingUpdates.clear();
+    taskTypesToRecheck.clear();
     if (!newlyCompleted.isEmpty()) {
-      stageTaskCompletion(newlyCompleted);
+      stageTaskCompletions(newlyCompleted);
     }
     return updated;
   }
@@ -531,65 +519,28 @@ public class ProjectXericManager {
     }
   }
 
-  private void stageAccountUpdate() {
-    synchronized (playerUpdateLock) {
-      AccountType accountType = playerInfo.getAccountType();
-      if (accountType == null
-          || accountType.getApiName() == null
-          || playerInfo.getAccountHash() == -1) return;
-      stageIfChanged(ProjectXericConfig.USERNAME_DATA_KEY, "username", playerInfo.getUsername());
-      stageIfChanged(
-          ProjectXericConfig.ACCOUNT_TYPE_DATA_KEY, "accountType", accountType.getApiName());
-      stageIfChanged("exceptions", "exceptions", gson.toJsonTree(playerInfo.getExceptions()));
-      // Always send an update so the backend records last_submission_at
-      if (pendingPlayerUpdate == null) {
-        pendingPlayerUpdate = new JsonObject();
-      }
-    }
-  }
-
-  private void stageTaskCompletion(Set<Task> tasks) {
+  private void stageTaskCompletions(Set<Task> tasks) {
     synchronized (playerUpdateLock) {
       if (playerInfo.getAccountHash() == -1) return;
-      if (pendingPlayerUpdate == null) {
-        pendingPlayerUpdate = new JsonObject();
+      if (unsubmittedTaskIds == null) {
+        unsubmittedTaskIds = new HashSet<>();
       }
-      pendingPlayerUpdate.add(
-          "completedTasks",
-          gson.toJsonTree(tasks.stream().map(Task::getId).collect(Collectors.toSet())));
-    }
-  }
-
-  private void stageIfChanged(String configKey, String jsonKey, Object value) {
-    synchronized (playerUpdateLock) {
-      if (value == null) return;
-      String serialized = value instanceof String ? (String) value : gson.toJson(value);
-      String stored = configManager.getRSProfileConfiguration(ProjectXericConfig.GROUP, configKey);
-      if (!serialized.equals(stored)) {
-        if (pendingPlayerUpdate == null) {
-          pendingPlayerUpdate = new JsonObject();
-        }
-        if (value instanceof String) {
-          pendingPlayerUpdate.addProperty(jsonKey, (String) value);
-        } else {
-          pendingPlayerUpdate.add(jsonKey, (JsonElement) value);
-        }
-        configManager.setRSProfileConfiguration(ProjectXericConfig.GROUP, configKey, serialized);
-      }
+      tasks.stream().map(Task::getId).forEach(unsubmittedTaskIds::add);
+      pendingFlush = true;
     }
   }
 
   private void flushPlayerUpdate() {
     synchronized (playerUpdateLock) {
-      if (pendingPlayerUpdate == null || playerInfo.getAccountHash() == -1) return;
+      if (!pendingFlush || playerInfo.getAccountHash() == -1) return;
       if (!config.submitData() || playerInfo.getAccountType() == AccountType.DEFAULT) {
-        pendingPlayerUpdate = null;
+        pendingFlush = false;
+        unsubmittedTaskIds = null;
         return;
       }
-      pendingPlayerUpdate.addProperty("accountHash", playerInfo.getAccountHash());
-      pendingPlayerUpdate.addProperty("tasksHash", playerInfo.getTasksHash());
-      apiClient.postPlayerData(pendingPlayerUpdate);
-      pendingPlayerUpdate = null;
+      apiClient.postPlayerData(playerInfo, unsubmittedTaskIds);
+      pendingFlush = false;
+      unsubmittedTaskIds = null;
     }
   }
 
