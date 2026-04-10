@@ -1,6 +1,6 @@
 package io.septem150.xeric;
 
-import java.io.File;
+import java.nio.file.Path;
 import net.runelite.client.RuneLite;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
@@ -15,7 +15,7 @@ import net.runelite.client.config.ConfigItem;
 public interface ProjectXericConfig extends Config {
   String NAME = "Project Xeric";
   String GROUP = "projectxeric";
-  File CACHE_DIR = new File(RuneLite.RUNELITE_DIR, "project-xeric");
+  Path CACHE_DIR = RuneLite.RUNELITE_DIR.toPath().resolve("project-xeric");
   String CLOG_DATA_KEY = "clog";
   String TASKS_DATA_KEY = "tasks";
   String TASKS_HASH_DATA_KEY = "tasks_hash";

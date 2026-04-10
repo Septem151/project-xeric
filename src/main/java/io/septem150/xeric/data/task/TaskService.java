@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.septem150.xeric.ProjectXericConfig;
 import io.septem150.xeric.data.ProjectXericApiClient.TaskResponse;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Singleton
 public class TaskService {
-  private static final File CACHE_FILE = new File(ProjectXericConfig.CACHE_DIR, "tasks.json");
+  private static final Path TASKS_CACHE_DIR = ProjectXericConfig.CACHE_DIR.resolve("tasks.json");
 
   private final Gson gson;
 
@@ -28,9 +28,9 @@ public class TaskService {
   }
 
   @Nullable private String readCacheFile() {
-    if (!CACHE_FILE.exists()) return null;
+    if (!Files.exists(TASKS_CACHE_DIR)) return null;
     try {
-      return Files.readString(CACHE_FILE.toPath());
+      return Files.readString(TASKS_CACHE_DIR);
     } catch (IOException e) {
       log.warn("Failed to read task cache", e);
       return null;
@@ -62,10 +62,10 @@ public class TaskService {
 
   public void saveToCache(String body) {
     try {
-      ProjectXericConfig.CACHE_DIR.mkdirs();
-      File tempFile = new File(ProjectXericConfig.CACHE_DIR, "tasks.json.tmp");
-      Files.write(tempFile.toPath(), body.getBytes(StandardCharsets.UTF_8));
-      Files.move(tempFile.toPath(), CACHE_FILE.toPath(), StandardCopyOption.REPLACE_EXISTING);
+      Files.createDirectories(ProjectXericConfig.CACHE_DIR);
+      Path tempPath = ProjectXericConfig.CACHE_DIR.resolve("tasks.json.tmp");
+      Files.write(tempPath, body.getBytes(StandardCharsets.UTF_8));
+      Files.move(tempPath, TASKS_CACHE_DIR, StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
       log.warn("Failed to save tasks to cache", e);
     }
