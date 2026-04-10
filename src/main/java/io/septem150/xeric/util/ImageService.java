@@ -9,8 +9,10 @@ import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskType;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -26,8 +28,8 @@ import net.runelite.client.util.ImageUtil;
 public class ImageService {
   private static final int TASK_ICON_SIZE = 20;
   private static final int RANK_ICON_SIZE = 32;
-  private static final File ICONS_DIR = new File(ProjectXericConfig.CACHE_DIR, "icons");
-  private static final File RANKS_DIR = new File(ProjectXericConfig.CACHE_DIR, "ranks");
+  private static final Path ICONS_CACHE_DIR = ProjectXericConfig.CACHE_DIR.resolve("icons");
+  private static final Path RANKS_CACHE_DIR = ProjectXericConfig.CACHE_DIR.resolve("ranks");
 
   private final ProjectXericApiClient apiClient;
   private final Map<TaskType, BufferedImage> defaultIcons = new EnumMap<>(TaskType.class);
@@ -35,8 +37,12 @@ public class ImageService {
   @Inject
   public ImageService(ProjectXericApiClient apiClient) {
     this.apiClient = apiClient;
-    ICONS_DIR.mkdirs();
-    RANKS_DIR.mkdirs();
+    try {
+      Files.createDirectories(ICONS_CACHE_DIR);
+      Files.createDirectories(RANKS_CACHE_DIR);
+    } catch (IOException e) {
+      log.warn("Failed to create icon cache directories", e);
+    }
     for (TaskType type : TaskType.values()) {
       defaultIcons.put(
           type,
@@ -70,34 +76,51 @@ public class ImageService {
     String iconFilename = resolveIconFilename(task);
     if (iconFilename == null) return;
     loadIcon(
-        ICONS_DIR, iconFilename, apiClient.fetchTaskIcon(iconFilename), TASK_ICON_SIZE, callback);
+        ICONS_CACHE_DIR,
+        iconFilename,
+        apiClient.fetchTaskIcon(iconFilename),
+        TASK_ICON_SIZE,
+        callback);
   }
 
   public void loadRankIcon(ClanRank rank, Consumer<BufferedImage> callback) {
     if (rank == null || rank.getIcon() == null) return;
     String iconFilename = rank.getIcon();
     loadIcon(
-        RANKS_DIR, iconFilename, apiClient.fetchRankIcon(iconFilename), RANK_ICON_SIZE, callback);
+        RANKS_CACHE_DIR,
+        iconFilename,
+        apiClient.fetchRankIcon(iconFilename),
+        RANK_ICON_SIZE,
+        callback);
   }
 
   private void loadIcon(
-      File cacheDir,
+      Path cacheDir,
       String filename,
       CompletableFuture<byte[]> fetchFuture,
       int size,
       Consumer<BufferedImage> callback) {
-    File cachedFile = new File(cacheDir, filename);
+    Path resolvedPath = cacheDir.resolve(filename).normalize();
+    // after resolving path, compare against cacheDir to prevent relative escaping via "../"
+    if (!resolvedPath.startsWith(cacheDir)) {
+      log.warn("Invalid icon cache directory: {}", filename);
+      return;
+    }
 
-    if (cachedFile.exists()) {
-      try {
-        BufferedImage image = ImageIO.read(cachedFile);
+    if (Files.exists(resolvedPath)) {
+      try (InputStream in = Files.newInputStream(resolvedPath)) {
+        BufferedImage image = ImageIO.read(in);
         if (image != null) {
           callback.accept(resize(image, size));
           return;
         }
       } catch (IOException e) {
         log.warn("Corrupt cached icon, deleting: {}", filename);
-        cachedFile.delete();
+        try {
+          Files.deleteIfExists(resolvedPath);
+        } catch (IOException ex) {
+          log.warn("Failed to delete corrupt cached icon: {}", filename, ex);
+        }
       }
     }
 
@@ -107,15 +130,12 @@ public class ImageService {
               try {
                 BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
                 if (image == null) return;
-                try {
-                  cacheDir.mkdirs();
-                  ImageIO.write(image, "png", cachedFile);
-                } catch (IOException e) {
-                  log.warn("Failed to cache icon: {}", filename, e);
-                }
                 callback.accept(resize(image, size));
+                // Ensure cache dir exists before trying to write
+                Files.createDirectories(cacheDir);
+                ImageIO.write(image, "png", Files.newOutputStream(resolvedPath));
               } catch (IOException e) {
-                log.warn("Failed to read icon: {}", filename, e);
+                log.warn("Failed to load or cache icon: {}", filename, e);
               }
             })
         .exceptionally(

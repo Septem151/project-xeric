@@ -13,7 +13,10 @@ import io.septem150.xeric.data.task.Task;
 import io.septem150.xeric.data.task.TaskType;
 import io.septem150.xeric.panel.ProjectXericPanel;
 import io.septem150.xeric.util.RuntimeTypeAdapterFactory;
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.inject.Inject;
 import javax.inject.Named;
 import lombok.extern.slf4j.Slf4j;
@@ -73,17 +76,26 @@ public final class ProjectXericPlugin extends Plugin {
     }
   }
 
-  private static void deleteDirectory(File dir) {
-    File[] files = dir.listFiles();
-    if (files != null) {
-      for (File file : files) {
-        if (file.isDirectory()) {
-          deleteDirectory(file);
-        }
-        file.delete();
-      }
+  private static void deleteDirectory(Path dir) {
+    if (Files.isSymbolicLink(dir)) {
+      log.error("Failed to delete cache directory: symlink detected");
+      return;
     }
-    dir.delete();
+    try (DirectoryStream<Path> subPaths = Files.newDirectoryStream(dir)) {
+      for (Path subPath : subPaths) {
+        if (Files.isSymbolicLink(subPath)) {
+          continue;
+        }
+        if (Files.isDirectory(subPath)) {
+          deleteDirectory(subPath);
+        } else {
+          Files.delete(subPath);
+        }
+      }
+      Files.delete(dir);
+    } catch (IOException e) {
+      log.error("Failed to delete cache directory", e);
+    }
   }
 
   @Provides
